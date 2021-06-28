@@ -1,0 +1,10 @@
+build
+build-py
+##############
+*.dll
+*.exe
+*.o
+*.so
+*.pyd
+
+*.bak
