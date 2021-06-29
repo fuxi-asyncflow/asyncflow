@@ -1,0 +1,7 @@
+{
+  "generator": "py",
+  "flowchart_type": {
+    "AI": "Character",
+    "Subchart": "Character"
+  }
+}

@@ -1,0 +1,1041 @@
+[
+  {
+    "Uid": "3f73e8cd591a4bc7ae0200b58135f99f",
+    "Path": "AI.test_01",
+    "Type": "Character",
+    "Nodes": [
+      {
+        "Uid": "0",
+        "Text": "Start",
+        "Rect": {"x": 62, "y": -2, "w": 92, "h": 40},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "9dfc8ea58a4743db95183f7d9bfb04ec",
+        "Text": "Say(\"hello\")",
+        "Rect": {"x": 34, "y": 60, "w": 148, "h": 36},
+        "ViewType": 2 
+      },
+    ],
+    "Connectors": [
+      { "Start": "0", "End": "9dfc8ea58a4743db95183f7d9bfb04ec", "Type": 2, "Shape": 2 },
+    ]
+  },
+  {
+    "Uid": "d5525a4b237344deb6b15370fff8d146",
+    "Path": "AI.test_02",
+    "Type": "Character",
+    "Nodes": [
+      {
+        "Uid": "0",
+        "Text": "Start",
+        "Rect": {"x": 35, "y": -2, "w": 92, "h": 40},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "cc77a904008c43719a7e505910cdc10f",
+        "Text": "Say(time)",
+        "Rect": {"x": 19.5, "y": 60, "w": 123, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "eb7813885a224228a7747366d8618dbf",
+        "Text": "wait(1)",
+        "Rect": {"x": 28, "y": 122, "w": 106, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "98c9fbfeaef0425885d98de2c5daf952",
+        "Text": "Say(time)",
+        "Rect": {"x": 19.5, "y": 184, "w": 123, "h": 36},
+        "ViewType": 2 
+      },
+    ],
+    "Connectors": [
+      { "Start": "cc77a904008c43719a7e505910cdc10f", "End": "eb7813885a224228a7747366d8618dbf", "Type": 2, "Shape": 2 },
+      { "Start": "eb7813885a224228a7747366d8618dbf", "End": "98c9fbfeaef0425885d98de2c5daf952", "Type": 2, "Shape": 2 },
+      { "Start": "0", "End": "cc77a904008c43719a7e505910cdc10f", "Type": 2, "Shape": 2 },
+    ]
+  },
+  {
+    "Uid": "76c21fc34c8142f2ac256f295482769d",
+    "Path": "AI.test_03",
+    "Type": "Character",
+    "Variables": [
+      { "Name": "str", "type": "String"},
+    ],
+    "Nodes": [
+      {
+        "Uid": "0",
+        "Text": "Start",
+        "Rect": {"x": 80, "y": -2, "w": 92, "h": 40},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "b5d9a1fa89fb471e8aa16acc1913e9a3",
+        "Text": "$str = \"hello\"",
+        "Rect": {"x": 43, "y": 60, "w": 166, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "4e9524324662485d8149d455b2894734",
+        "Text": "Say($str)",
+        "Rect": {"x": 64.5, "y": 122, "w": 123, "h": 36},
+        "ViewType": 2 
+      },
+    ],
+    "Connectors": [
+      { "Start": "b5d9a1fa89fb471e8aa16acc1913e9a3", "End": "4e9524324662485d8149d455b2894734", "Type": 2, "Shape": 2 },
+      { "Start": "0", "End": "b5d9a1fa89fb471e8aa16acc1913e9a3", "Type": 2, "Shape": 2 },
+    ]
+  },
+  {
+    "Uid": "40865e387f2247d2966ce07fff0cfffc",
+    "Path": "AI.test_04",
+    "Type": "Character",
+    "Nodes": [
+      {
+        "Uid": "0",
+        "Text": "Start",
+        "Rect": {"x": 64, "y": -2, "w": 88, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "47ecef471c53408aa0bf0794ce312e04",
+        "Text": "Say(\"hello\")",
+        "Rect": {"x": 34, "y": 60, "w": 148, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "912f034c3c29442aa9d1f70f67c727a0",
+        "Text": "Say(\"world\")",
+        "Rect": {"x": 152, "y": 122, "w": 150, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "5b3bb757d1724fc3a795f53db0723816",
+        "Text": "Say(time)",
+        "Rect": {"x": 46.5, "y": 184, "w": 123, "h": 36},
+        "ViewType": 2 
+      },
+    ],
+    "Connectors": [
+      { "Start": "47ecef471c53408aa0bf0794ce312e04", "End": "912f034c3c29442aa9d1f70f67c727a0", "Type": 2, "Shape": 2 },
+      { "Start": "912f034c3c29442aa9d1f70f67c727a0", "End": "5b3bb757d1724fc3a795f53db0723816", "Type": 2, "Shape": 2 },
+      { "Start": "5b3bb757d1724fc3a795f53db0723816", "End": "47ecef471c53408aa0bf0794ce312e04", "Type": 2, "Shape": 2 },
+      { "Start": "0", "End": "47ecef471c53408aa0bf0794ce312e04", "Type": 2, "Shape": 2 },
+    ]
+  },
+  {
+    "Uid": "0caef504e13f49c7afe8318b4e3b30ac",
+    "Path": "AI.test_05",
+    "Type": "Character",
+    "Nodes": [
+      {
+        "Uid": "0",
+        "Text": "Start",
+        "Rect": {"x": 766, "y": 0, "w": 92, "h": 40},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "f93329c774ce439bb8d4b81bf5d151ce",
+        "Text": "OnEvent0Arg",
+        "Rect": {"x": 298, "y": 57, "w": 140, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "59fe1a5da28a48e0a48627d63ba50809",
+        "Text": "Say(\"event 0 pass\")",
+        "Rect": {"x": 233.5, "y": 120, "w": 211, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "9983834617ab4979acc4a56125a2d16f",
+        "Text": "OnEvent1Arg",
+        "Rect": {"x": 742, "y": 60, "w": 140, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "a1ac7944f25842df8fedb0f6deba7a4d",
+        "Text": "Say(\"event 1 pass\" + Event1Arg.param)",
+        "Rect": {"x": 641.5, "y": 129, "w": 369, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "6d64fde9049743f393ebb811b69aeb06",
+        "Text": "OnEvent2Arg",
+        "Rect": {"x": 982, "y": 58, "w": 140, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "92232347f4064253b2c9ad3b0e9293b1",
+        "Text": "Say(\"event 2 pass\")",
+        "Rect": {"x": 1050.5, "y": 162, "w": 211, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "8a1c7ed3160c4d0eb5a6257f3ef34614",
+        "Text": "Say(\"1st arg\" + Event2Arg.param1)",
+        "Rect": {"x": 1044, "y": 229, "w": 334, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "a0e5dc6615ea4cb3a3c2c229b598049c",
+        "Text": "Say(\"2nd arg\" + Event2Arg.param2)",
+        "Rect": {"x": 1050, "y": 306, "w": 334, "h": 36},
+        "ViewType": 2 
+      },
+    ],
+    "Connectors": [
+      { "Start": "f93329c774ce439bb8d4b81bf5d151ce", "End": "59fe1a5da28a48e0a48627d63ba50809", "Type": 2, "Shape": 2 },
+      { "Start": "9983834617ab4979acc4a56125a2d16f", "End": "a1ac7944f25842df8fedb0f6deba7a4d", "Type": 2, "Shape": 2 },
+      { "Start": "6d64fde9049743f393ebb811b69aeb06", "End": "92232347f4064253b2c9ad3b0e9293b1", "Type": 2, "Shape": 2 },
+      { "Start": "92232347f4064253b2c9ad3b0e9293b1", "End": "8a1c7ed3160c4d0eb5a6257f3ef34614", "Type": 2, "Shape": 2 },
+      { "Start": "8a1c7ed3160c4d0eb5a6257f3ef34614", "End": "a0e5dc6615ea4cb3a3c2c229b598049c", "Type": 2, "Shape": 2 },
+      { "Start": "0", "End": "f93329c774ce439bb8d4b81bf5d151ce", "Type": 2, "Shape": 2 },
+      { "Start": "0", "End": "9983834617ab4979acc4a56125a2d16f", "Type": 2, "Shape": 2 },
+      { "Start": "0", "End": "6d64fde9049743f393ebb811b69aeb06", "Type": 2, "Shape": 2 },
+    ]
+  },
+  {
+    "Uid": "b367a0fbbd1244d4a113ba2a3d91bd8f",
+    "Path": "AI.test_06",
+    "Type": "Character",
+    "Nodes": [
+      {
+        "Uid": "0",
+        "Text": "Start",
+        "Rect": {"x": 125, "y": -2, "w": 92, "h": 40},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "12080d88c85f406bb2c5d63266c2228a",
+        "Text": "test_06_sub()",
+        "Rect": {"x": 92, "y": 60, "w": 158, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "bbd7cefd50b942728807fc2831476e07",
+        "Text": "Say(\"subunit pass\")",
+        "Rect": {"x": 66, "y": 122, "w": 210, "h": 36},
+        "ViewType": 2 
+      },
+    ],
+    "Connectors": [
+      { "Start": "12080d88c85f406bb2c5d63266c2228a", "End": "bbd7cefd50b942728807fc2831476e07", "Type": 1, "Shape": 2 },
+      { "Start": "0", "End": "12080d88c85f406bb2c5d63266c2228a", "Type": 2, "Shape": 2 },
+    ]
+  },
+  {
+    "Uid": "677cd511bec744d6885e365dbb3c73a8",
+    "Path": "AI.test_06_sub",
+    "Type": "Character",
+    "IsSubChart": true,
+    "ReturnType": "Number",
+    "Nodes": [
+      {
+        "Uid": "0",
+        "Text": "Start",
+        "Rect": {"x": 37, "y": -2, "w": 88, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "52d53ccc09ac4beda69f9ef0a8663ef5",
+        "Text": "return(1)",
+        "Rect": {"x": 19.5, "y": 60, "w": 123, "h": 36},
+        "ViewType": 2 
+      },
+    ],
+    "Connectors": [
+      { "Start": "0", "End": "52d53ccc09ac4beda69f9ef0a8663ef5", "Type": 2, "Shape": 2 },
+    ]
+  },
+  {
+    "Uid": "704b7e29af784f0e840eea3e1cf26629",
+    "Path": "AI.test_07",
+    "Type": "Character",
+    "Variables": [
+      { "Name": "a", "type": "Number"},
+    ],
+    "Nodes": [
+      {
+        "Uid": "0",
+        "Text": "Start",
+        "Rect": {"x": 152, "y": 0, "w": 92, "h": 40},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "9169be5d222349db89e0de785c0d6a74",
+        "Text": "test_07_sub(1,2)",
+        "Rect": {"x": 105.5, "y": 60, "w": 185, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "edf49f0e00e149ddb9bb4f7f2f7b38b2",
+        "Text": "$a = test_07_sub(3, 4)",
+        "Rect": {"x": 79.5, "y": 122, "w": 237, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "ae372d08c8a744e4ae0ab9ebfa73883a",
+        "Text": "Say($a)",
+        "Rect": {"x": 145, "y": 184, "w": 106, "h": 36},
+        "ViewType": 2 
+      },
+    ],
+    "Connectors": [
+      { "Start": "9169be5d222349db89e0de785c0d6a74", "End": "edf49f0e00e149ddb9bb4f7f2f7b38b2", "Type": 2, "Shape": 2 },
+      { "Start": "edf49f0e00e149ddb9bb4f7f2f7b38b2", "End": "ae372d08c8a744e4ae0ab9ebfa73883a", "Type": 2, "Shape": 2 },
+      { "Start": "0", "End": "9169be5d222349db89e0de785c0d6a74", "Type": 2, "Shape": 2 },
+    ]
+  },
+  {
+    "Uid": "7e873dceba2b4b03998b2f49a843cac6",
+    "Path": "AI.test_07_sub",
+    "Type": "Character",
+    "IsSubChart": true,
+    "ReturnType": "Number",
+    "Variables": [
+      { "Name": "x", "type": "Number", "is_param": true},
+      { "Name": "y", "type": "Number", "is_param": true},
+      { "Name": "i", "type": "Number"},
+    ],
+    "Nodes": [
+      {
+        "Uid": "0",
+        "Text": "Start",
+        "Rect": {"x": 401, "y": 54, "w": 92, "h": 40},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "fac314b909574f9fb386a9a4cbbcf897",
+        "Text": "Say($x)",
+        "Rect": {"x": 391, "y": 119, "w": 106, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "d3ca5de79331406cb6468bcf80796782",
+        "Text": "Say($y)",
+        "Rect": {"x": 395, "y": 189, "w": 106, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "50cd0849040c491ba1bac88436c7fbfd",
+        "Text": "$i = $x + $y",
+        "Rect": {"x": 33, "y": 184, "w": 150, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "8612fd56143d4c4191826f9c67a97d4b",
+        "Text": "Say($i)",
+        "Rect": {"x": 55, "y": 246, "w": 106, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "84fc5277ee074792b045e255001eb5a5",
+        "Text": "return($i)",
+        "Rect": {"x": 42, "y": 308, "w": 132, "h": 36},
+        "ViewType": 2 
+      },
+    ],
+    "Connectors": [
+      { "Start": "fac314b909574f9fb386a9a4cbbcf897", "End": "d3ca5de79331406cb6468bcf80796782", "Type": 2, "Shape": 2 },
+      { "Start": "d3ca5de79331406cb6468bcf80796782", "End": "50cd0849040c491ba1bac88436c7fbfd", "Type": 2, "Shape": 2 },
+      { "Start": "50cd0849040c491ba1bac88436c7fbfd", "End": "8612fd56143d4c4191826f9c67a97d4b", "Type": 2, "Shape": 2 },
+      { "Start": "8612fd56143d4c4191826f9c67a97d4b", "End": "84fc5277ee074792b045e255001eb5a5", "Type": 2, "Shape": 2 },
+      { "Start": "0", "End": "fac314b909574f9fb386a9a4cbbcf897", "Type": 2, "Shape": 2 },
+    ]
+  },
+  {
+    "Uid": "1d4b35e532ac4c6f92bf85721caabe0b",
+    "Path": "AI.test_08",
+    "Type": "Character",
+    "Variables": [
+      { "Name": "c", "type": "Bool"},
+      { "Name": "d", "type": "Bool"},
+    ],
+    "Nodes": [
+      {
+        "Uid": "0",
+        "Text": "Start",
+        "Rect": {"x": 127, "y": -2, "w": 88, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "a3e8ca5860a243eca9d0b0a783f9ecef",
+        "Text": "$d = AsyncAdd(3, 4)",
+        "Rect": {"x": 65.5, "y": 60, "w": 211, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "86be085d3008499ea34ee8430d59cca5",
+        "Text": "Say($d)",
+        "Rect": {"x": 118, "y": 122, "w": 106, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "c87734cba7c048d6b8411e99677313c4",
+        "Text": "$c = AsyncAdd(1,2)",
+        "Rect": {"x": 414, "y": 60, "w": 202, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "d0faf6e42a4348a79d306a0b079ab730",
+        "Text": "Say($c)",
+        "Rect": {"x": 462, "y": 122, "w": 106, "h": 36},
+        "ViewType": 2 
+      },
+    ],
+    "Connectors": [
+      { "Start": "c87734cba7c048d6b8411e99677313c4", "End": "d0faf6e42a4348a79d306a0b079ab730", "Type": 2, "Shape": 2 },
+      { "Start": "a3e8ca5860a243eca9d0b0a783f9ecef", "End": "86be085d3008499ea34ee8430d59cca5", "Type": 2, "Shape": 2 },
+      { "Start": "0", "End": "c87734cba7c048d6b8411e99677313c4", "Type": 2, "Shape": 2 },
+      { "Start": "0", "End": "a3e8ca5860a243eca9d0b0a783f9ecef", "Type": 2, "Shape": 2 },
+    ]
+  },
+  {
+    "Uid": "abc9d59911864640bccc1e83b448915c",
+    "Path": "AI.test_09",
+    "Type": "Character",
+    "Nodes": [
+      {
+        "Uid": "0",
+        "Text": "Start",
+        "Rect": {"x": 318, "y": -2, "w": 88, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "cad031eba4e34290ba788e14a3b11ba3",
+        "Text": "wait(3)",
+        "Rect": {"x": 172, "y": 60, "w": 106, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "d4ef42ee02024c77bd6f2ab10081690e",
+        "Text": "Say(\"node 3\")",
+        "Rect": {"x": 38, "y": 122, "w": 158, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "4f250050ff41462691f0df2b8d8df8b5",
+        "Text": "wait_all()",
+        "Rect": {"x": 327.5, "y": 266, "w": 107, "h": 36},
+        "ViewType": 4 
+      },
+      {
+        "Uid": "7825f180d385472481a7f64c1d791554",
+        "Text": "Say(\"all node runned\")",
+        "Rect": {"x": 268, "y": 379, "w": 238, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "e8c4dbecdd694ea980121f04bae16444",
+        "Text": "wait(2)",
+        "Rect": {"x": 309, "y": 60, "w": 106, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "9b64a62b1cf94374a293e329fe66d9a8",
+        "Text": "Say(\"node 2\")",
+        "Rect": {"x": 283, "y": 122, "w": 158, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "c8d16b1c904c4bf798a6ec8bbf703f37",
+        "Text": "wait(1)",
+        "Rect": {"x": 446, "y": 60, "w": 106, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "cc6fe6d717f74f61a3b70652c293020a",
+        "Text": "Say(\"node 1\")",
+        "Rect": {"x": 528, "y": 122, "w": 158, "h": 36},
+        "ViewType": 2 
+      },
+    ],
+    "Connectors": [
+      { "Start": "c8d16b1c904c4bf798a6ec8bbf703f37", "End": "cc6fe6d717f74f61a3b70652c293020a", "Type": 2, "Shape": 2 },
+      { "Start": "e8c4dbecdd694ea980121f04bae16444", "End": "9b64a62b1cf94374a293e329fe66d9a8", "Type": 2, "Shape": 2 },
+      { "Start": "cad031eba4e34290ba788e14a3b11ba3", "End": "d4ef42ee02024c77bd6f2ab10081690e", "Type": 2, "Shape": 2 },
+      { "Start": "0", "End": "c8d16b1c904c4bf798a6ec8bbf703f37", "Type": 2, "Shape": 2 },
+      { "Start": "0", "End": "e8c4dbecdd694ea980121f04bae16444", "Type": 2, "Shape": 2 },
+      { "Start": "0", "End": "cad031eba4e34290ba788e14a3b11ba3", "Type": 2, "Shape": 2 },
+      { "Start": "d4ef42ee02024c77bd6f2ab10081690e", "End": "4f250050ff41462691f0df2b8d8df8b5", "Type": 2, "Shape": 2 },
+      { "Start": "9b64a62b1cf94374a293e329fe66d9a8", "End": "4f250050ff41462691f0df2b8d8df8b5", "Type": 2, "Shape": 2 },
+      { "Start": "cc6fe6d717f74f61a3b70652c293020a", "End": "4f250050ff41462691f0df2b8d8df8b5", "Type": 2, "Shape": 2 },
+      { "Start": "4f250050ff41462691f0df2b8d8df8b5", "End": "7825f180d385472481a7f64c1d791554", "Type": 2, "Shape": 2 },
+    ]
+  },
+  {
+    "Uid": "5cfb52857eeb4e5c8327c6f71f7536b1",
+    "Path": "AI.test_10",
+    "Type": "Character",
+    "Variables": [
+      { "Name": "s", "type": "Character"},
+    ],
+    "Nodes": [
+      {
+        "Uid": "0",
+        "Text": "Start",
+        "Rect": {"x": 804, "y": -2, "w": 88, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "e886cb0441184affaeaa17b79e10426d",
+        "Text": "$s=CreateCharacter()",
+        "Rect": {"x": 738.5, "y": 60, "w": 219, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "b93968aec81f4d4da508c8223064ef4a",
+        "Text": "$s.OnEvent1Arg",
+        "Rect": {"x": 501.5, "y": 122, "w": 167, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "86dfd1f0ac4e41639589da2ea0ef0016",
+        "Text": "Say(\"event 1 pass\" + Event1Arg.param)",
+        "Rect": {"x": 148.5, "y": 184, "w": 369, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "0e216dd981de4983a93a08b1acb7f9b8",
+        "Text": "$s.OnEvent2Arg",
+        "Rect": {"x": 764.5, "y": 122, "w": 167, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "d278c17dc6684644b403e02b710f3b77",
+        "Text": "Say(\"event 2 pass\")",
+        "Rect": {"x": 742.5, "y": 184, "w": 211, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "42aa83bff2b148cb93f40f306260de8b",
+        "Text": "Say(\"1st arg\" +Event2Arg.param1)",
+        "Rect": {"x": 685.5, "y": 246, "w": 325, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "eacbd156f3ef4739ad4f7d8666e25061",
+        "Text": "Say(\"2nd arg\" + Event2Arg.param2)",
+        "Rect": {"x": 681, "y": 308, "w": 334, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "a7c4d9fba6d546249ff8efe98e31dc44",
+        "Text": "$s.OnEvent0Arg",
+        "Rect": {"x": 1027.5, "y": 122, "w": 167, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "2a7e4570f894433e9e25d97a40f5785c",
+        "Text": "Say(\"event 0 pass\")",
+        "Rect": {"x": 1095.5, "y": 184, "w": 211, "h": 36},
+        "ViewType": 2 
+      },
+    ],
+    "Connectors": [
+      { "Start": "e886cb0441184affaeaa17b79e10426d", "End": "a7c4d9fba6d546249ff8efe98e31dc44", "Type": 2, "Shape": 2 },
+      { "Start": "e886cb0441184affaeaa17b79e10426d", "End": "0e216dd981de4983a93a08b1acb7f9b8", "Type": 2, "Shape": 2 },
+      { "Start": "e886cb0441184affaeaa17b79e10426d", "End": "b93968aec81f4d4da508c8223064ef4a", "Type": 2, "Shape": 2 },
+      { "Start": "a7c4d9fba6d546249ff8efe98e31dc44", "End": "2a7e4570f894433e9e25d97a40f5785c", "Type": 2, "Shape": 2 },
+      { "Start": "0e216dd981de4983a93a08b1acb7f9b8", "End": "d278c17dc6684644b403e02b710f3b77", "Type": 2, "Shape": 2 },
+      { "Start": "d278c17dc6684644b403e02b710f3b77", "End": "42aa83bff2b148cb93f40f306260de8b", "Type": 2, "Shape": 2 },
+      { "Start": "42aa83bff2b148cb93f40f306260de8b", "End": "eacbd156f3ef4739ad4f7d8666e25061", "Type": 2, "Shape": 2 },
+      { "Start": "b93968aec81f4d4da508c8223064ef4a", "End": "86dfd1f0ac4e41639589da2ea0ef0016", "Type": 2, "Shape": 2 },
+      { "Start": "0", "End": "e886cb0441184affaeaa17b79e10426d", "Type": 2, "Shape": 2 },
+    ]
+  },
+  {
+    "Uid": "aae9d1642a6947388eaa24c25b7162c2",
+    "Path": "AI.test_11",
+    "Type": "Character",
+    "Nodes": [
+      {
+        "Uid": "0",
+        "Text": "Start",
+        "Rect": {"x": 273, "y": -2, "w": 88, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "e2525217efbf4ebf99f3b86798386f34",
+        "Text": "test_11_sub()",
+        "Rect": {"x": 238, "y": 60, "w": 158, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "26e9d8f7af1a4470a418c3f4aee4d292",
+        "Text": "Say(\"subunit pass\")",
+        "Rect": {"x": 26, "y": 129, "w": 210, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "e6e2831309464d679a474d01bf55842b",
+        "Text": "Say(\"red\")",
+        "Rect": {"x": 251.5, "y": 122, "w": 131, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "47d891df53ff42978d4c3f237d6f1678",
+        "Text": "Say(\"green\")",
+        "Rect": {"x": 511, "y": 122, "w": 148, "h": 36},
+        "ViewType": 2 
+      },
+    ],
+    "Connectors": [
+      { "Start": "e2525217efbf4ebf99f3b86798386f34", "End": "26e9d8f7af1a4470a418c3f4aee4d292", "Type": 2, "Shape": 2 },
+      { "Start": "e2525217efbf4ebf99f3b86798386f34", "End": "e6e2831309464d679a474d01bf55842b", "Type": 0, "Shape": 2 },
+      { "Start": "e2525217efbf4ebf99f3b86798386f34", "End": "47d891df53ff42978d4c3f237d6f1678", "Type": 1, "Shape": 2 },
+      { "Start": "0", "End": "e2525217efbf4ebf99f3b86798386f34", "Type": 2, "Shape": 2 },
+    ]
+  },
+  {
+    "Uid": "0aac22e09c254946b812d04abd29ad0e",
+    "Path": "AI.test_11_sub",
+    "Type": "Character",
+    "IsSubChart": true,
+    "Nodes": [
+      {
+        "Uid": "0",
+        "Text": "Start",
+        "Rect": {"x": 441, "y": 279, "w": 88, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "d7014a211f044117a75004b7c0c6e259",
+        "Text": "Say(\"hello sub\")",
+        "Rect": {"x": 395.5, "y": 461, "w": 185, "h": 36},
+        "ViewType": 2 
+      },
+    ],
+    "Connectors": [
+      { "Start": "0", "End": "d7014a211f044117a75004b7c0c6e259", "Type": 2, "Shape": 2 },
+    ]
+  },
+  {
+    "Uid": "906f76014a3d48b697b31bde4e8e2d5a",
+    "Path": "AI.test_12",
+    "Type": "Character",
+    "Nodes": [
+      {
+        "Uid": "0",
+        "Text": "Start",
+        "Rect": {"x": 1632, "y": -2, "w": 88, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "dcc94bd684af4256b35b1b6b569fd92c",
+        "Text": "Say(\"1\")",
+        "Rect": {"x": 1141.3334, "y": 48.724537, "w": 114, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "9ebbe264cc964a4d95914440a062fa7f",
+        "Text": "Say(\"2\")",
+        "Rect": {"x": 1146, "y": 129.0787, "w": 114, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "b741aa2dae5f40f5834b6c2f31c2fca6",
+        "Text": "OnEvent1Arg",
+        "Rect": {"x": 1362.3334, "y": 51.502316, "w": 140, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "26ad3735d1b04e1ea1523c2184f7c103",
+        "Text": "Say(\"event 0 pass\")",
+        "Rect": {"x": 1313.8704, "y": 126.30093, "w": 211, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "2a7e47308bd4416c8b4ae849709a3e61",
+        "Text": "wait(1)",
+        "Rect": {"x": 1622.0741, "y": 61.6875, "w": 106, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "f8e95d4cf35c4c3ca373481f45562fed",
+        "Text": "Say(\"hello\")",
+        "Rect": {"x": 1595.1852, "y": 123.52315, "w": 148, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "b5a0ee2e8ad841bdb9ede256cfc34751",
+        "Text": "stopflow(\"dcc94bd684af4256b35b1b6b569fd92c\")",
+        "Rect": {"x": 1792.2407, "y": 61.555557, "w": 158, "h": 36},
+        "ViewType": 6 
+      },
+      {
+        "Uid": "9c122076a85b4ad19243ad35518efb85",
+        "Text": "stopnode(\"b741aa2dae5f40f5834b6c2f31c2fca6\", \"2a7e47308bd4416c8b4ae849709a3e61\")",
+        "Rect": {"x": 1799.9703, "y": 123.74466, "w": 182, "h": 36},
+        "ViewType": 5 
+      },
+    ],
+    "Connectors": [
+      { "Start": "dcc94bd684af4256b35b1b6b569fd92c", "End": "9ebbe264cc964a4d95914440a062fa7f", "Type": 2, "Shape": 2 },
+      { "Start": "9ebbe264cc964a4d95914440a062fa7f", "End": "dcc94bd684af4256b35b1b6b569fd92c", "Type": 2, "Shape": 2 },
+      { "Start": "b741aa2dae5f40f5834b6c2f31c2fca6", "End": "26ad3735d1b04e1ea1523c2184f7c103", "Type": 2, "Shape": 2 },
+      { "Start": "2a7e47308bd4416c8b4ae849709a3e61", "End": "f8e95d4cf35c4c3ca373481f45562fed", "Type": 2, "Shape": 2 },
+      { "Start": "0", "End": "dcc94bd684af4256b35b1b6b569fd92c", "Type": 2, "Shape": 2 },
+      { "Start": "0", "End": "b741aa2dae5f40f5834b6c2f31c2fca6", "Type": 2, "Shape": 2 },
+      { "Start": "0", "End": "2a7e47308bd4416c8b4ae849709a3e61", "Type": 2, "Shape": 2 },
+      { "Start": "0", "End": "b5a0ee2e8ad841bdb9ede256cfc34751", "Type": 2, "Shape": 2 },
+      { "Start": "b5a0ee2e8ad841bdb9ede256cfc34751", "End": "9c122076a85b4ad19243ad35518efb85", "Type": 2, "Shape": 2 },
+    ]
+  },
+  {
+    "Uid": "841dadc1ffb1443d97bb37408e9e239d",
+    "Path": "AI.test_13",
+    "Type": "Character",
+    "Nodes": [
+      {
+        "Uid": "0",
+        "Text": "Start",
+        "Rect": {"x": 423.25925, "y": 36.88889, "w": 88, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "77c3eff07e174b4190ccc1bb215d834f",
+        "Text": "Say(\"hello\")",
+        "Rect": {"x": 412.7037, "y": 114.62963, "w": 148, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "c67673fe4dc9434c9a5b1c39bfadf42a",
+        "Text": "stopflow(\"1136de93efa140d2bc91882393c2811b\")",
+        "Rect": {"x": 251.59258, "y": 279.7037, "w": 158, "h": 36},
+        "ViewType": 6 
+      },
+      {
+        "Uid": "1136de93efa140d2bc91882393c2811b",
+        "Text": "Say(\"1\")",
+        "Rect": {"x": 567.6667, "y": 259.03705, "w": 114, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "8658e0ed635c4166b2f6da54657ef2d0",
+        "Text": "Say(\"2\")",
+        "Rect": {"x": 567.6667, "y": 335.85184, "w": 114, "h": 36},
+        "ViewType": 2 
+      },
+    ],
+    "Connectors": [
+      { "Start": "77c3eff07e174b4190ccc1bb215d834f", "End": "1136de93efa140d2bc91882393c2811b", "Type": 2, "Shape": 2 },
+      { "Start": "1136de93efa140d2bc91882393c2811b", "End": "8658e0ed635c4166b2f6da54657ef2d0", "Type": 2, "Shape": 2 },
+      { "Start": "0", "End": "77c3eff07e174b4190ccc1bb215d834f", "Type": 2, "Shape": 2 },
+      { "Start": "77c3eff07e174b4190ccc1bb215d834f", "End": "c67673fe4dc9434c9a5b1c39bfadf42a", "Type": 2, "Shape": 2 },
+    ]
+  },
+  {
+    "Uid": "81582c464934437fa830e564139c7581",
+    "Path": "AI.test_14",
+    "Type": "Character",
+    "Nodes": [
+      {
+        "Uid": "0",
+        "Text": "Start",
+        "Rect": {"x": 91, "y": -2, "w": 88, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "885dd3312aaa4823aaa2cfac700e4844",
+        "Text": "Say(1)",
+        "Rect": {"x": 86.5, "y": 61.6875, "w": 97, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "2f7be34327f24fa0b535097fe666cfbe",
+        "Text": "Say(2)",
+        "Rect": {"x": 41.166668, "y": 164.26389, "w": 97, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "7fc1f00251a046af905e2ef32d9a469e",
+        "Text": "Say(3)",
+        "Rect": {"x": 212.90741, "y": 156.85648, "w": 97, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "a2ff83bfb2df48fd97b3a296db445d0f",
+        "Text": "Say(4)",
+        "Rect": {"x": 213.83333, "y": 239.0625, "w": 97, "h": 36},
+        "ViewType": 2 
+      },
+    ],
+    "Connectors": [
+      { "Start": "885dd3312aaa4823aaa2cfac700e4844", "End": "2f7be34327f24fa0b535097fe666cfbe", "Type": 2, "Shape": 2 },
+      { "Start": "885dd3312aaa4823aaa2cfac700e4844", "End": "7fc1f00251a046af905e2ef32d9a469e", "Type": 2, "Shape": 2 },
+      { "Start": "2f7be34327f24fa0b535097fe666cfbe", "End": "885dd3312aaa4823aaa2cfac700e4844", "Type": 2, "Shape": 2 },
+      { "Start": "7fc1f00251a046af905e2ef32d9a469e", "End": "a2ff83bfb2df48fd97b3a296db445d0f", "Type": 2, "Shape": 2 },
+      { "Start": "a2ff83bfb2df48fd97b3a296db445d0f", "End": "7fc1f00251a046af905e2ef32d9a469e", "Type": 2, "Shape": 2 },
+      { "Start": "0", "End": "885dd3312aaa4823aaa2cfac700e4844", "Type": 2, "Shape": 2 },
+    ]
+  },
+  {
+    "Uid": "52c73a19796a421a87d5891f9bb89959",
+    "Path": "AI.test_15",
+    "Type": "Character",
+    "Nodes": [
+      {
+        "Uid": "0",
+        "Text": "Start",
+        "Rect": {"x": 37, "y": -2, "w": 88, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "c2ef46ac033c49a4926b34b57460aea4",
+        "Text": "wait(2)",
+        "Rect": {"x": 28, "y": 60, "w": 106, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "21e88f49ee08465185f28fbf755cbf6e",
+        "Text": "Say(time)",
+        "Rect": {"x": 19.5, "y": 122, "w": 123, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "ffbf71024ce145ae99a55e31d2b3c925",
+        "Text": "wait(5)",
+        "Rect": {"x": 28, "y": 184, "w": 106, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "2d49ef38d1ca4024b1ee6ad1c9a954aa",
+        "Text": "Say(time)",
+        "Rect": {"x": 19.5, "y": 246, "w": 123, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "6755d438d5f844baba7de0bb822d80be",
+        "Text": "wait(1)",
+        "Rect": {"x": 165, "y": 60, "w": 106, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "930cc0978159403aaa57db6d967df8a4",
+        "Text": "Say(time)",
+        "Rect": {"x": 192.5, "y": 122, "w": 123, "h": 36},
+        "ViewType": 2 
+      },
+    ],
+    "Connectors": [
+      { "Start": "6755d438d5f844baba7de0bb822d80be", "End": "930cc0978159403aaa57db6d967df8a4", "Type": 2, "Shape": 2 },
+      { "Start": "930cc0978159403aaa57db6d967df8a4", "End": "ffbf71024ce145ae99a55e31d2b3c925", "Type": 2, "Shape": 2 },
+      { "Start": "ffbf71024ce145ae99a55e31d2b3c925", "End": "2d49ef38d1ca4024b1ee6ad1c9a954aa", "Type": 2, "Shape": 2 },
+      { "Start": "c2ef46ac033c49a4926b34b57460aea4", "End": "21e88f49ee08465185f28fbf755cbf6e", "Type": 2, "Shape": 2 },
+      { "Start": "21e88f49ee08465185f28fbf755cbf6e", "End": "ffbf71024ce145ae99a55e31d2b3c925", "Type": 2, "Shape": 2 },
+      { "Start": "0", "End": "6755d438d5f844baba7de0bb822d80be", "Type": 2, "Shape": 2 },
+      { "Start": "0", "End": "c2ef46ac033c49a4926b34b57460aea4", "Type": 2, "Shape": 2 },
+    ]
+  },
+  {
+    "Uid": "a54eb9c15ca44c59b91fcf58054be659",
+    "Path": "AI.test_16",
+    "Type": "Character",
+    "Nodes": [
+      {
+        "Uid": "0",
+        "Text": "Start",
+        "Rect": {"x": 55, "y": -2, "w": 88, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "08af1e3195a6434498270071af0c8f0d",
+        "Text": "wait(2)",
+        "Rect": {"x": 46, "y": 60, "w": 106, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "c21382fe4be74b5b90b98fa464955be3",
+        "Text": "Say(time)",
+        "Rect": {"x": 37.5, "y": 122, "w": 123, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "a59747ae1ba64774b7b01e2a1367c21b",
+        "Text": "OnEvent0Arg",
+        "Rect": {"x": 29, "y": 184, "w": 140, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "e4f2099363374023941118f7e266ae92",
+        "Text": "Say(time)",
+        "Rect": {"x": 37.5, "y": 246, "w": 123, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "47bb1b892f084f3faf2e379b737193de",
+        "Text": "wait(1)",
+        "Rect": {"x": 183, "y": 60, "w": 106, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "83d7e4d0d23e479c861e45a18ecd2060",
+        "Text": "Say(time)",
+        "Rect": {"x": 210.5, "y": 122, "w": 123, "h": 36},
+        "ViewType": 2 
+      },
+    ],
+    "Connectors": [
+      { "Start": "47bb1b892f084f3faf2e379b737193de", "End": "83d7e4d0d23e479c861e45a18ecd2060", "Type": 2, "Shape": 2 },
+      { "Start": "83d7e4d0d23e479c861e45a18ecd2060", "End": "a59747ae1ba64774b7b01e2a1367c21b", "Type": 2, "Shape": 2 },
+      { "Start": "a59747ae1ba64774b7b01e2a1367c21b", "End": "e4f2099363374023941118f7e266ae92", "Type": 2, "Shape": 2 },
+      { "Start": "08af1e3195a6434498270071af0c8f0d", "End": "c21382fe4be74b5b90b98fa464955be3", "Type": 2, "Shape": 2 },
+      { "Start": "c21382fe4be74b5b90b98fa464955be3", "End": "a59747ae1ba64774b7b01e2a1367c21b", "Type": 2, "Shape": 2 },
+      { "Start": "0", "End": "47bb1b892f084f3faf2e379b737193de", "Type": 2, "Shape": 2 },
+      { "Start": "0", "End": "08af1e3195a6434498270071af0c8f0d", "Type": 2, "Shape": 2 },
+    ]
+  },
+  {
+    "Uid": "71c23d0119b64e93969934705a2aaf5f",
+    "Path": "AI.test_17",
+    "Type": "Character",
+    "Nodes": [
+      {
+        "Uid": "0",
+        "Text": "Start",
+        "Rect": {"x": 73, "y": -2, "w": 88, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "670513fc98454b4db29124bdbc4bf942",
+        "Text": "wait(2)",
+        "Rect": {"x": 64, "y": 60, "w": 106, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "590f60f752f04a40a511de6bda60afdd",
+        "Text": "Say(time)",
+        "Rect": {"x": 55.5, "y": 122, "w": 123, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "e1330480adb54f65a73066597afd098e",
+        "Text": "test_17_sub()",
+        "Rect": {"x": 38, "y": 184, "w": 158, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "30f45e8ceb1e46fd936f69159226b54d",
+        "Text": "Say(time)",
+        "Rect": {"x": 55.5, "y": 246, "w": 123, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "ade192269da34394a7eb87a47ea4c81e",
+        "Text": "wait(1)",
+        "Rect": {"x": 201, "y": 60, "w": 106, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "3bae8e8241b548e9ad7e6d01e8707f7c",
+        "Text": "Say(time)",
+        "Rect": {"x": 228.5, "y": 122, "w": 123, "h": 36},
+        "ViewType": 2 
+      },
+    ],
+    "Connectors": [
+      { "Start": "ade192269da34394a7eb87a47ea4c81e", "End": "3bae8e8241b548e9ad7e6d01e8707f7c", "Type": 2, "Shape": 2 },
+      { "Start": "3bae8e8241b548e9ad7e6d01e8707f7c", "End": "e1330480adb54f65a73066597afd098e", "Type": 2, "Shape": 2 },
+      { "Start": "e1330480adb54f65a73066597afd098e", "End": "30f45e8ceb1e46fd936f69159226b54d", "Type": 2, "Shape": 2 },
+      { "Start": "670513fc98454b4db29124bdbc4bf942", "End": "590f60f752f04a40a511de6bda60afdd", "Type": 2, "Shape": 2 },
+      { "Start": "590f60f752f04a40a511de6bda60afdd", "End": "e1330480adb54f65a73066597afd098e", "Type": 2, "Shape": 2 },
+      { "Start": "0", "End": "ade192269da34394a7eb87a47ea4c81e", "Type": 2, "Shape": 2 },
+      { "Start": "0", "End": "670513fc98454b4db29124bdbc4bf942", "Type": 2, "Shape": 2 },
+    ]
+  },
+  {
+    "Uid": "9a2932951b4446a79aad42348b6b5c63",
+    "Path": "AI.test_17_sub",
+    "Type": "Character",
+    "IsSubChart": true,
+    "Nodes": [
+      {
+        "Uid": "0",
+        "Text": "Start",
+        "Rect": {"x": 36, "y": 0, "w": 90, "h": 32},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "924beff49dbb48d483747ac54782f6f0",
+        "Text": "Say(time)",
+        "Rect": {"x": 0, "y": 62, "w": 162, "h": 32},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "c5b7b977b0994bea8cfcf4bf57508de0",
+        "Text": "wait(3)",
+        "Rect": {"x": 18, "y": 124, "w": 126, "h": 32},
+        "ViewType": 2 
+      },
+    ],
+    "Connectors": [
+      { "Start": "924beff49dbb48d483747ac54782f6f0", "End": "c5b7b977b0994bea8cfcf4bf57508de0", "Type": 2, "Shape": 2 },
+      { "Start": "0", "End": "924beff49dbb48d483747ac54782f6f0", "Type": 2, "Shape": 2 },
+    ]
+  },
+  {
+    "Uid": "a1c8fe54017347d3bb5efe1873e6c07e",
+    "Path": "AI.test_18",
+    "Type": "Character",
+    "Variables": [
+      { "Name": "a", "type": "String"},
+    ],
+    "Nodes": [
+      {
+        "Uid": "0",
+        "Text": "Start",
+        "Rect": {"x": 64, "y": -2, "w": 88, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "2d914be5d7534adeaa52f51585d7a54e",
+        "Text": "$a = \"hello\"",
+        "Rect": {"x": 34, "y": 60, "w": 148, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "9517f2f34106421098628fff57ae5e3e",
+        "Text": "Say($a)",
+        "Rect": {"x": 129, "y": 122, "w": 106, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "2ba5507f48124a0ebc1ed621dc4930a7",
+        "Text": "$a=\"ss111\"",
+        "Rect": {"x": 143.5, "y": 184, "w": 131, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "365a6ef2dca547d6bbcb03bd7589c49b",
+        "Text": "OnEvent0Arg",
+        "Rect": {"x": 148, "y": 246, "w": 140, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "ea0871440caa47b1bae4ec66b238e270",
+        "Text": "Say(\"event 0 pass\")",
+        "Rect": {"x": 75.24074, "y": 311.7037, "w": 211, "h": 36},
+        "ViewType": 2 
+      },
+      {
+        "Uid": "6288a287371f4586a4cd7a6f274712dd",
+        "Text": "OnEvent2Arg",
+        "Rect": {"x": 121.333336, "y": 391.2963, "w": 140, "h": 36},
+        "ViewType": 2 
+      },
+    ],
+    "Connectors": [
+      { "Start": "2d914be5d7534adeaa52f51585d7a54e", "End": "9517f2f34106421098628fff57ae5e3e", "Type": 2, "Shape": 2 },
+      { "Start": "9517f2f34106421098628fff57ae5e3e", "End": "2ba5507f48124a0ebc1ed621dc4930a7", "Type": 2, "Shape": 2 },
+      { "Start": "2ba5507f48124a0ebc1ed621dc4930a7", "End": "365a6ef2dca547d6bbcb03bd7589c49b", "Type": 2, "Shape": 2 },
+      { "Start": "365a6ef2dca547d6bbcb03bd7589c49b", "End": "ea0871440caa47b1bae4ec66b238e270", "Type": 2, "Shape": 2 },
+      { "Start": "ea0871440caa47b1bae4ec66b238e270", "End": "6288a287371f4586a4cd7a6f274712dd", "Type": 2, "Shape": 2 },
+      { "Start": "6288a287371f4586a4cd7a6f274712dd", "End": "2d914be5d7534adeaa52f51585d7a54e", "Type": 2, "Shape": 2 },
+      { "Start": "0", "End": "2d914be5d7534adeaa52f51585d7a54e", "Type": 2, "Shape": 2 },
+    ]
+  },
+]

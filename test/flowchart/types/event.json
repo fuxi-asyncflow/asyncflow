@@ -1,0 +1,26 @@
+[
+    {
+        "name": "Start",
+        "description": "流程启动"
+    },
+    {
+        "name": "Tick",
+        "description": "心跳"
+    },
+    {
+        "name": "Event0Arg"
+    },
+    {
+        "name": "Event1Arg",
+        "parameters":[
+            {"name":"param","type":"String"}
+        ]
+    },
+    {
+        "name": "Event2Arg",
+        "parameters":[
+            {"name":"param1","type":"String"},
+            {"name":"param2","type":"String"}
+        ]
+    }
+]

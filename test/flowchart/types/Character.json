@@ -1,0 +1,153 @@
+{
+  "Uid": "00e66f735e554d978c2874e09e4151ef",
+  "Name": "Character",
+  "Inherits": [],
+  "Members": [
+    {
+      "Parameters": [
+        {
+          "Name": "x",
+          "type": "Number"
+        },
+        {
+          "Name": "y",
+          "type": "Number"
+        },
+        {
+          "Name": "z",
+          "type": "Any"
+        }
+      ],
+      "member_type": 2,
+      "Name": "AsyncAdd",
+      "Description": "说话",
+      "type": "Bool"
+    },
+    {
+      "Parameters": [],
+      "member_type": 2,
+      "Name": "CreateCharacter",
+      "Description": "创建一个Character",
+      "type": "Character"
+    },
+    {
+      "Parameters": [],
+      "member_type": 2,
+      "Name": "GetCharacter",
+      "type": "Character"
+    },
+    {
+      "Parameters": [],
+      "member_type": 2,
+      "Name": "IsValid",
+      "type": "Bool"
+    },
+    {
+      "member_type": 1,
+      "Name": "name",
+      "Description": "名字",
+      "type": "String"
+    },
+    {
+      "Parameters": [
+        {
+          "Name": "x",
+          "type": "Number"
+        }
+      ],
+      "member_type": 2,
+      "Name": "Move",
+      "Description": "移动",
+      "type": "Void"
+    },
+    {
+      "Parameters": [
+        {
+          "Name": "content",
+          "type": "Any"
+        }
+      ],
+      "member_type": 2,
+      "Name": "Say",
+      "Description": "说话",
+      "type": "Void"
+    },
+    {
+      "Parameters": [],
+      "member_type": 2,
+      "source": "asyncflow.call_sub(\"AI.test_06_sub\", $self)",
+      "From": 1,
+      "Name": "test_06_sub",
+      "type": "Number"
+    },
+    {
+      "Parameters": [
+        {
+          "IsParameter": true,
+          "Name": "x",
+          "type": "Number"
+        },
+        {
+          "Idx": 1,
+          "IsParameter": true,
+          "Name": "y",
+          "type": "Number"
+        }
+      ],
+      "member_type": 2,
+      "source": "asyncflow.call_sub(\"AI.test_07_sub\", $self, $params)",
+      "From": 1,
+      "Name": "test_07_sub",
+      "type": "Number"
+    },
+    {
+      "Parameters": [],
+      "member_type": 2,
+      "source": "asyncflow.call_sub(\"AI.test_11_sub\", $self)",
+      "From": 1,
+      "Name": "test_11_sub",
+      "type": "Bool"
+    },
+    {
+      "Parameters": [],
+      "member_type": 2,
+      "source": "asyncflow.call_sub(\"AI.test_17_sub\", $self)",
+      "From": 1,
+      "Name": "test_17_sub",
+      "type": "Bool"
+    },
+    {
+      "Parameters": [],
+      "member_type": 2,
+      "source": "asyncflow.call_sub(\"Subchart.SubchartTest_01_sub\", $self)",
+      "From": 1,
+      "Name": "SubchartTest_01_sub",
+      "type": "Number"
+    },
+    {
+      "Parameters": [],
+      "member_type": 2,
+      "source": "asyncflow.call_sub(\"Subchart.SubchartTest_04_sub\", $self)",
+      "From": 1,
+      "Name": "SubchartTest_04_sub",
+      "type": "Bool"
+    },
+    {
+      "Parameters": [],
+      "member_type": 2,
+      "source": "asyncflow.call_sub(\"Subchart.SubchartTest_07_sub\", $self)",
+      "From": 1,
+      "Name": "SubchartTest_07_sub",
+      "type": "Number"
+    },
+    {
+      "Parameters": [],
+      "member_type": 2,
+      "source": "asyncflow.call_sub(\"Subchart.SubchartTest_10_sub\", $self)",
+      "From": 1,
+      "Name": "SubchartTest_10_sub",
+      "type": "Number"
+    }
+  ],
+  "Source": 2
+}

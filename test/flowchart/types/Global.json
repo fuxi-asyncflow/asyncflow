@@ -1,0 +1,129 @@
+{
+  "Uid": "1e32ffbcd85e4954bac3a2425c00baf1",
+  "Name": "Global",
+  "Inherits": [],
+  "Members": [
+    {
+      "Parameters": [],
+      "member_type": 2,
+      "Name": "callback",
+      "Description": "回调",
+      "type": "Any"
+    },
+    {
+      "Parameters": [
+        {
+          "Name": "v",
+          "type": "Number"
+        }
+      ],
+      "member_type": 2,
+      "Name": "probability",
+      "Description": "随机概率",
+      "type": "Void"
+    },
+    {
+      "member_type": 1,
+      "source": "asyncflow.time()",
+      "Name": "time",
+      "Description": "世界的逻辑时间，单位秒",
+      "type": "Number"
+    },
+    {
+      "Parameters": [
+        {
+          "Name": "obj",
+          "type": "Character"
+        }
+      ],
+      "member_type": 2,
+      "source": "asyncflow.deregister",
+      "Name": "deregister",
+      "type": "Void"
+    },
+    {
+      "Parameters": [
+        {
+          "Name": "#NodeId",
+          "type": "NodeRef"
+        }
+      ],
+      "member_type": 2,
+      "Name": "gotonode",
+      "Description": "停止指定若干节点",
+      "type": "Void"
+    },
+    {
+      "Parameters": [
+        {
+          "Name": "content",
+          "type": "String"
+        }
+      ],
+      "member_type": 2,
+      "Name": "Print",
+      "Description": "打印",
+      "type": "Void"
+    },
+    {
+      "Parameters": [
+        {
+          "Name": "result",
+          "type": "Any"
+        }
+      ],
+      "member_type": 2,
+      "source": "asyncflow.ret",
+      "Name": "return",
+      "Description": "返回",
+      "type": "Void"
+    },
+    {
+      "Parameters": [
+        {
+          "Count": -1,
+          "Name": "NodeId",
+          "type": "String"
+        }
+      ],
+      "member_type": 2,
+      "source": "asyncflow.stop_flow",
+      "Name": "stopflow",
+      "Description": "停止指定若干节点及其后继流程",
+      "type": "Void"
+    },
+    {
+      "Parameters": [
+        {
+          "Count": -1,
+          "Name": "NodeId",
+          "type": "String"
+        }
+      ],
+      "member_type": 2,
+      "source": "asyncflow.stop_node",
+      "Name": "stopnode",
+      "Description": "停止指定若干节点",
+      "type": "Void"
+    },
+    {
+      "Parameters": [
+        {
+          "Name": "time",
+          "type": "Number"
+        }
+      ],
+      "member_type": 2,
+      "source": "asyncflow.wait",
+      "Name": "wait",
+      "type": "Void"
+    },
+    {
+      "Parameters": [],
+      "member_type": 2,
+      "Name": "wait_all",
+      "type": "Void"
+    }
+  ],
+  "Source": 2
+}
