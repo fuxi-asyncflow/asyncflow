@@ -21,10 +21,19 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - name: prepare-luajit
+      run: |
+        wget -O ${{github.workspace}}/thirdparty/LuaJIT-2.1.0-beta3.tar.gz https://luajit.org/download/LuaJIT-2.1.0-beta3.tar.gz
+        tar xvf ${{github.workspace}}/thirdparty/LuaJIT-2.1.0-beta3.tar.gz -C ${{github.workspace}}/thirdparty
+        make -C ${{github.workspace}}/thirdparty/LuaJIT-2.1.0-beta3
+
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DBUILD_LUAJIT=ON -DFLOWCHART_DEBUG=ON -DLUAJIT_INCLUDE_PATH=./LuaJIT-2.1.0-beta3/src -DLUAJIT_LIB=./LuaJIT-2.1.0-beta3/src/libluajit.so
+      run: >
+        cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DBUILD_LUAJIT=ON 
+        -DLUAJIT_INCLUDE_PATH=${{github.workspace}}/thirdparty/LuaJIT-2.1.0-beta3/src -DLUAJIT_LIB=${{github.workspace}}/thirdparty/LuaJIT-2.1.0-beta3/src/libluajit.so
+        -DBUILD_TEST=ON
 
     - name: Build
       # Build your program with the given configuration
@@ -34,5 +43,8 @@ jobs:
       working-directory: ${{github.workspace}}/build
       # Execute tests defined by the CMake configuration.  
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
-      run: ./lua_test
+      run: |
+        cp ${{github.workspace}}/thirdparty/LuaJIT-2.1.0-beta3/src/libluajit.so ${{github.workspace}}/build/libluajit-5.1.so.2
+        export LD_LIBRARY_PATH=${{github.workspace}}/build/
+        ${{github.workspace}}/build/lua_test
       
