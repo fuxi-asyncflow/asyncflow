@@ -104,6 +104,7 @@ int luaopen_asyncflow(lua_State *L)
 	module.Export(L);
 	delete manager_cls;
 	delete agent_cls;
+	delete chart_cls;
 	return 0;
 }
 
