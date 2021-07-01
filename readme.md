@@ -1,3 +1,4 @@
+![example workflow](https://github.com/fuxi-asyncflow/asyncflow/actions/workflows/cmake.yml/badge.svg?branch=main)
 # 编译
 
 ## 环境要求
