@@ -25,10 +25,11 @@ const char* set_breakpoint = "{\"jsonrpc\": \"2.0\",\"method\": \"break_point\",
 const char* delete_breakpoint = "{\"jsonrpc\": \"2.0\",\"method\": \"break_point\",\"params\": {\"chart_name\":\"test_websocket\",\"command\":\"delete\",\"node_uid\": \"00000\"},\"id\":6}";
 bool runflag;
 int message_count;
+const int THREAD_TOTAL_TIME = 50; // milliseconds
 
 void run_step()
 {
-	while (runflag)
+	for (int i = 0; i < THREAD_TOTAL_TIME / 10; i++)
 	{
 		dostring(L, "asyncflow.step(100)");
 		std::this_thread::sleep_for(std::chrono::milliseconds(10));
@@ -36,11 +37,12 @@ void run_step()
 }
 
 void run_web(client* c) {
-	while (runflag)
+	for(int i=0; i< THREAD_TOTAL_TIME / 10; i++)
 	{
 		if (c->stopped())
 			c->reset();
 		c->poll();
+		std::this_thread::sleep_for(std::chrono::milliseconds(10));
 	}
 }
 
@@ -211,7 +213,7 @@ std::string command_str(const std::string& str, const std::string& chart_name, i
 
 void run_event(Agent* agent)
 {
-	while (runflag)
+	for (int i = 0; i < THREAD_TOTAL_TIME / 10; i++)
 	{
 		manager->Step(10);
 		lua_pushstring(L, "first");
@@ -372,7 +374,7 @@ TEST_CASE("stop chart test")
 void run_and_attach(Agent* agent)
 {
 	int frame = 0;
-	while (runflag)
+	for (int i = 0; i < THREAD_TOTAL_TIME / 10; i++)
 	{
 		manager->Step(10);
 		std::this_thread::sleep_for(std::chrono::milliseconds(10));
