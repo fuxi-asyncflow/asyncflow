@@ -30,12 +30,14 @@ windows 上编译 python 模块：
 cmake -G "Visual Studio 15 Win64" .. -DBUILD_PYTHON=ON -DFLOWCHART_DEBUG=ON -DCMAKE_BUILD_TYPE=Release
 ```
 
-windows 上编译 luajit 模块：
+windows 上编译 luajit  与 python 模块：
 
 ```shell
-cmake -G "Visual Studio 15 Win64" .. -DBUILD_PYTHON=ON -DFLOWCHART_DEBUG=ON \
-	-DLUAJIT_INCLUDE_PATH=D:/LuaJIT-2.0.5/src \
-	-DLUAJIT_LIB=D:/LuaJIT-2.0.5/src/luajit.lib
+REM win_build.bat
+cmake . -Bwin-build -G "Visual Studio 16 2019" -Ax64 ^
+	-DBUILD_LUAJIT=ON -DBUILD_PYTHON=ON -DBUILD_TEST=ON -DFLOWCHART_DEBUG=ON ^
+	-DLUAJIT_INCLUDE_PATH=./thirdparty/LuaJIT-2.1.0-beta3/src ^
+	-DLUAJIT_LIB=./thirdparty/LuaJIT-2.1.0-beta3/src/lua51.lib
 	
 ```
 
