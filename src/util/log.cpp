@@ -6,7 +6,7 @@ std::shared_ptr<spdlog::logger> asyncflow::util::Log::rotatelogger = nullptr;
 bool asyncflow::util::Log::init_ = false;
 
 #ifdef NDEBUG
-spdlog::level::level_enum asyncflow::util::Log::LEVEL = spdlog::level::warn;
+spdlog::level::level_enum asyncflow::util::Log::LEVEL = spdlog::level::info;
 #else
 spdlog::level::level_enum asyncflow::util::Log::LEVEL = spdlog::level::debug;
 #endif
