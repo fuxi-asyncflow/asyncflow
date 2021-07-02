@@ -23,13 +23,13 @@ bool BreakpointFunc::call(Agent* agent)
 	if (continue_flag_)
 	{
 		continue_flag_ = false;
-		return pre_nodefunc_->call(agent);
+		return original_nodefunc_->call(agent);
 	}
 	auto* mgr = agent->GetManager();
 	auto* node = mgr->GetCurrentNode();
 	// if the chart is not in debug state, breakpoint can not work
 	if (!node->GetChart()->IsDebug())
-		return pre_nodefunc_->call(agent);
+		return original_nodefunc_->call(agent);
 	else
 	{
 		// add the node to the async manager

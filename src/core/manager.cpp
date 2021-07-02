@@ -522,8 +522,9 @@ bool Manager::DeleteBreakpoint(NodeData* data)
 		ASYNCFLOW_WARN("Delete Breakpoint error, the node is not a breakpoint.");
 		return false;
 	}
-	auto* pre_func = func->GetPreFunc();
-	data->SetNodeFunc(pre_func);
+	auto* original_func = func->GetOriginalFunc();
+    func->SetOriginalNull();
+	data->SetNodeFunc(original_func);
 	delete func;
 	async_manager_.ContinueBreakpoint(data);
 	return true;

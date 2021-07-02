@@ -37,14 +37,20 @@ namespace asyncflow
 		class BreakpointFunc : public NodeFunc
 		{
 		public:
-			BreakpointFunc(NodeFunc* func):continue_flag_(false), pre_nodefunc_(func) {}
-
+			BreakpointFunc(NodeFunc* func):continue_flag_(false), original_nodefunc_(func) {}
+			~BreakpointFunc() 
+			{
+				if (original_nodefunc_ != nullptr)
+					delete original_nodefunc_;
+			}
+            
 			bool call(core::Agent* agent) override;
 			void SetExecute(bool flag) { continue_flag_ = flag; }
-			NodeFunc* GetPreFunc() { return pre_nodefunc_; }
+			NodeFunc* GetOriginalFunc() { return original_nodefunc_; }
+            void SetOriginalNull() { original_nodefunc_ = nullptr; }
 
 		private:
-			NodeFunc* pre_nodefunc_;
+			NodeFunc* original_nodefunc_;
 			bool continue_flag_;
 		};
 #endif
