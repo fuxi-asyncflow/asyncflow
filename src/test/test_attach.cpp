@@ -98,19 +98,19 @@ TEST_CASE("test set args")
 	lua_getglobal(L, "chart");						
 	void* chart_ud = lua_touserdata(L, -1);
 	auto* chart = asyncflow::lua::LightUserDataWrapper::Cast<asyncflow::lua::LuaChart*>(chart_ud);
-	chart->GetVar(L, 1);
+	chart->GetVar(L, 0);
 	int a = lua_tonumber(L, -1);
 	REQUIRE(a == 100);
-	chart->GetVar(L, 2);
+	chart->GetVar(L, 1);
 	REQUIRE(lua_isboolean(L, -1));
 	REQUIRE(lua_toboolean(L, -1));
-	chart->GetVar(L, 3);
+	chart->GetVar(L, 2);
 	auto* c = lua_tostring(L, -1);
 	REQUIRE(strcmp(c, "hello") == 0);
 	lua_settop(L, 0);
 	lua_pushstring(L, "new_hello");
-	chart->SetVar(L, 3);
-	chart->GetVar(L, 3);
+	chart->SetVar(L, 2);
+	chart->GetVar(L, 2);
 	REQUIRE(strcmp(lua_tostring(L, -1), "new_hello") == 0);
 
 	///////////////////////////////////////////////////////////////////////////////////////////

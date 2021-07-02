@@ -238,7 +238,7 @@ TEST_CASE("debug chart test")
 	{
 		lua_settop(L, 0);
 		lua_pushstring(L, "hello");
-		manager->SetVar(L, 1);
+		manager->SetVar(L, 0);
 		return 0;
 	});
 
@@ -253,7 +253,7 @@ TEST_CASE("debug chart test")
 	{
 		lua_settop(L, 0);
 		lua_pushstring(L, "ss111");
-		manager->SetVar(L, 1);
+		manager->SetVar(L, 0);
 		return 0;
 	});
 

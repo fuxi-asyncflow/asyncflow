@@ -34,6 +34,7 @@ LuaChart::~LuaChart()
 
 int LuaChart::GetVar(lua_State* L, int idx) // [+0, +1, +1]
 {
+	++idx;	//lua table idx start from 1;
 	CheckLuaStack(1);
 	if (idx > data_->GetVarCount())
 	{
@@ -140,6 +141,7 @@ void LuaChart::SetInitTable(lua_State* L)
 // Lua table starts from 1, so does index.
 void LuaChart::SetVar(lua_State* L, int idx)     //[-0, +0, -]
 {
+	++idx;	//lua table idx start from 1;
 	CheckLuaStack(0);
 	// 1  - value, 2- weak
 	if (idx > data_->GetVarCount())
