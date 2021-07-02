@@ -1,5 +1,5 @@
 import sys
-sys.path.append("..\\flowchart\\generate")
+sys.path.append("../flowchart/generate")
 import asyncflow
 import Flowchart_AI
 import Flowchart_Subchart
@@ -57,14 +57,14 @@ def test_get_charts():
         agent.attach(i)
     agent.start()
     result = agent.get_charts()
-    assert(result == chart_tbl)
+    assert(set(result) == set(chart_tbl))
     result = agent.get_charts(True)
-    assert(result == chart_tbl)
+    assert(set(result) == set(chart_tbl))
     for i in range(150):
         manager.step(10)
     result = agent.get_charts(True)
     chart_tbl.append("AI.test_07_sub")
-    assert(result == chart_tbl)
+    assert(set(result) == set(chart_tbl))
     manager.deregister(Character)
     manager.step(10)
     asyncflow.exit()
@@ -79,6 +79,7 @@ def test_get_obj():
     assert(agent1.get_obj()==obj1)
     assert(agent2.get_obj()==obj2)
     assert(agent2.get_obj()!=obj3)
+    asyncflow.exit()
 
 if __name__ == "__main__":
     test_get_charts()

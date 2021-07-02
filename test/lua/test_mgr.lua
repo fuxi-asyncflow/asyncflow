@@ -1,3 +1,4 @@
+package.path = package.path ..';../flowchart/generate/?.lua';
 require("asyncflow")
 require("Flowchart_AI")
 require("Flowchart_Subchart")
@@ -80,8 +81,8 @@ function run_case(chart_name, run_time, event_list,result)
     local run_time = run_time or 10
     local total_frames = run_time * 1000 / step_time
     local manager = asyncflow.setup()
-    manager:import_charts("Flowchart_AI.json")
-    manager:import_event("event_info.json")
+    manager:import_charts("../flowchart/generate/Flowchart_AI.json")
+    manager:import_event("../flowchart/generate/event_info.json")
     local agent = manager:register(Character)
     agent:attach(chart_name)
     agent:start()
@@ -115,8 +116,8 @@ function test_attach_chart_params()
     Character.output={}
     Character.allCharacter = {}
     local manager = asyncflow.setup()
-    manager:import_charts("Flowchart_AI.json")
-    manager:import_event("event_info.json")
+    manager:import_charts("../flowchart/generate/Flowchart_AI.json")
+    manager:import_event("../flowchart/generate/event_info.json")
     local agent = manager:register(Character)
     local params_tbl = {}
     params_tbl["x"] = 2

@@ -1,5 +1,5 @@
 {
-  "generator": "py",
+  "generator": "lua",
   "flowchart_type": {
     "AI": "Character",
     "Subchart": "Character"
