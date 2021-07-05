@@ -163,7 +163,7 @@ int asyncflow::lua::import_event(lua_State* L)
 	}
 
 	auto* path = lua_tostring(L, 1);
-	bool result = manager->ImportEvent(path);
+	int result = manager->ImportEvent(path);
 	if (result)
 	{
 		std::vector<EventInfo>& event_list = manager->GetEventManager().GetEventList();
@@ -177,7 +177,7 @@ int asyncflow::lua::import_event(lua_State* L)
 			lua_setfield(L, -2, event_info.name.c_str());
 		}
 	}
-	lua_pushboolean(L, result);
+	lua_pushinteger(L, result);
 	return 1;
 }
 
