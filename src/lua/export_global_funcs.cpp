@@ -75,13 +75,13 @@ int asyncflow::lua::setup(lua_State* L)
 			Agent::DEBUG_NAME_METHOD = method_name;
 			ASYNCFLOW_LOG("debug_name_function is set to {0}.", Agent::DEBUG_NAME_METHOD);
 		}
-		mgr->GetWebsocketManager().Init();
+		mgr->GetWebsocketManager().Init(ip, port);
 #endif
 	}
 	else
 	{
 #ifdef FLOWCHART_DEBUG
-		mgr->GetWebsocketManager().Init(WebsocketManager::IP, WebsocketManager::START_PORT);
+		mgr->GetWebsocketManager().Init();
 #endif
 	}
 	LuaManager::currentManager = mgr;
