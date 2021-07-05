@@ -1,5 +1,5 @@
 import sys
-sys.path.append("..\\flowchart\\generate")
+sys.path.append("../flowchart/generate")
 import asyncflow
 import Flowchart_AI
 import Flowchart_Subchart

@@ -1,3 +1,4 @@
+package.path = package.path ..';../flowchart/generate/?.lua';
 require("asyncflow")
 require("Flowchart_AI")
 require("Flowchart_Subchart")
@@ -101,9 +102,9 @@ function run_case(chart_name, run_time, event_list,result)
     local run_time = run_time or 10
     local total_frames = run_time * 1000 / step_time
     asyncflow.setup()
-    asyncflow.import_charts("Flowchart_AI.json")
-    asyncflow.import_charts("Flowchart_Subchart.json")
-    asyncflow.import_event("event_info.json")
+    asyncflow.import_charts("../flowchart/generate/Flowchart_AI.json")
+    asyncflow.import_charts("../flowchart/generate/Flowchart_Subchart.json")
+    asyncflow.import_event("../flowchart/generate/event_info.json")
     asyncflow.register(Character)
     asyncflow.attach(Character,chart_name)
     asyncflow.start(Character)
@@ -136,9 +137,9 @@ function attach_chart_params(params_tbl)
     Character.output={}
     Character.allCharacter = {}
     asyncflow.setup()
-    asyncflow.import_charts("Flowchart_AI.json")
-    asyncflow.import_charts("Flowchart_Subchart.json")
-    asyncflow.import_event("event_info.json")
+    asyncflow.import_charts("../flowchart/generate/Flowchart_AI.json")
+    asyncflow.import_charts("../flowchart/generate/Flowchart_Subchart.json")
+    asyncflow.import_event("../flowchart/generate/event_info.json")
     asyncflow.register(Character)
     local chart = asyncflow.attach(Character,"AI.test_07_sub",params_tbl)
     chart:set_callback(callback)
