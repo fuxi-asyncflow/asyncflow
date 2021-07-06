@@ -244,7 +244,7 @@ PyObject* asyncflow::py::import_event(PyObject* self, PyObject* args)
 	if (!PyArg_ParseTuple(args, "s", &path))
 		PY_ARG_ERR;
 
-	bool result = manager->ImportEvent(path);
+	int result = manager->ImportEvent(path);
 	if (result)
 	{
 		//update eventId table
@@ -257,10 +257,8 @@ PyObject* asyncflow::py::import_event(PyObject* self, PyObject* args)
 			PyDict_SetItemString(EventIdType.tp_dict, event_info.name.c_str(), id);
 			FreeObject(id);
 		}
-		Py_RETURN_TRUE;
 	}
-	else
-		Py_RETURN_FALSE;
+	return PyLong_FromLong(result);
 }
 
 PyObject* asyncflow::py::register_obj(PyObject* self, PyObject* args)
