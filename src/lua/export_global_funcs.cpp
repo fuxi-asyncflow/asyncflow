@@ -81,7 +81,7 @@ int asyncflow::lua::setup(lua_State* L)
 	else
 	{
 #ifdef FLOWCHART_DEBUG
-		mgr->GetWebsocketManager().Init();
+		mgr->GetWebsocketManager().Init(WebsocketManager::IP, WebsocketManager::START_PORT);
 #endif
 	}
 	LuaManager::currentManager = mgr;

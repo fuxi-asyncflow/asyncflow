@@ -206,7 +206,7 @@ PyObject* asyncflow::py::setup(PyObject* self, PyObject* args)
 	else
 	{
 #ifdef FLOWCHART_DEBUG
-		manager->GetWebsocketManager().Init();
+		manager->GetWebsocketManager().Init(WebsocketManager::IP, WebsocketManager::START_PORT);
 #endif
 	}
 	return CreateCustomPyObj("manager", manager);

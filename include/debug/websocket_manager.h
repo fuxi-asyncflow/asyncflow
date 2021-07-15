@@ -33,7 +33,7 @@ namespace asyncflow
 		public:
 			WebsocketManager(core::Manager* manager);
 			~WebsocketManager();
-			void Init(std::string ip = IP, int port = START_PORT);
+			void Init(const std::string& ip, int port);
 			void StopDebugChart(core::Chart* chart);
 			void StartQuickDebug(core::Chart* chart);
 			void ContinueDebugChart(core::Chart* chart);

@@ -24,7 +24,7 @@ WebsocketManager::~WebsocketManager()
 	delete debugger_;
 }
 
-void WebsocketManager::Init(std::string ip, int port)
+void WebsocketManager::Init(const std::string& ip, int port)
 {
 #ifndef BUILD_WASM
 	server_.init_asio();
