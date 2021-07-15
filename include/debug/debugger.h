@@ -43,22 +43,22 @@ namespace asyncflow
 	    {
 	    public:
 			Debugger() = default;
-			virtual void HandleMessage(const std::string& msg, core::Manager* manager_, DebugConnection* obj) {}
+			virtual void HandleMessage(const std::string& msg, core::Manager* manager_, DebugConnection* obj) = 0;
 
 			virtual std::string PrepareChartDebugData(core::Chart* chart) = 0;
-			virtual std::string ErrorReply(int code, const std::string& error_msg, int id) = 0;
-			virtual std::string NormalMessage(const std::string& method, const std::vector<std::string>& result, int id) = 0;
-			virtual std::string SimpleReply(const std::string& method, const std::unordered_map<std::string, std::string>& result, int id) = 0;
+			virtual std::string ErrorReply(int code, const std::string& error_msg, int msg_id) = 0;
+			virtual std::string NormalMessage(const std::string& method, const std::vector<std::string>& result, int msg_id) = 0;
+			virtual std::string SimpleReply(const std::string& method, const std::unordered_map<std::string, std::string>& result, int msg_id) = 0;
 			virtual std::string StopMessage(const std::string& chart_name) = 0;
-			virtual std::string ChartInitData(const std::string& method, core::ChartData* chart_data, int id) = 0;
+			virtual std::string ChartInitData(const std::string& method, core::ChartData* chart_data, int msg_id) = 0;
 			virtual std::string ChartInfo(core::Chart* chart) = 0;
-			virtual std::string GetChartList(core::Manager* manager, const std::string& obj_name, const std::string& chart_name, int id) = 0;
+			virtual std::string GetChartList(core::Manager* manager, const std::string& obj_name, const std::string& chart_name, int msg_id) = 0;
 		public:
 			
 			std::string FindChart(core::Manager* manager, DebugChartInfo& chart_info);
-			std::string DebugChart(core::Manager* manager, DebugChartInfo& chart_info, int id);
-			std::string StopChart(core::Manager* manager, DebugChartInfo& chart_info, int id);
-			std::string ContinueDebug(core::Manager* manager, DebugChartInfo& chart_info, int id);
+			std::string DebugChart(core::Manager* manager, DebugChartInfo& chart_info, int msg_id);
+			std::string StopChart(core::Manager* manager, DebugChartInfo& chart_info, int msg_id);
+			std::string ContinueDebug(core::Manager* manager, DebugChartInfo& chart_info, int msg_id);
 	    };
 
 		

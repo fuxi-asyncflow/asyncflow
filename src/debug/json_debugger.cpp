@@ -19,7 +19,7 @@ DebugChartInfo GetDebugChartInfoFromJson(const rapidjson::Document::Object& para
 	return DebugChartInfo(agent_id, (Node*)owner_node_addr, nullptr, chart_name);
 }
 
-std::string JsonDebugger::GetChartList(Manager* manager, const std::string& obj_name, const std::string& chart_name, int id)
+std::string JsonDebugger::GetChartList(Manager* manager, const std::string& obj_name, const std::string& chart_name, int msg_id)
 {
 	auto v = manager->GetDebugChartList(chart_name, obj_name);
 
@@ -44,16 +44,16 @@ std::string JsonDebugger::GetChartList(Manager* manager, const std::string& obj_
 	v.clear();
 	writer.EndArray();
 	writer.EndObject();
-	if (id != -1)
+	if (msg_id != -1)
 	{
 		writer.String("id");
-		writer.Int(id);
+		writer.Int(msg_id);
 	}
 	writer.EndObject();
 	return std::string(sb.GetString());
 }
 
-std::string JsonDebugger::ChartInitData(const std::string& method, ChartData* chart_data, int id)
+std::string JsonDebugger::ChartInitData(const std::string& method, ChartData* chart_data, int msg_id)
 {
 	rapidjson::StringBuffer sb;
 	rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(sb);
@@ -69,10 +69,10 @@ std::string JsonDebugger::ChartInitData(const std::string& method, ChartData* ch
 	writer.String("chart_data");
 	ChartDataToJson(chart_data, writer);
 	writer.EndObject();
-	if (id != -1)
+	if (msg_id != -1)
 	{
 		writer.String("id");
-		writer.Int(id);
+		writer.Int(msg_id);
 	}
 	writer.EndObject();
 	return std::string(sb.GetString());
@@ -160,7 +160,7 @@ void JsonDebugger::ChartDataToJson(ChartData* chart_data, rapidjson::PrettyWrite
 	return;
 }
 
-std::string JsonDebugger::ErrorReply(int code, const std::string& error_msg, int id)
+std::string JsonDebugger::ErrorReply(int code, const std::string& error_msg, int msg_id)
 {
 	rapidjson::StringBuffer sb;
 	rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(sb);
@@ -173,16 +173,16 @@ std::string JsonDebugger::ErrorReply(int code, const std::string& error_msg, int
 	writer.String("message");
 	writer.String(error_msg.c_str());
 	writer.EndObject();
-	if (id != -1)
+	if (msg_id != -1)
 	{
 		writer.String("id");
-		writer.Int(id);
+		writer.Int(msg_id);
 	}
 	writer.EndObject();
 	return std::string(sb.GetString());
 }
 
-std::string JsonDebugger::NormalMessage(const std::string& method, const std::vector<std::string>& result, int id)
+std::string JsonDebugger::NormalMessage(const std::string& method, const std::vector<std::string>& result, int msg_id)
 {
 	rapidjson::StringBuffer sb;
 	rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(sb);
@@ -198,10 +198,10 @@ std::string JsonDebugger::NormalMessage(const std::string& method, const std::ve
 		writer.String(str.c_str());
 	}
 	writer.EndArray();
-	if (id != -1)
+	if (msg_id != -1)
 	{
 		writer.String("id");
-		writer.Int(id);
+		writer.Int(msg_id);
 	}
 	writer.EndObject();
 	return std::string(sb.GetString());
@@ -225,7 +225,7 @@ std::string JsonDebugger::StopMessage(const std::string& chart_name)
 	return std::string(sb.GetString());
 }
 
-std::string JsonDebugger::SimpleReply(const std::string& method, const std::unordered_map<std::string, std::string>& result, int id)
+std::string JsonDebugger::SimpleReply(const std::string& method, const std::unordered_map<std::string, std::string>& result, int msg_id)
 {
 	rapidjson::StringBuffer sb;
 	rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(sb);
@@ -242,10 +242,10 @@ std::string JsonDebugger::SimpleReply(const std::string& method, const std::unor
 		writer.String(pair.second.c_str());
 	}
 	writer.EndObject();
-	if (id != -1)
+	if (msg_id != -1)
 	{
 		writer.String("id");
-		writer.Int(id);
+		writer.Int(msg_id);
 	}
 	writer.EndObject();
 	return std::string(sb.GetString());
@@ -288,10 +288,10 @@ void JsonDebugger::HandleMessage(const std::string& msg, Manager* manager_, Debu
 		{
 			std::string func_name = doc["method"].GetString();
 			auto params = doc["params"].GetObject();
-			int id = -1;
+			int msg_id = -1;
 			if (doc.HasMember("id"))
 			{
-				id = doc["id"].GetInt();
+				msg_id = doc["id"].GetInt();
 			}
 			if (func_name == "get_chart_list")
 			{
@@ -301,12 +301,12 @@ void JsonDebugger::HandleMessage(const std::string& msg, Manager* manager_, Debu
 					chart_name = "";
 				if (obj_name == nullptr)
 					obj_name = "";
-				connection->Reply(JsonDebugger::GetChartList(manager_, chart_name, obj_name, id));
+				connection->Reply(JsonDebugger::GetChartList(manager_, chart_name, obj_name, msg_id));
 			}
 			else if (func_name == "debug_chart")
 			{
 				auto chartInfo = GetDebugChartInfoFromJson(params);
-				connection->Reply(DebugChart(manager_, chartInfo, id));
+				connection->Reply(DebugChart(manager_, chartInfo, msg_id));
 				auto* chart = chartInfo.chart;
 				if (chart != nullptr)
 				{
@@ -317,7 +317,7 @@ void JsonDebugger::HandleMessage(const std::string& msg, Manager* manager_, Debu
 			{
 				auto chartInfo = GetDebugChartInfoFromJson(params);
 
-				connection->Reply(StopChart(manager_, chartInfo, id));
+				connection->Reply(StopChart(manager_, chartInfo, msg_id));
 				auto* chart = chartInfo.chart;
 				if (chart != nullptr)
 				{
@@ -332,7 +332,7 @@ void JsonDebugger::HandleMessage(const std::string& msg, Manager* manager_, Debu
 				if (chart_list.size() > 0)
 				{
 					auto chart = chart_list.front();
-					connection->Reply(ChartInitData("quick_debug", chart->GetData(), id));
+					connection->Reply(ChartInitData("quick_debug", chart->GetData(), msg_id));
 					connection->Reply(ChartInfo(chart));
 					connection->StartDebugChart(chart);
 					return;
@@ -340,12 +340,12 @@ void JsonDebugger::HandleMessage(const std::string& msg, Manager* manager_, Debu
 				auto chart_data = manager_->GetChartData(chart_name);
 				if (chart_data == nullptr)
 				{
-					connection->Reply(ErrorReply(-10, "The chart is not exist in chart_data", id));
+					connection->Reply(ErrorReply(-10, "The chart is not exist in chart_data", msg_id));
 				}
 				else
 				{
 					connection->QuickDebugChart(chart_data);
-					connection->Reply(ChartInitData("quick_debug", chart_data, id));
+					connection->Reply(ChartInitData("quick_debug", chart_data, msg_id));
 				}
 			}
 			else if (func_name == "break_point")
@@ -354,14 +354,14 @@ void JsonDebugger::HandleMessage(const std::string& msg, Manager* manager_, Debu
 				auto chart_data = manager_->GetChartData(chart_name);
 				if (chart_data == nullptr)
 				{
-					connection->Reply(ErrorReply(-10, "The chart is not exist in chart_data", id));
+					connection->Reply(ErrorReply(-10, "The chart is not exist in chart_data", msg_id));
 					return;
 				}
 				auto uid = params["node_uid"].GetString();
 				auto node_data = chart_data->GetNodeData(uid);
 				if (node_data == nullptr)
 				{
-					connection->Reply(ErrorReply(-4, "The uid is not exist in chart_data", id));
+					connection->Reply(ErrorReply(-4, "The uid is not exist in chart_data", msg_id));
 					return;
 				}
 				auto command = params["command"].GetString();
@@ -376,7 +376,7 @@ void JsonDebugger::HandleMessage(const std::string& msg, Manager* manager_, Debu
 						manager_->SetBreakpoint(node_data);
 					}
 					result["command"] = "set";
-					connection->Reply(SimpleReply("break_point", result, id));
+					connection->Reply(SimpleReply("break_point", result, msg_id));
 				}
 				else
 				{
@@ -387,13 +387,13 @@ void JsonDebugger::HandleMessage(const std::string& msg, Manager* manager_, Debu
 						manager_->DeleteBreakpoint(node_data);
 					}
 					result["command"] = "delete";
-					connection->Reply(SimpleReply("break_point", result, id));
+					connection->Reply(SimpleReply("break_point", result, msg_id));
 				}
 			}
 			else if (func_name == "continue")
 			{
 				auto chartInfo = GetDebugChartInfoFromJson(params);
-				connection->Reply(ContinueDebug(manager_, chartInfo, id));
+				connection->Reply(ContinueDebug(manager_, chartInfo, msg_id));
 				auto* chart = chartInfo.chart;
 				if (chart != nullptr)
 				{
@@ -406,10 +406,10 @@ void JsonDebugger::HandleMessage(const std::string& msg, Manager* manager_, Debu
 				auto result = manager_->RunScript(script);
 				if (result.first)
 				{
-					connection->Reply(NormalMessage("gm", result.second, id));
+					connection->Reply(NormalMessage("gm", result.second, msg_id));
 				}
 				else
-					connection->Reply(ErrorReply(-10, result.second.front(), id));
+					connection->Reply(ErrorReply(-10, result.second.front(), msg_id));
 			}
 			else if (func_name == "hotfix")
 			{
@@ -417,22 +417,22 @@ void JsonDebugger::HandleMessage(const std::string& msg, Manager* manager_, Debu
 				auto result = manager_->RunScript(charts_func);
 				if (!result.first)
 				{
-					connection->Reply(ErrorReply(-15, "run charts_func error", id));
+					connection->Reply(ErrorReply(-15, "run charts_func error", msg_id));
 					return;
 				}
 				auto charts_data = params["charts_data"].GetString();
 				auto import_res = manager_->ImportJson(charts_data);
 				if (!import_res)
 				{
-					connection->Reply(ErrorReply(-15, "import charts_data error", id));
+					connection->Reply(ErrorReply(-15, "import charts_data error", msg_id));
 					return;
 				}
-				connection->Reply(NormalMessage("hotfix", std::vector<std::string>(), id));
+				connection->Reply(NormalMessage("hotfix", std::vector<std::string>(), msg_id));
 			}
 
 			else
 			{
-				connection->Reply(ErrorReply(-32601, "method not find", id));
+				connection->Reply(ErrorReply(-32601, "method not find", msg_id));
 			}
 		}
 	}

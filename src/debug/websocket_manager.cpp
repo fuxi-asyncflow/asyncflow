@@ -13,7 +13,7 @@ std::string WebsocketManager::IP = "127.0.0.1";
 
 WebsocketManager::WebsocketManager(Manager* manager)
 	: manager_(manager)   
-    , debugger_(new JsonDebugger)
+    , debugger_(new JsonDebugger())
 {
 	
 	ASYNCFLOW_LOG("[deubg] Launch debug server !");
