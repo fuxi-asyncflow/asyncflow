@@ -1,7 +1,9 @@
 #ifdef FLOWCHART_DEBUG
 #include "debug/websocket_manager.h"
 #include "core/manager.h"
-#include "debug/websocket_debugger.h"
+#include "util/json.h"
+#include "debug/json_debugger.h"
+
 
 using namespace asyncflow::debug;
 using namespace asyncflow::core;
@@ -10,15 +12,16 @@ int WebsocketManager::START_PORT = 9000;
 std::string WebsocketManager::IP = "127.0.0.1";
 
 WebsocketManager::WebsocketManager(Manager* manager)
-	: manager_(manager)
+	: manager_(manager)   
+    , debugger_(new JsonDebugger)
 {
-	handle_obj_ = new WebsocketHandleObject(this);
+	
 	ASYNCFLOW_LOG("[deubg] Launch debug server !");
 }
 
 WebsocketManager::~WebsocketManager()
 {
-	delete handle_obj_;
+	delete debugger_;
 }
 
 void WebsocketManager::Init(std::string ip, int port)
@@ -54,7 +57,7 @@ void WebsocketManager::Step()
 	{
 		if (chart_kv.first->GetDebugData().size() == 0)
 			continue;
-		auto str = Debugger::PrepareChartDebugData(chart_kv.first);
+		auto str = debugger_->PrepareChartDebugData(chart_kv.first);
 		ASYNCFLOW_DBG("[deubg] chart json {0}", str);
 		for (auto hdl : chart_kv.second)
 		{
@@ -160,7 +163,7 @@ void WebsocketManager::StartQuickDebug(Chart* chart)
 	{
 		try
 		{
-			server_.send(hdl, Debugger::ChartInfo(chart), websocketpp::frame::opcode::TEXT);
+			server_.send(hdl, debugger_->ChartInfo(chart), websocketpp::frame::opcode::TEXT);
 		}
 		catch (std::exception e)
 		{
@@ -206,7 +209,7 @@ void WebsocketManager::SendStopData(Chart* chart, HDL_CONTAINER &hdls)
 	if (chart->GetDebugData().size() != 0)
 	{
 		data_flag = true;
-		str = Debugger::PrepareChartDebugData(chart);
+		str = debugger_->PrepareChartDebugData(chart);
 	}
 	for (auto hdl : hdls)
 	{
@@ -216,7 +219,7 @@ void WebsocketManager::SendStopData(Chart* chart, HDL_CONTAINER &hdls)
 			{
 				server_.send(hdl, str, websocketpp::frame::opcode::TEXT);
 			}
-			server_.send(hdl, Debugger::StopMessage(chart->Name()), websocketpp::frame::opcode::TEXT);
+			server_.send(hdl, debugger_->StopMessage(chart->Name()), websocketpp::frame::opcode::TEXT);
 		}
 		catch (std::exception e)
 		{
@@ -263,8 +266,8 @@ void WebsocketManager::OnMessage(websocketpp::connection_hdl hdl, WebsocketAsioS
 	ASYNCFLOW_DBG("[debug] recv {}", data);
 	rapidjson::Document doc;
 	bool valid_json = util::JsonUtil::ParseJson(data, doc);
-	handle_obj_->SetHdl(hdl);
-	Debugger::HandleMessage(data, manager_, handle_obj_);
+	WebsocketDebugConnection connect{ this, hdl };
+	debugger_->HandleMessage(data, manager_, &connect);
 }
 
 bool WebsocketManager::IsPortAvailable(const char* ip, int port)
@@ -296,4 +299,32 @@ bool WebsocketManager::IsPortAvailable(const char* ip, int port)
 	}
 	return false;
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////
+
+void WebsocketDebugConnection::StartDebugChart(core::Chart* chart)
+{
+	websocketManager_->StartDebugChart(chart, hdl_);
+}
+
+void WebsocketDebugConnection::StopDebugChart(core::Chart* chart)
+{
+	websocketManager_->StopDebugChart(chart, hdl_);
+}
+
+void WebsocketDebugConnection::QuickDebugChart(core::ChartData* chart_data)
+{
+	websocketManager_->QuickDebugChart(chart_data, hdl_);
+}
+
+void WebsocketDebugConnection::ContinueDebugChart(core::Chart* chart)
+{
+	websocketManager_->ContinueDebugChart(chart);
+}
+
+void WebsocketDebugConnection::Reply(const std::string& msg)
+{
+	websocketManager_->SendReply(hdl_, msg);
+}
+
 #endif

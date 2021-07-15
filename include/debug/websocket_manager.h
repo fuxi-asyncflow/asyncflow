@@ -1,4 +1,6 @@
 #pragma once
+#include "debug/debugger.h"
+
 #ifdef FLOWCHART_DEBUG
 #include <vector>
 #include <unordered_map>
@@ -7,9 +9,7 @@
 #include <websocketpp/config/asio_no_tls.hpp>
 #include <websocketpp/server.hpp>
 #include <unordered_set>
-#include "util/json.h"
-#include "rapidjson/prettywriter.h"
-#include "rapidjson/stringbuffer.h"
+
 
 
 typedef websocketpp::server<websocketpp::config::asio> WebsocketAsioServer;
@@ -27,7 +27,6 @@ namespace asyncflow
 
 	namespace debug
 	{
-		class WebsocketHandleObject;
 		class WebsocketManager
 		{
 			typedef std::vector<websocketpp::connection_hdl> HDL_CONTAINER;
@@ -43,8 +42,9 @@ namespace asyncflow
 			WebsocketAsioServer server_;
 			core::Manager* manager_;
 			std::unordered_map<core::Chart*, HDL_CONTAINER> chart_map_;
-			std::unordered_map<std::string, HDL_CONTAINER> quick_debug_map_;
-			WebsocketHandleObject* handle_obj_;
+			std::unordered_map<std::string, HDL_CONTAINER> quick_debug_map_;			
+			Debugger* debugger_;
+			
 
 		public:
 			void StartDebugChart(core::Chart* chart, websocketpp::connection_hdl hdl);			
@@ -68,6 +68,26 @@ namespace asyncflow
 			//use for test
 			const std::unordered_map<core::Chart*, HDL_CONTAINER>& GetChartMap() { return chart_map_; }
 						
+		};
+
+		class WebsocketDebugConnection : public DebugConnection
+		{
+		public:
+			WebsocketDebugConnection(WebsocketManager* websocketManager_, websocketpp::connection_hdl hdl)
+				: websocketManager_(websocketManager_)
+				, hdl_(hdl)
+			{};
+
+			void StartDebugChart(core::Chart*) override;
+			void StopDebugChart(core::Chart*)  override;
+			void QuickDebugChart(core::ChartData*) override;
+			void ContinueDebugChart(core::Chart*) override;
+			void Reply(const std::string& msg) override;
+
+
+		private:
+			WebsocketManager* websocketManager_;
+			websocketpp::connection_hdl hdl_;
 		};
 	}
 }
