@@ -59,15 +59,17 @@ void WebsocketManager::Step()
 			continue;
 		auto str = debugger_->PrepareChartDebugData(chart_kv.first);
 		ASYNCFLOW_DBG("[deubg] chart json {0}", str);
-		for (auto hdl : chart_kv.second)
+		auto iter = chart_kv.second.begin();
+		while (iter != chart_kv.second.end())
 		{
 			try
 			{
-				server_.send(hdl, str, websocketpp::frame::opcode::TEXT);
+				server_.send(*iter, str, websocketpp::frame::opcode::TEXT);
+				++iter;
 			}
 			catch (std::exception e)
 			{
-				RemoveHdl(chart_kv.second, hdl);
+				iter = chart_kv.second.erase(iter);
 				if (chart_kv.second.size() == 0)
 					check_chart.push_back(chart_kv.first);
 				ASYNCFLOW_WARN("[deubg] websocket send error for chart {}, the reason is {}", chart_kv.first->Name(), e.what());
