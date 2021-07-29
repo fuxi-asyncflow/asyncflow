@@ -82,7 +82,7 @@ namespace asyncflow
 				auto* agent = GetAgent(game_object);
 				if (agent != nullptr)
 					return agent;
-
+				ASYNCFLOW_LOG("register game object {}!", (void*)game_object);
 				agent = new TAGENT(manager_, game_object);
 				gameobject_map_[game_object] = agent;
 				AddAgent(agent);

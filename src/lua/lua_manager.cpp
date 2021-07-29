@@ -40,7 +40,6 @@ Agent* LuaManager::RegisterGameObject(void* obj, int tick)
 		ASYNCFLOW_LOG("object has registered to asyncflow");
 		return nullptr;
 	}
-	ASYNCFLOW_LOG("register object to asyncflow");
 	auto agent = agent_manager_.Register(obj);	// -1	
 	agent->SetTickInterval(tick);
 	return agent;

@@ -508,12 +508,11 @@ int asyncflow::lua::wait_event(lua_State* L)
 		lua_pushboolean(L, 0);
 		return 1;
 	}
-	auto agent = luaManager->GetAgent((void*)obj);
+	Agent* agent = luaManager->GetAgent((void*)obj);
 	if (agent == nullptr)
 	{
-		ASYNCFLOW_ERR("wait event obj must be registered");
-		lua_pushboolean(L, 0);
-		return 1;
+		ASYNCFLOW_ERR("wait event obj {} is not registered", obj);
+		agent = luaManager->RegisterGameObject(const_cast<void*>(obj), Manager::DEFAULT_AGENT_TICK);
 	}
 	res = luaManager->WaitEvent(agent, event_id);
 	lua_pushboolean(L, res);
