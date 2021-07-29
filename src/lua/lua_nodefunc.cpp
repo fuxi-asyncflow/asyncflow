@@ -30,7 +30,7 @@ bool LuaNodeFunc::call(Agent* agent)
 		while (true)
 		{
 			ASYNCFLOW_ERR("chart stack[{0}] {1}[{2}]", chart_stack, temp_chart->Name(), node_id);
-			for (int var_id = 1; var_id <= temp_chart->GetData()->GetVarCount(); var_id++)
+			for (int var_id = 0; var_id < temp_chart->GetData()->GetVarCount(); var_id++)
 			{
 				static_cast<LuaChart*>(temp_chart)->GetVar(L, var_id);
 				std::string var = ToString(L, -1);

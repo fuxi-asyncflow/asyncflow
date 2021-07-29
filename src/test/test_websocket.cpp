@@ -7,7 +7,7 @@
 #include "util/json.h"
 #include <websocketpp/config/asio_no_tls_client.hpp>
 #include <websocketpp/client.hpp>
-#include "debug/debug_common.h"
+#include "debug/json_debugger.h"
 
 #include "catch.hpp"
 
@@ -63,7 +63,7 @@ void on_message(client* c, websocketpp::connection_hdl hdl, client::message_ptr 
 	REQUIRE(charts.Size() == 1);
 
 	asyncflow::debug::ChartInfo chart_info;
-	chart_info.Deserialize(charts[0]);
+	asyncflow::debug::Deserialize_ChartInfo_Json(charts[0], chart_info);
 	REQUIRE(chart_info.owner_node_addr == 0);
 	REQUIRE(chart_info.owner_node_id == -1);
 	REQUIRE(chart_info.chart_name == "test_websocket");
@@ -164,19 +164,19 @@ void debug_chart_on_message(client* c, websocketpp::connection_hdl hdl, client::
 		REQUIRE(data.Size() == 6);
 		REQUIRE(data[0]["type"] == "event_status");
 		asyncflow::debug::EventStatusData event_data;
-		event_data.Deserialize(data[0]);
+		Deserialize_EventStatusData_Json(data[0],event_data);
 		REQUIRE(event_data.event_name == "Event2Arg");
 		REQUIRE(event_data.argcount == 2);
 		REQUIRE(event_data.n_args[0] == "first");
 		REQUIRE(event_data.n_args[1] == "second");
 		REQUIRE(data[1]["type"] == "node_status");
 		asyncflow::debug::NodeStatusData node_data;
-		node_data.Deserialize(data[1]);
+		Deserialize_NodeStatusData_Json(data[1], node_data);
 		REQUIRE(node_data.old_status == 0);
 		REQUIRE(node_data.new_status == 2);
 		REQUIRE(data[2]["type"] == "variable_status");
 		asyncflow::debug::VariableStatusData variable_data;
-		variable_data.Deserialize(data[2]);
+		Deserialize_VariableStatusData_Json(data[2],variable_data);
 		REQUIRE(variable_data.old_value == "hello");
 		REQUIRE(variable_data.new_value == "ss111");
 	}
@@ -414,7 +414,7 @@ void quick_debug_on_message(client* c, Agent* agent, websocketpp::connection_hdl
 		REQUIRE(data.Size() == 1);
 		REQUIRE(data[0]["type"] == "node_status");
 		asyncflow::debug::NodeStatusData node_data;
-		node_data.Deserialize(data[0]);
+		Deserialize_NodeStatusData_Json(data[0], node_data);
 		REQUIRE(node_data.old_status == 0);
 		REQUIRE(node_data.new_status == 1);
 	}
@@ -426,7 +426,7 @@ void quick_debug_on_message(client* c, Agent* agent, websocketpp::connection_hdl
 		REQUIRE(data.Size() == 2);
 		REQUIRE(data[0]["type"] == "node_status");
 		asyncflow::debug::NodeStatusData node_data;
-		node_data.Deserialize(data[0]);
+		Deserialize_NodeStatusData_Json(data[0], node_data);
 		REQUIRE(node_data.old_status == 0);
 		REQUIRE(node_data.new_status == 2);
 	}
@@ -516,7 +516,7 @@ void breakpoint_on_message(client* c, Agent* agent, websocketpp::connection_hdl 
 		REQUIRE(data.Size() == 1);
 		REQUIRE(data[0]["type"] == "node_status");
 		asyncflow::debug::NodeStatusData node_data;
-		node_data.Deserialize(data[0]);
+		Deserialize_NodeStatusData_Json(data[0],node_data);
 		REQUIRE(node_data.old_status == 0);
 		REQUIRE(node_data.new_status == 1);
 	}
@@ -528,7 +528,7 @@ void breakpoint_on_message(client* c, Agent* agent, websocketpp::connection_hdl 
 		REQUIRE(data.Size() == 2);
 		REQUIRE(data[0]["type"] == "node_status");
 		asyncflow::debug::NodeStatusData node_data;
-		node_data.Deserialize(data[0]);
+		Deserialize_NodeStatusData_Json(data[0], node_data);
 		REQUIRE(node_data.old_status == 0);
 		REQUIRE(node_data.new_status == 2);
 		std::this_thread::sleep_for(std::chrono::milliseconds(2000));
@@ -556,7 +556,7 @@ void breakpoint_on_message(client* c, Agent* agent, websocketpp::connection_hdl 
 		REQUIRE(data.Size() == 2);
 		REQUIRE(data[0]["type"] == "node_status");
 		asyncflow::debug::NodeStatusData node_data;
-		node_data.Deserialize(data[0]);
+		Deserialize_NodeStatusData_Json(data[0], node_data);
 		REQUIRE(node_data.old_status == 0);
 		REQUIRE(node_data.new_status == 2);
 		runflag = false;
