@@ -58,6 +58,7 @@ int luaopen_asyncflow(lua_State *L)
 	module.AddFunction("config_log", config_log);
 	module.AddFunction("import_charts", import_charts);
 	module.AddFunction("import_event", import_event);
+	module.AddFunction("set_error_handler", set_error_handler);
 	module.AddFunction("register", register_obj);
 	module.AddFunction("step", step);
 	module.AddFunction("event", event);
@@ -86,6 +87,7 @@ int luaopen_asyncflow(lua_State *L)
 	manager_cls.AddFunction("register", mgr_register_obj);
 	manager_cls.AddFunction("import_charts", mgr_import_charts);
 	manager_cls.AddFunction("import_event", mgr_import_event);
+	manager_cls.AddFunction("set_error_handler", mgr_set_error_handler);
 	manager_cls.AddFunction("step", mgr_step);
 	manager_cls.AddFunction("event", mgr_event);
 	manager_cls.AddFunction("exit", mgr_exit);

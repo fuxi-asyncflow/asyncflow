@@ -139,6 +139,8 @@ namespace asyncflow
 			/////////////////////////////////////////////////////////////////////////////////////
 			void GetFunc(Ref func_ref);
 
+			static int ErrorFunction(lua_State* L);
+
 		private:
 			bool is_init;
 		};

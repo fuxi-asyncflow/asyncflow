@@ -32,11 +32,12 @@ void LuaAgent::RunFlow(Node* start_node)
 {
 	auto* const mgr = (LuaManager*)manager_;
 	auto* const L = mgr->L;
-	lua_rawgeti(L, LUA_REGISTRYINDEX, mgr->ObjectRef);
-	lua_rawgeti(L, -1, obj_);
-	lua_rawgeti(L, LUA_REGISTRYINDEX, mgr->FunctionRef);
+	lua_rawgeti(L, LUA_REGISTRYINDEX, mgr->ErrorHandler);	//  +1
+	lua_rawgeti(L, LUA_REGISTRYINDEX, mgr->ObjectRef);		//  +1
+	lua_rawgeti(L, -1, obj_);								//  +1
+	lua_rawgeti(L, LUA_REGISTRYINDEX, mgr->FunctionRef);	//  +1
 	manager_->GetExecutor().RunFlow(start_node);
-	lua_pop(L, 3);
+	lua_pop(L, 4);											//  -4
 }
 
 std::string LuaAgent::GetName()

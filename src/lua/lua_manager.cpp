@@ -18,10 +18,10 @@ void LuaManager::Init()
 		return;
 
 	LuaManager::currentManager = this;
-	lua_newtable(L);									//  +1
+	lua_pushcfunction(L, LuaManager::ErrorFunction);	//  +1
 	ErrorHandler = luaL_ref(L, LUA_REGISTRYINDEX);		//  -1
-	lua_newtable(L);
-	FunctionRef = luaL_ref(L, LUA_REGISTRYINDEX);
+	lua_newtable(L);									//  +1
+	FunctionRef = luaL_ref(L, LUA_REGISTRYINDEX);		//  -1
 	lua_newtable(L);
 	ObjectRef = luaL_ref(L, LUA_REGISTRYINDEX);
 	lua_newtable(L);									//  +1
@@ -154,6 +154,13 @@ void LuaManager::GetFunc(Ref func_ref)		//  +2
 {
 	lua_rawgeti(L, LUA_REGISTRYINDEX, FunctionRef);
 	lua_rawgeti(L, -1, func_ref);
+}
+
+int LuaManager::ErrorFunction(lua_State* L)
+{
+	const char* err_msg = lua_tostring(L, -1);
+	ASYNCFLOW_ERR("run node error : {0}", err_msg);
+	return 0;
 }
 
 

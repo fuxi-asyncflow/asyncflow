@@ -25,6 +25,7 @@ int asyncflow::lua::mgr_##func_name(lua_State* L)												\
 MANAGER_CLASS_FUNC(register_obj)
 MANAGER_CLASS_FUNC(import_charts)
 MANAGER_CLASS_FUNC(import_event)
+MANAGER_CLASS_FUNC(set_error_handler)
 MANAGER_CLASS_FUNC(step)
 MANAGER_CLASS_FUNC(event)
 MANAGER_CLASS_FUNC(exit)

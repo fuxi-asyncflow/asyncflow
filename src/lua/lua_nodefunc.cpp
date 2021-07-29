@@ -17,10 +17,8 @@ bool LuaNodeFunc::call(Agent* agent)
 	lua_pushvalue(L, -3);
 
 	//TODO set error handle func
-	if (lua_pcall(L, 1, 1, 0))
+	if (lua_pcall(L, 1, 1, -6))
 	{
-		const char* err_msg = lua_tostring(L, -1);
-		ASYNCFLOW_ERR("run node error : {0}", err_msg);
 		auto current_chart = (LuaChart*)mgr->GetCurrentNode()->GetChart();
 		auto node_data = mgr->GetCurrentNode()->GetData();
 		ASYNCFLOW_ERR("run node[{0}] {1} error in chart {2}", node_data->GetId(), node_data->GetUid(), current_chart->Name());
