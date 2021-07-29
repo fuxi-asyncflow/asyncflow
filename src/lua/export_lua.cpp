@@ -25,7 +25,7 @@ void LuaExportModule::Export(lua_State* L)
 	{
 		luaL_Reg l;
 		auto* str = new char[kv.first.length() + 1];
-		strcpy(str, kv.first.c_str());
+		strcpy_s(str, kv.first.length() + 1, kv.first.c_str());
 		l.name = str;
 		l.func = kv.second;
 		funcs.push_back(l);
