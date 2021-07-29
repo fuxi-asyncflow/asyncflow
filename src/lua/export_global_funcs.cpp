@@ -113,8 +113,7 @@ int asyncflow::lua::register_obj(lua_State* L)
 	{
 		LUA_ERR(L, "1st arg for asyncflow.register should be a userdata or table");
 	}
-	int tick = 0;
-	bool start_flag = true;
+	int tick = Manager::DEFAULT_AGENT_TICK;
 
 	if (lua_istable(L, 2))
 	{
