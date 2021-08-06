@@ -65,7 +65,7 @@ std::string LuaAgent::GetName()
 			lua_pop(L, 1);											//  -1
 		}
 	}
-	std::string str(ToString(L, -2));
+	std::string str(ToString(L, -1));
 	lua_pop(L, 2);													//  -2
 	return str;
 }
