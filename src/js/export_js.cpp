@@ -206,12 +206,17 @@ EM_PORT_API(int) event(int obj_id, int  event_id, uint8_t* ptr, int count)
 		ASYNCFLOW_WARN(manager_null_msg);
 		return 0;
 	}
+	if (count < 0)
+	{
+		ASYNCFLOW_WARN("the event arg count must be larger than 0");
+		return 0;
+	}
 	int* args = new int[count];
 	for (int i = 0; i < count; i++) {
 		memcpy(args + i, ptr + i * 4, 4);
 	}
 	bool result = mgr->Event(event_id, obj_id, args, count);
-	return 1;
+	return result;
 }
 
 EM_PORT_API(int) debug_command(char* str)
@@ -265,11 +270,13 @@ EM_PORT_API(int) call_sub(char* chart_name, int id, uint8_t* ptr, int count)
 	{
 		return 0;
 	}
+	if (count < 0)
+		return 0;
 	int* args = new int[count];
 	for (int i = 0; i < count; i++) {
 		memcpy(args + i, ptr + i * 4, 4);
 	}
-	mgr->Subchart(chart_name, mgr->GetAgent(id), args, count);
+	mgr->Subchart(chart_name, id, args, count);
 	return 1;
 }
 
@@ -289,7 +296,18 @@ EM_PORT_API(int) wait_event(int id, int event_id)
 	{
 		return 0;
 	}
-	auto res = mgr->WaitEvent(mgr->GetAgent(id), event_id);
+	if (event_id < 1)
+	{
+		ASYNCFLOW_ERR("event_id can not be {0}", event_id);
+		return 0;
+	}
+	Agent* agent = mgr->GetAgent(id);
+	if (agent == nullptr)
+	{
+		ASYNCFLOW_ERR("wait event obj {0} is not registered", id);
+		agent = mgr->RegisterGameObject(id, Manager::DEFAULT_AGENT_TICK);
+	}
+	auto res = mgr->WaitEvent(agent, event_id);
 	return res;
 }
 

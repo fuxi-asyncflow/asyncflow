@@ -101,6 +101,27 @@ int asyncflow::lua::config_log(lua_State* L)
 	return 0;
 }
 
+int asyncflow::lua::set_error_handler(lua_State* L)
+{
+	if (LuaManager::currentManager == nullptr)
+	{
+		LUA_ERR(L, manager_null_msg);
+	}
+	if (!lua_isfunction(L, 1))
+	{
+		LUA_ERR(L, agr_err_msg);
+	}
+	lua_settop(L, 1);
+	auto ref = LuaManager::currentManager->ErrorHandler;
+	if (ref != LUA_NOREF)
+	{
+		luaL_unref(L, LUA_REGISTRYINDEX, ref);
+	}
+	LuaManager::currentManager->ErrorHandler = luaL_ref(L, LUA_REGISTRYINDEX);
+	lua_pushboolean(L, true);
+	return 1;
+}
+
 int asyncflow::lua::register_obj(lua_State* L)
 {
 	if (LuaManager::currentManager == nullptr)
@@ -113,8 +134,7 @@ int asyncflow::lua::register_obj(lua_State* L)
 	{
 		LUA_ERR(L, "1st arg for asyncflow.register should be a userdata or table");
 	}
-	int tick = 0;
-	bool start_flag = true;
+	int tick = Manager::DEFAULT_AGENT_TICK;
 
 	if (lua_istable(L, 2))
 	{
@@ -508,12 +528,11 @@ int asyncflow::lua::wait_event(lua_State* L)
 		lua_pushboolean(L, 0);
 		return 1;
 	}
-	auto agent = luaManager->GetAgent((void*)obj);
+	Agent* agent = luaManager->GetAgent((void*)obj);
 	if (agent == nullptr)
 	{
-		ASYNCFLOW_ERR("wait event obj must be registered");
-		lua_pushboolean(L, 0);
-		return 1;
+		ASYNCFLOW_ERR("wait event obj {} is not registered", obj);
+		agent = luaManager->RegisterGameObject(const_cast<void*>(obj), Manager::DEFAULT_AGENT_TICK);
 	}
 	res = luaManager->WaitEvent(agent, event_id);
 	lua_pushboolean(L, res);

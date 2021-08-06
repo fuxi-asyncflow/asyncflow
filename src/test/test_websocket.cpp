@@ -25,7 +25,7 @@ const char* set_breakpoint = "{\"jsonrpc\": \"2.0\",\"method\": \"break_point\",
 const char* delete_breakpoint = "{\"jsonrpc\": \"2.0\",\"method\": \"break_point\",\"params\": {\"chart_name\":\"test_websocket\",\"command\":\"delete\",\"node_uid\": \"00000\"},\"id\":6}";
 bool runflag;
 int message_count;
-const int THREAD_TOTAL_TIME = 50; // milliseconds
+const int THREAD_TOTAL_TIME = 3000; // milliseconds
 
 void run_step()
 {
