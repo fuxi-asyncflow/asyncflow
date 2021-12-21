@@ -1,3 +1,4 @@
+#if 0
 #ifdef FLOWCHART_DEBUG
 #include <fstream>
 #include <thread>
@@ -689,4 +690,5 @@ TEST_CASE("gm test")
 	delete chart_data;
 }
 
+#endif
 #endif
