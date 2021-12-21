@@ -62,6 +62,18 @@ namespace asyncflow
 				return (JsAgent*)agent_manager_.GetAgent(id);
 			}
 
+			bool Subchart(const std::string& chart_name, int id, void* args, int arg_count)
+			{
+				Agent* agent = agent_manager_.GetAgent(id);
+				//if the obj was not registered, create a new agent
+				if (agent == nullptr)
+				{
+					ASYNCFLOW_ERR("subchart object {0} is not registered", id);
+					agent = agent_manager_.Register(id);
+				}
+				return Manager::Subchart(chart_name, agent, args, arg_count);
+			}
+
 			int GetVar(int idx)
 			{
 				auto chart = static_cast<JsChart*>(GetCurrentNode()->GetChart());

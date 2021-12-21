@@ -51,12 +51,13 @@ namespace asyncflow
 
 			Agent* RegisterGameObject(PyObject* obj, int tick_interval)
 			{
+				if (tick_interval <= 0)
+					tick_interval = DEFAULT_AGENT_TICK;
 				if (agent_manager_.GetAgent(obj) != nullptr)
 				{
 					ASYNCFLOW_LOG("object has registered to asyncflow");
 					return nullptr;
 				}
-				ASYNCFLOW_LOG("register object to asyncflow");
 				auto agent = agent_manager_.Register(obj);
 				if (tick_interval != Manager::default_time_interval_)
 					agent->SetTickInterval(tick_interval);
@@ -81,8 +82,8 @@ namespace asyncflow
 				//If the obj does not register then create a new one, its tick_interval as default
 				if (agent == nullptr)
 				{
-					this->RegisterGameObject(obj, Manager::DEFAULT_AGENT_TICK);
-					agent = agent_manager_.GetAgent(obj);
+					ASYNCFLOW_ERR("subchart object {0} is not registered", (       void*)obj);
+					agent = agent_manager_.Register(obj);
 				}
 
 				return Manager::Subchart(chart_name, agent, args, arg_count);

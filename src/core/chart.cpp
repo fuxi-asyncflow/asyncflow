@@ -31,7 +31,7 @@ Chart::~Chart()
 	}
 	ClearDebugData();
 #endif
-	for (auto node : node_list_)
+	for (auto* node : node_list_)
 	{
 		delete node;
 	}
@@ -69,7 +69,7 @@ bool Chart::Init(ChartData* chart_data, Node* owner_node /* = nullptr*/)
 //Stop function contains a virtual function ClearVariables, so it can not be used in chart destructor.
 void Chart::Stop()
 {
-	for (auto& node : node_list_)
+	for (auto* node : node_list_)
 	{
 		node->Stop();
 	}
@@ -103,7 +103,7 @@ bool Chart::CheckRunning()
 }
 
 #ifdef 	FLOWCHART_DEBUG
-void Chart::SendNodeStatus(int id, std::string uid, Node::Status old_status, Node::Status new_status, bool result)
+void Chart::SendNodeStatus(int id, const std::string& uid, Node::Status old_status, Node::Status new_status, bool result)
 {
 	if (old_status != new_status &&(old_status == Node::Status::Idle || new_status == Node::Status::EndRun))
 	{
@@ -116,7 +116,7 @@ void Chart::SendNodeStatus(int id, std::string uid, Node::Status old_status, Nod
 
 void Chart::ClearDebugData()
 {
-	for (auto debug_data : debug_data_list_)
+	for (auto* debug_data : debug_data_list_)
 	{
 		delete debug_data;
 	}

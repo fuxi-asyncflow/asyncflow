@@ -13,7 +13,6 @@ Agent* JsManager::RegisterGameObject(int obj, int tick)
 		ASYNCFLOW_LOG("object has registered to asyncflow");
 		return nullptr;
 	}
-	ASYNCFLOW_LOG("register object to asyncflow");
 	auto agent = agent_manager_.Register(obj);
 	agent->SetTickInterval(tick);
 	return agent;
@@ -32,7 +31,13 @@ Chart* JsManager::AttachChart(int obj, const std::string& chart_name)
 
 bool JsManager::Event(int event_id, int obj_id, int* args, int arg_count, bool immediate)
 {
-	return Manager::Event(event_id, agent_manager_.GetAgent(obj_id), (void*)args, arg_count, immediate);
+	auto agent = agent_manager_.GetAgent(obj_id);
+	if (agent == nullptr)
+	{
+		ASYNCFLOW_WARN("raise event obj {} is not registered", obj_id);
+		agent = agent_manager_.Register(obj_id);
+	}
+	return Manager::Event(event_id, agent, (void*)args, arg_count, immediate);
 }
 
 int JsManager::GetEventPatam(int event_id, int param_idx)

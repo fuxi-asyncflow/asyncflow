@@ -27,7 +27,7 @@ namespace asyncflow
 				
 			}
 			~NodeData();
-			bool InitFromJson(rapidjson::Value& jobj, const std::unordered_map<std::string, int>& map, ChartData* chart_data);
+			bool InitFromJson(rapidjson::Value& jobj, const std::unordered_map<std::string, int>& id_map, ChartData* chart_data);
 			NodeFunc* GetNodeFunc() { return node_func_; }
 			int	GetId() { return node_id_; }
 			std::string GetUid() { return node_uid_; }

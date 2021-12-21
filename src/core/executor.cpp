@@ -10,7 +10,6 @@ DfsExecutor::DfsExecutor()
 	: current_agent_(nullptr)
 	, current_node_(nullptr)
 {
-	
 }
 
 void DfsExecutor::RunFlow(Node* start_node)
@@ -37,7 +36,7 @@ void DfsExecutor::RunFlow(Node* start_node)
 			continue;
 
 		if (loop_check_ && node->RunFlag() && !node->GetData()->IsEventNode())	//loop
-		{			
+		{
 			current_agent_->WaitEvent(node, AsyncEventBase::TICK_EVENT);			
 		}
 		else
@@ -50,7 +49,7 @@ void DfsExecutor::RunFlow(Node* start_node)
 			{
 				node->SetStatus(Node::EndRun);
 				AddSubsequenceNodes(node, node->GetResult());
-			}			
+			}
 		}
 	}
 

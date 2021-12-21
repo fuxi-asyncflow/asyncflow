@@ -18,8 +18,6 @@ namespace asyncflow
 		public:
 			static std::shared_ptr<spdlog::logger> rotatelogger;
 			static spdlog::level::level_enum LEVEL;
-			static std::string PATH;
-			static std::string LOG_NAME;
 			
 		public:			
 			static void Init();

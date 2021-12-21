@@ -17,10 +17,8 @@ bool LuaNodeFunc::call(Agent* agent)
 	lua_pushvalue(L, -3);
 
 	//TODO set error handle func
-	if (lua_pcall(L, 1, 1, 0))
+	if (lua_pcall(L, 1, 1, -6))
 	{
-		const char* err_msg = lua_tostring(L, -1);
-		ASYNCFLOW_ERR("run node error : {0}", err_msg);
 		auto current_chart = (LuaChart*)mgr->GetCurrentNode()->GetChart();
 		auto node_data = mgr->GetCurrentNode()->GetData();
 		ASYNCFLOW_ERR("run node[{0}] {1} error in chart {2}", node_data->GetId(), node_data->GetUid(), current_chart->Name());
@@ -30,7 +28,7 @@ bool LuaNodeFunc::call(Agent* agent)
 		while (true)
 		{
 			ASYNCFLOW_ERR("chart stack[{0}] {1}[{2}]", chart_stack, temp_chart->Name(), node_id);
-			for (int var_id = 1; var_id <= temp_chart->GetData()->GetVarCount(); var_id++)
+			for (int var_id = 0; var_id < temp_chart->GetData()->GetVarCount(); var_id++)
 			{
 				static_cast<LuaChart*>(temp_chart)->GetVar(L, var_id);
 				std::string var = ToString(L, -1);

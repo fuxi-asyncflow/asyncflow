@@ -75,7 +75,7 @@ int asyncflow::lua::setup(lua_State* L)
 			Agent::DEBUG_NAME_METHOD = method_name;
 			ASYNCFLOW_LOG("debug_name_function is set to {0}.", Agent::DEBUG_NAME_METHOD);
 		}
-		mgr->GetWebsocketManager().Init();
+		mgr->GetWebsocketManager().Init(ip, port);
 #endif
 	}
 	else
@@ -101,6 +101,27 @@ int asyncflow::lua::config_log(lua_State* L)
 	return 0;
 }
 
+int asyncflow::lua::set_error_handler(lua_State* L)
+{
+	if (LuaManager::currentManager == nullptr)
+	{
+		LUA_ERR(L, manager_null_msg);
+	}
+	if (!lua_isfunction(L, 1))
+	{
+		LUA_ERR(L, agr_err_msg);
+	}
+	lua_settop(L, 1);
+	auto ref = LuaManager::currentManager->ErrorHandler;
+	if (ref != LUA_NOREF)
+	{
+		luaL_unref(L, LUA_REGISTRYINDEX, ref);
+	}
+	LuaManager::currentManager->ErrorHandler = luaL_ref(L, LUA_REGISTRYINDEX);
+	lua_pushboolean(L, true);
+	return 1;
+}
+
 int asyncflow::lua::register_obj(lua_State* L)
 {
 	if (LuaManager::currentManager == nullptr)
@@ -113,8 +134,7 @@ int asyncflow::lua::register_obj(lua_State* L)
 	{
 		LUA_ERR(L, "1st arg for asyncflow.register should be a userdata or table");
 	}
-	int tick = 0;
-	bool start_flag = true;
+	int tick = Manager::DEFAULT_AGENT_TICK;
 
 	if (lua_istable(L, 2))
 	{
@@ -163,7 +183,7 @@ int asyncflow::lua::import_event(lua_State* L)
 	}
 
 	auto* path = lua_tostring(L, 1);
-	bool result = manager->ImportEvent(path);
+	int result = manager->ImportEvent(path);
 	if (result)
 	{
 		std::vector<EventInfo>& event_list = manager->GetEventManager().GetEventList();
@@ -177,7 +197,7 @@ int asyncflow::lua::import_event(lua_State* L)
 			lua_setfield(L, -2, event_info.name.c_str());
 		}
 	}
-	lua_pushboolean(L, result);
+	lua_pushinteger(L, result);
 	return 1;
 }
 
@@ -498,7 +518,8 @@ int asyncflow::lua::wait_event(lua_State* L)
 	int event_id = (int)lua_tonumber(L, 2);
 	if (event_id < 1)
 	{
-		ASYNCFLOW_ERR("event_id can not be {0}", event_id);
+		auto* str = lua_tostring(L, 2);
+		ASYNCFLOW_ERR("event_id can not be {0}", str == nullptr ? "null" : str);
 		lua_pushboolean(L, 0);
 		return 1;
 	}
@@ -508,12 +529,11 @@ int asyncflow::lua::wait_event(lua_State* L)
 		lua_pushboolean(L, 0);
 		return 1;
 	}
-	auto agent = luaManager->GetAgent((void*)obj);
+	Agent* agent = luaManager->GetAgent((void*)obj);
 	if (agent == nullptr)
 	{
-		ASYNCFLOW_ERR("wait event obj must be registered");
-		lua_pushboolean(L, 0);
-		return 1;
+		ASYNCFLOW_ERR("wait event obj {} is not registered", obj);
+		agent = luaManager->RegisterGameObject(const_cast<void*>(obj), Manager::DEFAULT_AGENT_TICK);
 	}
 	res = luaManager->WaitEvent(agent, event_id);
 	lua_pushboolean(L, res);
@@ -530,7 +550,7 @@ int asyncflow::lua::get_event_param(lua_State* L)
 
 	int event_id = (int)lua_tonumber(L, 1);
 	int param_id = (int)lua_tonumber(L, 2);
-	LuaManager::currentManager->GetEventParam(L, event_id, param_id - 1);
+	LuaManager::currentManager->GetEventParam(L, event_id, param_id);
 	return 1;
 }
 

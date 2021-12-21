@@ -7,7 +7,7 @@
 #include "util/json.h"
 #include <websocketpp/config/asio_no_tls_client.hpp>
 #include <websocketpp/client.hpp>
-#include "debug/debug_common.h"
+#include "debug/json_debugger.h"
 
 #include "catch.hpp"
 
@@ -23,26 +23,46 @@ const char* quick_debug = "{\"jsonrpc\": \"2.0\",\"method\": \"quick_debug\",\"p
 const char* gm_str = "{\"jsonrpc\": \"2.0\",\"method\": \"gm\",\"params\": {\"script\":\"return agent:get_charts()[1], 111\"}, \"id\": 1 }";
 const char* set_breakpoint = "{\"jsonrpc\": \"2.0\",\"method\": \"break_point\",\"params\": {\"chart_name\":\"test_websocket\",\"command\":\"set\",\"node_uid\": \"00000\"},\"id\":5}";
 const char* delete_breakpoint = "{\"jsonrpc\": \"2.0\",\"method\": \"break_point\",\"params\": {\"chart_name\":\"test_websocket\",\"command\":\"delete\",\"node_uid\": \"00000\"},\"id\":6}";
-bool runflag;
+bool runflag, openflag;
 int message_count;
-const int THREAD_TOTAL_TIME = 50; // milliseconds
+const int DURATION = 100;
+const int THREAD_MAX_TIME = 10000; // milliseconds
+
+void run(client* c, int timeout)
+{
+	int cur_time = 0;
+	while (runflag && cur_time <= timeout)
+	{
+		dostring(L, "asyncflow.step(100)");
+		std::this_thread::sleep_for(std::chrono::milliseconds(DURATION));
+		cur_time += DURATION;
+
+		if (c->stopped())
+			c->reset();
+		c->poll();
+	}
+}
 
 void run_step()
 {
-	for (int i = 0; i < THREAD_TOTAL_TIME / 10; i++)
+	int frame = 0;
+	while(runflag && frame < THREAD_MAX_TIME/DURATION)
 	{
 		dostring(L, "asyncflow.step(100)");
-		std::this_thread::sleep_for(std::chrono::milliseconds(10));
+		std::this_thread::sleep_for(std::chrono::milliseconds(DURATION));
+		++frame;
 	}
 }
 
 void run_web(client* c) {
-	for(int i=0; i< THREAD_TOTAL_TIME / 10; i++)
+	int loop_count = 0;
+	while(runflag && loop_count < THREAD_MAX_TIME / DURATION)
 	{
 		if (c->stopped())
 			c->reset();
 		c->poll();
-		std::this_thread::sleep_for(std::chrono::milliseconds(10));
+		std::this_thread::sleep_for(std::chrono::milliseconds(DURATION));
+		++loop_count;
 	}
 }
 
@@ -63,7 +83,7 @@ void on_message(client* c, websocketpp::connection_hdl hdl, client::message_ptr 
 	REQUIRE(charts.Size() == 1);
 
 	asyncflow::debug::ChartInfo chart_info;
-	chart_info.Deserialize(charts[0]);
+	asyncflow::debug::Deserialize_ChartInfo_Json(charts[0], chart_info);
 	REQUIRE(chart_info.owner_node_addr == 0);
 	REQUIRE(chart_info.owner_node_id == -1);
 	REQUIRE(chart_info.chart_name == "test_websocket");
@@ -77,6 +97,7 @@ void on_open(client* c, const char* str, websocketpp::connection_hdl hdl)
 	try
 	{
 		c->send(hdl, str, websocketpp::frame::opcode::text);
+		openflag = true;
 	}
 	catch (websocketpp::exception const& ec)
 	{
@@ -118,9 +139,14 @@ TEST_CASE("get list test")
 	client c;
 	std::string url = "ws://localhost:9000";
 	c.init_asio();
-	c.clear_access_channels(websocketpp::log::alevel::all);
+	std::ofstream ofs("wslog.txt");
+	c.get_alog().set_ostream(&ofs);
+	c.get_elog().set_ostream(&ofs);	
+	c.set_access_channels(websocketpp::log::alevel::all);
+	c.set_error_channels(websocketpp::log::alevel::all);
 	c.set_message_handler(bind(&on_message, &c, ::_1, ::_2));
 	c.set_open_handler(bind(&on_open, &c, get_list, ::_1));
+	c.set_fail_handler([](websocketpp::connection_hdl h) { ASYNCFLOW_ERR("**** ERROR"); });
 	websocketpp::lib::error_code ec;
 	auto hdl = c.get_connection(url, ec);
 	if (ec)
@@ -128,16 +154,21 @@ TEST_CASE("get list test")
 		ASYNCFLOW_ERR("could not create connection because: {} ", ec.message());
 		runflag = false;
 	}
-	c.connect(hdl);
+	
 	runflag = true;
-	std::thread t1([&]() {run_step(); });
-	std::thread t2([&c]() {run_web(&c); });
-	t1.join();
-	t2.join();
+	try {
+		c.connect(hdl);
+		//run(&c, THREAD_MAX_TIME);
+
+	}
+  catch (std::exception const& e) {
+	  printf("==== %s\n", e.what());
+  }
 
 	////////////////////////////////////////////////////////////////////////////////////////////
 	DESTROY_LUA
 	delete chart_data;
+	ofs.close();
 }
 
 void debug_chart_on_message(client* c, websocketpp::connection_hdl hdl, client::message_ptr msg) {
@@ -148,6 +179,8 @@ void debug_chart_on_message(client* c, websocketpp::connection_hdl hdl, client::
 		REQUIRE(false);
 	}
 	//std::cout << msg->get_payload() << std::endl;
+	if (strcmp(doc["method"].GetString(), "heart_beat") == 0)
+		return;
 	REQUIRE(strcmp(doc["method"].GetString(), "debug_chart") == 0);
 	if (message_count == 0)
 	{
@@ -164,19 +197,19 @@ void debug_chart_on_message(client* c, websocketpp::connection_hdl hdl, client::
 		REQUIRE(data.Size() == 6);
 		REQUIRE(data[0]["type"] == "event_status");
 		asyncflow::debug::EventStatusData event_data;
-		event_data.Deserialize(data[0]);
+		Deserialize_EventStatusData_Json(data[0],event_data);
 		REQUIRE(event_data.event_name == "Event2Arg");
 		REQUIRE(event_data.argcount == 2);
 		REQUIRE(event_data.n_args[0] == "first");
 		REQUIRE(event_data.n_args[1] == "second");
 		REQUIRE(data[1]["type"] == "node_status");
 		asyncflow::debug::NodeStatusData node_data;
-		node_data.Deserialize(data[1]);
+		Deserialize_NodeStatusData_Json(data[1], node_data);
 		REQUIRE(node_data.old_status == 0);
 		REQUIRE(node_data.new_status == 2);
 		REQUIRE(data[2]["type"] == "variable_status");
 		asyncflow::debug::VariableStatusData variable_data;
-		variable_data.Deserialize(data[2]);
+		Deserialize_VariableStatusData_Json(data[2],variable_data);
 		REQUIRE(variable_data.old_value == "hello");
 		REQUIRE(variable_data.new_value == "ss111");
 	}
@@ -213,9 +246,10 @@ std::string command_str(const std::string& str, const std::string& chart_name, i
 
 void run_event(Agent* agent)
 {
-	for (int i = 0; i < THREAD_TOTAL_TIME / 10; i++)
+	int frame = 0;
+	while(runflag && frame < THREAD_MAX_TIME/DURATION)
 	{
-		manager->Step(10);
+		manager->Step(100);
 		lua_pushstring(L, "first");
 		int arg_ref = luaL_ref(L, LUA_REGISTRYINDEX);
 		int* args = new int[2];
@@ -224,7 +258,8 @@ void run_event(Agent* agent)
 		arg_ref = luaL_ref(L, LUA_REGISTRYINDEX);
 		args[1] = arg_ref;
 		manager->Manager::Event(5, agent, args, 2, false);
-		std::this_thread::sleep_for(std::chrono::milliseconds(10));
+		std::this_thread::sleep_for(std::chrono::milliseconds(DURATION));
+		++frame;
 	}
 }
 
@@ -301,8 +336,10 @@ void stop_chart_on_message(client* c, Agent* agent, websocketpp::connection_hdl 
 	if (!valid_json)
 	{
 		REQUIRE(false);
-	}
+	}	
 	//std::cout << msg->get_payload() << std::endl;
+	if (strcmp(doc["method"].GetString(), "heart_beat") == 0)
+		return;
 	auto* chart = agent->FindChart("test_websocket", nullptr);
 	auto& map = manager->GetWebsocketManager().GetChartMap();
 	if (message_count == 0)
@@ -374,14 +411,21 @@ TEST_CASE("stop chart test")
 void run_and_attach(Agent* agent)
 {
 	int frame = 0;
-	for (int i = 0; i < THREAD_TOTAL_TIME / 10; i++)
+	while(runflag && frame< THREAD_MAX_TIME / DURATION)
 	{
-		manager->Step(10);
-		std::this_thread::sleep_for(std::chrono::milliseconds(10));
-		if (frame == 150)
+		manager->Step(100);
+		std::this_thread::sleep_for(std::chrono::milliseconds(DURATION));
+		if (openflag == true)
 		{
+			for (int i = 0; i < 10; i++)
+			{
+				manager->Step(100);
+				std::this_thread::sleep_for(std::chrono::milliseconds(DURATION));
+				++frame;
+			}
 			manager->Manager::AttachChart(agent, "test_websocket");
 			agent->Start();
+			openflag = false;
 		}
 		++frame;
 	}
@@ -395,6 +439,8 @@ void quick_debug_on_message(client* c, Agent* agent, websocketpp::connection_hdl
 		REQUIRE(false);
 	}
 	//std::cout << msg->get_payload() << std::endl;
+	if (strcmp(doc["method"].GetString(), "heart_beat") == 0)
+		return;
 	auto& map = manager->GetWebsocketManager().GetChartMap();
 	if (message_count == 0)
 	{
@@ -414,7 +460,7 @@ void quick_debug_on_message(client* c, Agent* agent, websocketpp::connection_hdl
 		REQUIRE(data.Size() == 1);
 		REQUIRE(data[0]["type"] == "node_status");
 		asyncflow::debug::NodeStatusData node_data;
-		node_data.Deserialize(data[0]);
+		Deserialize_NodeStatusData_Json(data[0], node_data);
 		REQUIRE(node_data.old_status == 0);
 		REQUIRE(node_data.new_status == 1);
 	}
@@ -426,7 +472,7 @@ void quick_debug_on_message(client* c, Agent* agent, websocketpp::connection_hdl
 		REQUIRE(data.Size() == 2);
 		REQUIRE(data[0]["type"] == "node_status");
 		asyncflow::debug::NodeStatusData node_data;
-		node_data.Deserialize(data[0]);
+		Deserialize_NodeStatusData_Json(data[0], node_data);
 		REQUIRE(node_data.old_status == 0);
 		REQUIRE(node_data.new_status == 2);
 	}
@@ -466,6 +512,7 @@ TEST_CASE("quick debug test")
 	}
 	c.connect(hdl);
 	runflag = true;
+	openflag = false;
 	message_count = 0;
 	std::thread t1([&agent]() {run_and_attach(agent); });
 	std::thread t2([&c]() {run_web(&c); });
@@ -484,6 +531,8 @@ void breakpoint_on_message(client* c, Agent* agent, websocketpp::connection_hdl 
 		REQUIRE(false);
 	}
 	//std::cout << msg->get_payload() << std::endl;
+	if (strcmp(doc["method"].GetString(), "heart_beat") == 0)
+		return;
 	auto& map = manager->GetWebsocketManager().GetChartMap();
 	if (message_count == 0)
 	{
@@ -516,7 +565,7 @@ void breakpoint_on_message(client* c, Agent* agent, websocketpp::connection_hdl 
 		REQUIRE(data.Size() == 1);
 		REQUIRE(data[0]["type"] == "node_status");
 		asyncflow::debug::NodeStatusData node_data;
-		node_data.Deserialize(data[0]);
+		Deserialize_NodeStatusData_Json(data[0],node_data);
 		REQUIRE(node_data.old_status == 0);
 		REQUIRE(node_data.new_status == 1);
 	}
@@ -528,7 +577,7 @@ void breakpoint_on_message(client* c, Agent* agent, websocketpp::connection_hdl 
 		REQUIRE(data.Size() == 2);
 		REQUIRE(data[0]["type"] == "node_status");
 		asyncflow::debug::NodeStatusData node_data;
-		node_data.Deserialize(data[0]);
+		Deserialize_NodeStatusData_Json(data[0], node_data);
 		REQUIRE(node_data.old_status == 0);
 		REQUIRE(node_data.new_status == 2);
 		std::this_thread::sleep_for(std::chrono::milliseconds(2000));
@@ -556,7 +605,7 @@ void breakpoint_on_message(client* c, Agent* agent, websocketpp::connection_hdl 
 		REQUIRE(data.Size() == 2);
 		REQUIRE(data[0]["type"] == "node_status");
 		asyncflow::debug::NodeStatusData node_data;
-		node_data.Deserialize(data[0]);
+		Deserialize_NodeStatusData_Json(data[0], node_data);
 		REQUIRE(node_data.old_status == 0);
 		REQUIRE(node_data.new_status == 2);
 		runflag = false;
@@ -585,6 +634,7 @@ TEST_CASE("breakpoint test")
 	}
 	c.connect(hdl);
 	runflag = true;
+	openflag = false;
 	message_count = 0;
 	std::thread t1([&agent]() {run_and_attach(agent); });
 	std::thread t2([&c]() {run_web(&c); });

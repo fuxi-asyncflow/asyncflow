@@ -58,6 +58,7 @@ int luaopen_asyncflow(lua_State *L)
 	module.AddFunction("config_log", config_log);
 	module.AddFunction("import_charts", import_charts);
 	module.AddFunction("import_event", import_event);
+	module.AddFunction("set_error_handler", set_error_handler);
 	module.AddFunction("register", register_obj);
 	module.AddFunction("step", step);
 	module.AddFunction("event", event);
@@ -82,29 +83,27 @@ int luaopen_asyncflow(lua_State *L)
 	module.AddFunction("stop_node", stop_node);
 	module.AddFunction("stop_flow", stop_flow);
 
-	auto* manager_cls = new LuaExportClass(L, "manager");
-	manager_cls->AddFunction("register", mgr_register_obj);
-	manager_cls->AddFunction("import_charts", mgr_import_charts);
-	manager_cls->AddFunction("import_event", mgr_import_event);
-	manager_cls->AddFunction("step", mgr_step);
-	manager_cls->AddFunction("event", mgr_event);
-	manager_cls->AddFunction("exit", mgr_exit);
-	manager_cls->AddFunction("deregister", mgr_deregister_obj);
+	auto manager_cls = LuaExportClass(L, "manager");
+	manager_cls.AddFunction("register", mgr_register_obj);
+	manager_cls.AddFunction("import_charts", mgr_import_charts);
+	manager_cls.AddFunction("import_event", mgr_import_event);
+	manager_cls.AddFunction("set_error_handler", mgr_set_error_handler);
+	manager_cls.AddFunction("step", mgr_step);
+	manager_cls.AddFunction("event", mgr_event);
+	manager_cls.AddFunction("exit", mgr_exit);
+	manager_cls.AddFunction("deregister", mgr_deregister_obj);
 
-	auto* agent_cls = new LuaExportClass(L, "agent");
-	agent_cls->AddFunction("attach", agent_attach_chart);
-	agent_cls->AddFunction("remove", agent_remove_chart);
-	agent_cls->AddFunction("get_charts", agent_get_charts);
-	agent_cls->AddFunction("start", agent_start);
-	agent_cls->AddFunction("stop", agent_stop);
-	agent_cls->AddFunction("get_obj", agent_get_obj);
+	auto agent_cls = LuaExportClass(L, "agent");
+	agent_cls.AddFunction("attach", agent_attach_chart);
+	agent_cls.AddFunction("remove", agent_remove_chart);
+	agent_cls.AddFunction("get_charts", agent_get_charts);
+	agent_cls.AddFunction("start", agent_start);
+	agent_cls.AddFunction("stop", agent_stop);
+	agent_cls.AddFunction("get_obj", agent_get_obj);
 
-	auto* chart_cls = new LuaExportClass(L, "chart");
-	chart_cls->AddFunction("set_callback", chart_set_callback);
+	auto chart_cls = LuaExportClass(L, "chart");
+	chart_cls.AddFunction("set_callback", chart_set_callback);
 	module.Export(L);
-	delete manager_cls;
-	delete agent_cls;
-	delete chart_cls;
 	return 0;
 }
 

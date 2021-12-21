@@ -1,7 +1,11 @@
 {
-  "generator": "lua",
-  "flowchart_type": {
-    "AI": "Character",
-    "Subchart": "Character"
-  }
+    "generator": "lua",
+    "flowchart_type": {
+        "AI": "Character",
+        "Subchart": "Character"
+    },
+    "output_path": ".\\generate",
+    "file_save_options": {
+        "saveMode": 1
+    }
 }

@@ -46,7 +46,7 @@ void Manager::Step(int milliseconds)
 	//time count is the milliseconds from last step, must > 0
 	auto const time_count = milliseconds >= 0 ? milliseconds : default_time_interval_;
 
-	//timer	
+	//timer
 	timer_manager_.Step(time_count);
 
 #ifdef FLOWCHART_DEBUG
@@ -63,7 +63,7 @@ void Manager::Step(int milliseconds)
 		HandleEvent(*ev);
 		delete ev;
 		ev = event_queue_.NextEvent();
-	}	
+	}
 
 	//deregister_obj agent, must after event handling
 	for (auto* agent : dying_agents_.GetDyingAgents())
@@ -152,15 +152,29 @@ int Manager::ImportFile(const std::string& file_name)
 //read chart info
 int Manager::ImportJson(const std::string& json_str)
 {
+	return ImportChatData(ParseChartsFromJson(json_str));	
+}
+
+int	Manager::ImportChatData(const std::vector<ChartData*>& data_list)
+{
+	int count = 0;
+	for (auto* data : data_list)
+	{
+		if (ReloadChartData(data))
+			count++;
+	}
+	return count;
+}
+
+std::vector<ChartData*> Manager::ParseChartsFromJson(const std::string& json_str)
+{	
 	rapidjson::Document doc;
-	
+	std::vector<ChartData*> data_list;
 	if (JsonUtil::ParseJson(json_str, doc))
 	{
-		//read all
-		int counts = 0;
-		if(doc.IsArray())
-		{			
-			for(auto& chart_obj : doc.GetArray())
+		if (doc.IsArray())
+		{
+			for (auto& chart_obj : doc.GetArray())
 			{
 				auto* data = CreateChartData();
 				if (!data->FromJson(chart_obj))
@@ -169,17 +183,17 @@ int Manager::ImportJson(const std::string& json_str)
 				}
 				else
 				{
-					ReloadChartData(data);
-					++counts;
+					data_list.push_back(data);
 				}
 			}
-			return counts;
-		}		
+			return data_list;
+		}
 	}
-	return 0;
+	ASYNCFLOW_ERR("import chars failed: not a valid json");
+	return data_list;
 }
 
-bool Manager::ReloadChartData(ChartData* new_data)
+bool Manager::ReloadChartData(ChartData* new_data) const
 {
 	if (new_data == nullptr) return false;
 
@@ -193,8 +207,24 @@ bool Manager::ReloadChartData(ChartData* new_data)
 	{
 		chart_data_dict_->insert(std::make_pair(new_data->Name(), new_data));
 	}
-
 	return true;
+}
+
+void Manager::RestartChart(const std::string& chart_name)
+{
+	const auto& agents = GetAgentManager().GetAgents();
+	auto* chart_data = GetChartData(chart_name);
+	for (const auto& agentkv : agents)
+	{
+		auto* agent = agentkv.second;
+		auto* chart = agent->FindChart(chart_name, nullptr);
+		if (chart != nullptr)
+		{
+			agent->RemoveChart(chart_name);
+			agent->AttachChart(chart_data);
+			agent->StartChart(chart_name);
+		}
+	}
 }
 
 
@@ -228,7 +258,7 @@ void Manager::Wait(int milliseconds)
 	{
 		milliseconds = 1;
 	}
-	auto node = GetCurrentNode();
+	auto* node = GetCurrentNode();
 	if (node == nullptr)
 	{
 		ASYNCFLOW_WARN("wait function should be called inside asyncflow node");
@@ -255,7 +285,7 @@ void Manager::Wait(int milliseconds)
 
 bool Manager::WaitAll(span<const int> args)
 {
-	auto node = GetCurrentNode();
+	auto* node = GetCurrentNode();
 	node->SetWaitAllFlag(true);
 	auto* wait_all = (NodeWaitAll*)node->GetAttacher();
 	if (wait_all == nullptr)
@@ -279,8 +309,8 @@ bool Manager::WaitAll(span<const int> args)
 
 bool Manager::StopNode(span<const int> args)
 {
-	Chart* chart = GetCurrentNode()->GetChart();
-	int max_id = chart->GetNodesCount();
+	auto* chart = GetCurrentNode()->GetChart();
+	auto const max_id = chart->GetNodesCount();
 
 	for (auto id: args)
 	{		

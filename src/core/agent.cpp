@@ -19,7 +19,7 @@ Agent::Agent(Manager* manager)
 	, timer_(this)
 {
 	timer_.Start();
-	for (int i = 0; i <= manager_->GetEventManager().GetEventCount(); i++)
+	for (auto i = 0; i <= manager_->GetEventManager().GetEventCount(); i++)
 	{
 		waiting_nodes_list.push_back(new NodeList());
 	}
@@ -31,7 +31,7 @@ Agent::~Agent()
 	timer_.Stop();
 
 	// destroy all nodes that are waiting for events
-	for (auto v : waiting_nodes_list)
+	for (auto* v : waiting_nodes_list)
 	{
 		delete v;
 	}
@@ -41,11 +41,11 @@ Agent::~Agent()
 	for (auto& chart_list : chart_dict_)
 	{
 		std::vector<Chart*> tmp(chart_list.second.begin(), chart_list.second.end());
-		for (auto chart : tmp)
+		for (auto* chart : tmp)
 		{
-			auto ownerNode = chart->GetOwnerNode();
-			if (ownerNode != nullptr)
-				ownerNode->SetAttacher(nullptr);
+			auto* owner_node = chart->GetOwnerNode();
+			if (owner_node != nullptr)
+				owner_node->SetAttacher(nullptr);
 			else
 				delete chart;
 		}
@@ -86,7 +86,7 @@ bool Agent::AddChart(Chart* chart, Node* node /* = nullptr*/)
 	}
 	auto& chart_list = it->second;
 
-	auto it_chart = std::find_if(chart_list.begin(), chart_list.end(),
+	auto const it_chart = std::find_if(chart_list.begin(), chart_list.end(),
 		[node](Chart* c)->bool { return c->GetOwnerNode() == node; });
 	if (it_chart != chart_list.end())
 	{
@@ -131,6 +131,7 @@ bool Agent::StartChart(Chart* chart, bool is_async /*= true*/)
 	return true;
 }
 
+// this function should only be used in ~Chart()
 bool Agent::EraseChart(Chart* chart)
 {
 	auto& chart_name = chart->Name();
@@ -189,8 +190,8 @@ void Agent::HandleEvent(const AsyncEventBase& event)
 	while (waiting_nodes->Size() > 0)
 	{
 		// The agent of the node may be different from the agent which the current event belongs to, eg $obj.OnSee.
-		auto node = waiting_nodes->PopFront();
-		auto agent = node->GetAgent();
+		auto* node = waiting_nodes->PopFront();
+		auto* agent = node->GetAgent();
 		node->SetStatus(Node::Idle);
 #ifdef FLOWCHART_DEBUG
 		node->SendEventStatus(&event);
@@ -209,7 +210,7 @@ void Agent::RunFlow(Node* start_node)
 }
 
 // Start to run all charts that are not in running status;
-void Agent::Start()       
+void Agent::Start()
 {
 	for (const auto& charts : chart_dict_)
 	{
@@ -273,7 +274,7 @@ Chart* Agent::FindChart(const std::string& chart_name, Node* owner_node)
 	auto it = chart_dict_.find(chart_name);
 	if (it == chart_dict_.end())
 		return nullptr;
-	for (auto chart : it->second)
+	for (auto* chart : it->second)
 	{
 		if (chart->GetOwnerNode() == owner_node)
 		{

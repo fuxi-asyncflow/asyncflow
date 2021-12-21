@@ -8,6 +8,7 @@ namespace asyncflow
 		int mgr_register_obj(lua_State* L);
 		int mgr_import_charts(lua_State* L);
 		int mgr_import_event(lua_State* L);
+		int mgr_set_error_handler(lua_State* L);
 		int mgr_step(lua_State* L);
 		int mgr_event(lua_State* L);
 		int mgr_exit(lua_State* L);

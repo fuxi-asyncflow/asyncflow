@@ -106,7 +106,7 @@ PyObject* asyncflow::py::mgr_import_event(BasicObject* self, PyObject* args)
 		PY_ARG_ERR;
 
 	auto mgr = reinterpret_cast<PyManager*>(self->data_ptr);
-	bool result = mgr->ImportEvent(path);
+	int result = mgr->ImportEvent(path);
 	if (result)
 	{
 		//update eventId table
@@ -119,10 +119,8 @@ PyObject* asyncflow::py::mgr_import_event(BasicObject* self, PyObject* args)
 			PyDict_SetItemString(EventIdType.tp_dict, event_info.name.c_str(), id);
 			FreeObject(id);
 		}
-		Py_RETURN_TRUE;
 	}
-	else
-		Py_RETURN_FALSE;
+	return PyLong_FromLong(result);
 }
 
 PyObject* asyncflow::py::mgr_step(BasicObject* self, PyObject* args)

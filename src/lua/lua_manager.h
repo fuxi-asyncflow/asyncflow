@@ -103,8 +103,8 @@ namespace asyncflow
 				//if the obj was not registered, create a new agent
 				if (agent == nullptr)
 				{
-					this->RegisterGameObject(obj, DEFAULT_AGENT_TICK);
-					agent = agent_manager_.GetAgent(obj);
+					ASYNCFLOW_ERR("subchart object {0} is not registered", obj);
+					agent = agent_manager_.Register(obj);
 				}
 				return Manager::Subchart(chart_name, agent, L, arg_count);
 			}
@@ -138,6 +138,8 @@ namespace asyncflow
 
 			/////////////////////////////////////////////////////////////////////////////////////
 			void GetFunc(Ref func_ref);
+
+			static int ErrorFunction(lua_State* L);
 
 		private:
 			bool is_init;

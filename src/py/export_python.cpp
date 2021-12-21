@@ -201,13 +201,13 @@ PyObject* asyncflow::py::setup(PyObject* self, PyObject* args)
 			}
 		}
 		manager->GetWebsocketManager().Init(ip, port);
-#endif FLOWCHART_DEBUG
+#endif
 	}
 	else
 	{
 #ifdef FLOWCHART_DEBUG
-		manager->GetWebsocketManager().Init();
-#endif FLOWCHART_DEBUG
+		manager->GetWebsocketManager().Init(WebsocketManager::IP, WebsocketManager::START_PORT);
+#endif
 	}
 	return CreateCustomPyObj("manager", manager);
 }
@@ -244,7 +244,7 @@ PyObject* asyncflow::py::import_event(PyObject* self, PyObject* args)
 	if (!PyArg_ParseTuple(args, "s", &path))
 		PY_ARG_ERR;
 
-	bool result = manager->ImportEvent(path);
+	int result = manager->ImportEvent(path);
 	if (result)
 	{
 		//update eventId table
@@ -257,10 +257,8 @@ PyObject* asyncflow::py::import_event(PyObject* self, PyObject* args)
 			PyDict_SetItemString(EventIdType.tp_dict, event_info.name.c_str(), id);
 			FreeObject(id);
 		}
-		Py_RETURN_TRUE;
 	}
-	else
-		Py_RETURN_FALSE;
+	return PyLong_FromLong(result);
 }
 
 PyObject* asyncflow::py::register_obj(PyObject* self, PyObject* args)
@@ -590,11 +588,11 @@ PyObject* asyncflow::py::wait_event(PyObject* self, PyObject* args)
 			ASYNCFLOW_ERR("parse argument failed!\n");
 			Py_RETURN_FALSE;
 		}
-		auto agent = manager->GetAgent(obj);
+		Agent* agent = manager->GetAgent(obj);
 		if (agent == nullptr)
 		{
-			ASYNCFLOW_ERR("wait_event obj is not registered!\n");
-			Py_RETURN_FALSE;
+			ASYNCFLOW_ERR("wait event obj {} is not registered", (void*)obj);
+			agent = manager->RegisterGameObject(obj, Manager::DEFAULT_AGENT_TICK);
 		}
 		result = manager->WaitEvent(agent, event_id);
 	}
