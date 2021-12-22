@@ -9,9 +9,9 @@ int AsyncEventBase::TICK_EVENT = 2;
 
 EventManager::EventManager()
 {
-	event_info_list_.push_back(EventInfo{ 0, 0, std::string("None") });
-	event_info_list_.push_back(EventInfo{ 1, 0, std::string("Start") });
-	event_info_list_.push_back(EventInfo{ 2, 0, std::string("Tick") });
+	event_info_list_.emplace_back(EventInfo{ 0, 0, std::string("None") });
+	event_info_list_.emplace_back(EventInfo{ 1, 0, std::string("Start") });
+	event_info_list_.emplace_back(EventInfo{ 2, 0, std::string("Tick") });
 }
 
 const std::string& EventManager::GetEventName(int event_id) const
@@ -27,7 +27,7 @@ const std::string& EventManager::GetEventName(int event_id) const
 int EventManager::InitFromJson(const std::string& json_str)
 {
 	rapidjson::Document doc;
-	bool parse_result = asyncflow::util::JsonUtil::ParseJson(json_str, doc);
+	auto const parse_result = asyncflow::util::JsonUtil::ParseJson(json_str, doc);
 	if (!parse_result)
 	{
 		ASYNCFLOW_ERR("load event info error");
@@ -35,13 +35,13 @@ int EventManager::InitFromJson(const std::string& json_str)
 	}
 
 	event_info_list_.clear();
-	event_info_list_.push_back(EventInfo{ 0, 0, std::string("None") });
+	event_info_list_.emplace_back(EventInfo{ 0, 0, std::string("None") });
 	auto event_array = doc.GetArray();
 	int count = 0;
-	for (auto it = event_array.begin(); it != event_array.end(); ++it)
+	for (auto* it = event_array.begin(); it != event_array.end(); ++it)
 	{
 		auto id = it->FindMember("id")->value.GetInt();
-		auto name = it->FindMember("name")->value.GetString();
+		auto const name = it->FindMember("name")->value.GetString();
 		if (strcmp(name, "Start") == 0)
 		{
 			AsyncEventBase::START_EVENT = id;

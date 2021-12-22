@@ -11,8 +11,6 @@ spdlog::level::level_enum asyncflow::util::Log::LEVEL = spdlog::level::info;
 spdlog::level::level_enum asyncflow::util::Log::LEVEL = spdlog::level::debug;
 #endif
 
-std::string asyncflow::util::Log::PATH = "";
-std::string asyncflow::util::Log::LOG_NAME = "";
 
 namespace asyncflow
 {
@@ -25,27 +23,34 @@ namespace asyncflow
 			if (!init_)
 			{
 				init_ = true;
-				SetLog(PATH, LOG_NAME);
+				SetLog("", "");
 			}
 #endif
 		}
 
 		void Log::SetLog(const std::string& path, const std::string& log_name)
 		{
-			PATH = path;
-			LOG_NAME = log_name;
-			if (PATH != "")
+			spdlog::drop_all();			
+			if (!path.empty())
 			{
-				try {
+				try 
+				{					
 					// if the file not find, path regards as config string
-					spdlog_setup::from_file(PATH);
-					rotatelogger = spdlog::get(LOG_NAME);
-					return;
+					spdlog_setup::from_file(path);
+					rotatelogger = spdlog::get(log_name);
+					if (rotatelogger != nullptr)
+					{
+						printf("[asyncflow] config spdlog success, use %s in %s\n", log_name.c_str(), path.c_str());
+						return;
+					}
 				}
-				catch (const std::exception& e) {
-					printf("Read log config from %s error, the reason is %s!\n", PATH.c_str(), e.what() );
+				catch (const std::exception& e) 
+				{
+					printf("[asyncflow] Read log config from %s error, the reason is %s!\n", path.c_str(), e.what() );
 				}
 			}
+
+			// default config
 			rotatelogger = spdlog::get("console");
 			if (rotatelogger == nullptr)
 			{

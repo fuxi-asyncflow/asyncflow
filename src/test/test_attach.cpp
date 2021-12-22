@@ -99,7 +99,7 @@ TEST_CASE("test set args")
 	void* chart_ud = lua_touserdata(L, -1);
 	auto* chart = asyncflow::lua::LightUserDataWrapper::Cast<asyncflow::lua::LuaChart*>(chart_ud);
 	chart->GetVar(L, 0);
-	int a = lua_tonumber(L, -1);
+	auto a = lua_tonumber(L, -1);
 	REQUIRE(a == 100);
 	chart->GetVar(L, 1);
 	REQUIRE(lua_isboolean(L, -1));

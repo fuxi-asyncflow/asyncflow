@@ -2,15 +2,15 @@
 
 using namespace asyncflow::core;
 
-bool NodeInnerFunc::call(Agent* agent)
+bool ControlNodeFunc::call(Agent* agent)
 {
 	auto* mgr = agent->GetManager();
 	return (mgr->*func)(span<int>{params_});
 }
 
-NodeFunc* NodeInnerFunc::CreateInnerFunc(FuncType func, std::vector<int> params)
+NodeFunc* ControlNodeFunc::Create(ControlFunc func, const std::vector<int>& params)
 {
-	auto* f = new NodeInnerFunc;
+	auto* f = new ControlNodeFunc;
 	f->func = func;
 	f->params_ = params;
 	return f;

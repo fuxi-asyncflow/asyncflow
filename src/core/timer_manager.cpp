@@ -6,8 +6,8 @@
 using namespace asyncflow::core;
 
 AgentTimer::AgentTimer(Agent* agent)
-	: agent_(agent)	
-{	
+	: agent_(agent)
+{
 }
 
 AgentTimer::~AgentTimer()
@@ -17,7 +17,7 @@ AgentTimer::~AgentTimer()
 
 void AgentTimer::Start(int delay)
 {	
-	agent_->GetManager()->GetTimerManager().AddTimer(this, static_cast<int64_t>(agent_->GetTickInterval() + delay));
+	agent_->GetManager()->GetTimerManager().AddTimer(this, static_cast<int64_t>(agent_->GetTickInterval()) + delay);
 }
 
 void AgentTimer::execute()

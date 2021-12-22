@@ -45,7 +45,7 @@ namespace asyncflow
 			void	StartDebug() { if(!debug_) debug_ = true; }
 			void	StopDebug() { debug_ = false; ClearDebugData(); }
 			bool	IsDebug() { return debug_; }
-			void	SendNodeStatus(int id, std::string uid, Node::Status old_status, Node::Status new_status, bool result);
+			void	SendNodeStatus(int id, const std::string& uid, Node::Status old_status, Node::Status new_status, bool result);
 			virtual void SendEventStatus(std::string node_uid, const AsyncEventBase* event) = 0;
 
 			const std::vector<debug::DebugData*>& GetDebugData() { return debug_data_list_; }

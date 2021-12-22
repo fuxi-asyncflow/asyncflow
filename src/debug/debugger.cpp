@@ -28,34 +28,34 @@ std::string Debugger::FindChart(core::Manager* manager, DebugChartInfo& chart_in
 
 }
 
-std::string Debugger::DebugChart(Manager* manager, DebugChartInfo& chart_info, int id)
+std::string Debugger::DebugChart(Manager* manager, DebugChartInfo& chart_info, int msg_id)
 {
 	const auto reply = FindChart(manager, chart_info);
 	//ensure agent is not destroyed
 	if (chart_info.chart == nullptr)
 	{
-		return ErrorReply(-1, reply, id);
+		return ErrorReply(-1, reply, msg_id);
 	}
 	else
 	{
 		ASYNCFLOW_DBG("[debug] DebugChart {0} {1} {2}", chart_info.agent_id, chart_info.chart_name, (void*)chart_info.owner_node);
-		return ChartInitData("debug_chart", chart_info.chart->GetData(), id);
+		return ChartInitData("debug_chart", chart_info.chart->GetData(), msg_id);
 	}
 }
 
-std::string Debugger::ContinueDebug(Manager* manager, DebugChartInfo& chart_info, int id)
+std::string Debugger::ContinueDebug(Manager* manager, DebugChartInfo& chart_info, int msg_id)
 {
 	ASYNCFLOW_DBG("[debug] ContinueChart {0} {1} {2}", chart_info.agent_id, chart_info.chart_name, (void*)chart_info.owner_node);
 	const auto reply = FindChart(manager, chart_info);
 	if (chart_info.chart == nullptr)
 	{
-		return ErrorReply(-1, reply, id);
+		return ErrorReply(-1, reply, msg_id);
 	}
 	else
 	{
 		std::unordered_map<std::string, std::string> result;
 		result["chart_name"] = chart_info.chart_name;
-		return SimpleReply("continue", result, id);
+		return SimpleReply("continue", result, msg_id);
 	}
 }
 

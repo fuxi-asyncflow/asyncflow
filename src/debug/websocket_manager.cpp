@@ -29,8 +29,10 @@ void WebsocketManager::Init(const std::string& ip, int port)
 #ifndef BUILD_WASM
 	server_.init_asio();
 	server_.clear_access_channels(websocketpp::log::alevel::all);
-	server_.set_message_handler(std::bind(&WebsocketManager::OnMessage, this
-		, std::placeholders::_1, std::placeholders::_2));
+	server_.set_message_handler([this](websocketpp::connection_hdl hdl, WebsocketAsioServer::message_ptr msg)
+	{
+		OnMessage(hdl, msg);
+	});
 
 	//check available port start from port
 	int max_delta = 100;
@@ -55,9 +57,11 @@ void WebsocketManager::Step()
 	std::vector<Chart *> check_chart;
 	for (auto& chart_kv : chart_map_)
 	{
+		std::string str;
 		if (chart_kv.first->GetDebugData().size() == 0)
-			continue;
-		auto str = debugger_->PrepareChartDebugData(chart_kv.first);
+			str = debugger_->HeartBeat();
+		else
+			str = debugger_->PrepareChartDebugData(chart_kv.first);
 		ASYNCFLOW_DBG("[deubg] chart json {0}", str);
 		auto iter = chart_kv.second.begin();
 		while (iter != chart_kv.second.end())
@@ -266,8 +270,6 @@ void WebsocketManager::OnMessage(websocketpp::connection_hdl hdl, WebsocketAsioS
 	assert(manager_ != nullptr);
 	auto& data = msg->get_payload();
 	ASYNCFLOW_DBG("[debug] recv {}", data);
-	rapidjson::Document doc;
-	bool valid_json = util::JsonUtil::ParseJson(data, doc);
 	WebsocketDebugConnection connect{ this, hdl };
 	debugger_->HandleMessage(data, manager_, &connect);
 }

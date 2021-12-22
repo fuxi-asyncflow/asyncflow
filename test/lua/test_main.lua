@@ -8,6 +8,8 @@ Character.__index = Character
 Character.allCharacter = {}
 Character.output = {}
 
+
+
 function Character:Say(s)
     table.insert(self.output,tostring(s))
     --print(s)
@@ -38,7 +40,7 @@ testdata = {
     ,{"AI.test_09", nil,nil, {"node 1", "node 2", "node 3", "all node runned"}}
     ,{"AI.test_10", nil, eventlist, {"event 0 pass", "event 1 pass hello", "event 2 pass", "1st arg first", "2nd arg second"}}
     ,{"AI.test_11", nil, nil, {"hello sub", "subunit pass", "green"}}
-    , {"AI.test_12", nil, nil, {"1", "2"}}
+    --, {"AI.test_12", nil, nil, {"1", "2"}}
     , {"AI.test_13", nil, nil, {"hello"}}
     , {"AI.test_14", 3, nil, {"1", "2", "3", "4", "1", "2", "3", "4","1", "2", "3", "4","1", "2", "3", "4"}}
     , {"AI.test_15", nil, nil, {"1000", "2000", "6000"}}
@@ -101,7 +103,10 @@ function run_case(chart_name, run_time, event_list,result)
     local step_time = 100;
     local run_time = run_time or 10
     local total_frames = run_time * 1000 / step_time
+    
     asyncflow.setup()
+    --asyncflow.config_log("./logconfig.toml", "root")
+    
     asyncflow.import_charts("../flowchart/generate/Flowchart_AI.json")
     asyncflow.import_charts("../flowchart/generate/Flowchart_Subchart.json")
     asyncflow.import_event("../flowchart/generate/event_info.json")
@@ -136,7 +141,10 @@ end
 function attach_chart_params(params_tbl)
     Character.output={}
     Character.allCharacter = {}
+    
     asyncflow.setup()
+    --asyncflow.config_log("./logconfig.toml", "root")
+    
     asyncflow.import_charts("../flowchart/generate/Flowchart_AI.json")
     asyncflow.import_charts("../flowchart/generate/Flowchart_Subchart.json")
     asyncflow.import_event("../flowchart/generate/event_info.json")

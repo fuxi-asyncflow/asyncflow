@@ -17,20 +17,20 @@ namespace asyncflow
 		{
 		public:			
 			virtual bool call(Agent* agent) = 0;
-			virtual ~NodeFunc() {}
+			virtual ~NodeFunc() = default;
 		};
 
-		typedef bool(Manager::*FuncType)(span<const int>);
+		typedef bool(Manager::*ControlFunc)(span<const int>);
 
-		class NodeInnerFunc : public NodeFunc
+		class ControlNodeFunc : public NodeFunc
 		{
 		public:
 			bool call(core::Agent* agent) override;
-			static NodeFunc* CreateInnerFunc(FuncType, std::vector<int>);
+			static NodeFunc* Create(ControlFunc, const std::vector<int>&);
 
 		private:
 			std::vector<int> params_;
-			FuncType func;
+			ControlFunc func;
 		};
 
 #ifdef FLOWCHART_DEBUG

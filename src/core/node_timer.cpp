@@ -84,15 +84,15 @@ bool NodeWaitAll::Run(int id)
 	{
 		it->second = true;
 		//check if all node has runned
-		for(auto itor = node_ids_.begin(); itor != node_ids_.end(); ++itor)
+		for(auto iter = node_ids_.begin(); iter != node_ids_.end(); ++iter)
 		{
-			if (!itor->second)
+			if (!iter->second)
 				return false;			
 		}
 		//reset
-		for(auto itor = node_ids_.begin(); itor != node_ids_.end(); ++itor)
+		for(auto iter = node_ids_.begin(); iter != node_ids_.end(); ++iter)
 		{
-			itor->second = true;
+			iter->second = true;
 		}
 		return true;
 	}

@@ -182,7 +182,7 @@ std::string JsonDebugger::ErrorReply(int code, const std::string& error_msg, int
 	return std::string(sb.GetString());
 }
 
-std::string JsonDebugger::NormalMessage(const std::string& method, const std::vector<std::string>& result, int msg_id)
+std::string JsonDebugger::SimpleReply(const std::string& method, const std::vector<std::string>& result, int msg_id)
 {
 	rapidjson::StringBuffer sb;
 	rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(sb);
@@ -406,7 +406,7 @@ void JsonDebugger::HandleMessage(const std::string& msg, Manager* manager_, Debu
 				auto result = manager_->RunScript(script);
 				if (result.first)
 				{
-					connection->Reply(NormalMessage("gm", result.second, msg_id));
+					connection->Reply(SimpleReply("gm", result.second, msg_id));
 				}
 				else
 					connection->Reply(ErrorReply(-10, result.second.front(), msg_id));
@@ -420,14 +420,20 @@ void JsonDebugger::HandleMessage(const std::string& msg, Manager* manager_, Debu
 					connection->Reply(ErrorReply(-15, "run charts_func error", msg_id));
 					return;
 				}
-				auto charts_data = params["charts_data"].GetString();
-				auto import_res = manager_->ImportJson(charts_data);
-				if (!import_res)
+				auto* charts_data_str = params["charts_data"].GetString();
+				auto chart_data_list = manager_->ParseChartsFromJson(charts_data_str);
+				manager_->ImportChatData(chart_data_list);
+				for (auto data : chart_data_list)
+				{
+					manager_->RestartChart(data->Name());
+				}
+
+				if (chart_data_list.empty())
 				{
 					connection->Reply(ErrorReply(-15, "import charts_data error", msg_id));
 					return;
 				}
-				connection->Reply(NormalMessage("hotfix", std::vector<std::string>(), msg_id));
+				connection->Reply(SimpleReply("hotfix", std::vector<std::string>(), msg_id));
 			}
 
 			else
@@ -508,7 +514,7 @@ void asyncflow::debug::Serialize_NodeStatusData_Json(Writer& writer, const NodeS
 	writer.String("new_status");
 	writer.Int(nsd.new_status);
 
-	if (nsd.new_status == 2)   //节点现在的状态为完成状态发送运行结果
+	if (nsd.new_status == 2)   //陆脷碌茫脧脰脭脷碌脛脳麓脤卢脦陋脥锚鲁脡脳麓脤卢路垄脣脥脭脣脨脨陆谩鹿没
 	{
 		writer.String("result");
 		writer.Bool(nsd.result);
@@ -626,6 +632,19 @@ void asyncflow::debug::Deserialize_EventStatusData_Json(const rapidjson::Value& 
 				esd.n_args.push_back(arg.GetString());
 		}
 	}
+}
+
+std::string JsonDebugger::HeartBeat()
+{
+	rapidjson::StringBuffer sb;
+	rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(sb);
+	writer.StartObject();
+	writer.String("jsonrpc");
+	writer.String("2.0");
+	writer.String("method");
+	writer.String("heart_beat");
+	writer.EndObject();
+	return std::string(sb.GetString());
 }
 
 #endif

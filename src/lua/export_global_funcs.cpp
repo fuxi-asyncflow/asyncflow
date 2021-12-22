@@ -518,7 +518,8 @@ int asyncflow::lua::wait_event(lua_State* L)
 	int event_id = (int)lua_tonumber(L, 2);
 	if (event_id < 1)
 	{
-		ASYNCFLOW_ERR("event_id can not be {0}", event_id);
+		auto* str = lua_tostring(L, 2);
+		ASYNCFLOW_ERR("event_id can not be {0}", str == nullptr ? "null" : str);
 		lua_pushboolean(L, 0);
 		return 1;
 	}
@@ -549,7 +550,7 @@ int asyncflow::lua::get_event_param(lua_State* L)
 
 	int event_id = (int)lua_tonumber(L, 1);
 	int param_id = (int)lua_tonumber(L, 2);
-	LuaManager::currentManager->GetEventParam(L, event_id, param_id - 1);
+	LuaManager::currentManager->GetEventParam(L, event_id, param_id);
 	return 1;
 }
 
