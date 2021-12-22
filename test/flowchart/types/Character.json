@@ -1,153 +1,231 @@
 {
-  "Uid": "00e66f735e554d978c2874e09e4151ef",
-  "Name": "Character",
-  "Inherits": [],
-  "Members": [
-    {
-      "Parameters": [
+    "Uid": "00e66f735e554d978c2874e09e4151ef",
+    "Name": "Character",
+    "Source": 2,
+    "Members": [
         {
-          "Name": "x",
-          "type": "Number"
+            "Uid": "829e81bcc8d840d4a2a50db25c7a49a4",
+            "Name": "AsyncAdd",
+            "Type": "Bool",
+            "Description": "说话",
+            "MemberType": 2,
+            "From": 0,
+            "Code": {
+                "hasCode": false,
+                "language": null,
+                "code": ""
+            },
+            "Parameters": [
+                {
+                    "Uid": "70f95c3105344f93943a518d39877ab0",
+                    "Name": "x",
+                    "Type": "Number"
+                },
+                {
+                    "Uid": "df2b6b4188f44043bc7e4fa56349f927",
+                    "Name": "y",
+                    "Type": "Number"
+                }
+            ],
+            "IsAsync": false,
+            "BelongType": "Character"
         },
         {
-          "Name": "y",
-          "type": "Number"
+            "Uid": "eb8931c7e30a4efeaf8f98b8e639677f",
+            "Name": "CreateCharacter",
+            "Type": "Character",
+            "Description": "创建一个Character",
+            "MemberType": 2,
+            "From": 0,
+            "Code": {
+                "hasCode": false,
+                "language": null,
+                "code": ""
+            },
+            "Parameters": [],
+            "IsAsync": false,
+            "BelongType": "Character"
         },
         {
-          "Name": "z",
-          "type": "Any"
-        }
-      ],
-      "member_type": 2,
-      "Name": "AsyncAdd",
-      "Description": "说话",
-      "type": "Bool"
-    },
-    {
-      "Parameters": [],
-      "member_type": 2,
-      "Name": "CreateCharacter",
-      "Description": "创建一个Character",
-      "type": "Character"
-    },
-    {
-      "Parameters": [],
-      "member_type": 2,
-      "Name": "GetCharacter",
-      "type": "Character"
-    },
-    {
-      "Parameters": [],
-      "member_type": 2,
-      "Name": "IsValid",
-      "type": "Bool"
-    },
-    {
-      "member_type": 1,
-      "Name": "name",
-      "Description": "名字",
-      "type": "String"
-    },
-    {
-      "Parameters": [
-        {
-          "Name": "x",
-          "type": "Number"
-        }
-      ],
-      "member_type": 2,
-      "Name": "Move",
-      "Description": "移动",
-      "type": "Void"
-    },
-    {
-      "Parameters": [
-        {
-          "Name": "content",
-          "type": "Any"
-        }
-      ],
-      "member_type": 2,
-      "Name": "Say",
-      "Description": "说话",
-      "type": "Void"
-    },
-    {
-      "Parameters": [],
-      "member_type": 2,
-      "source": "asyncflow.call_sub(\"AI.test_06_sub\", $self)",
-      "From": 1,
-      "Name": "test_06_sub",
-      "type": "Number"
-    },
-    {
-      "Parameters": [
-        {
-          "IsParameter": true,
-          "Name": "x",
-          "type": "Number"
+            "Uid": "3dd000701f6b44aabcd91f8d449691aa",
+            "Name": "GetCharacter",
+            "Type": "Character",
+            "MemberType": 2,
+            "From": 0,
+            "Code": {
+                "hasCode": false,
+                "language": null,
+                "code": ""
+            },
+            "Parameters": [],
+            "IsAsync": false,
+            "BelongType": "Character"
         },
         {
-          "Idx": 1,
-          "IsParameter": true,
-          "Name": "y",
-          "type": "Number"
+            "Uid": "732ce0b3e498404cb3f438ca302b6cbf",
+            "Name": "IsValid",
+            "Type": "Bool",
+            "MemberType": 2,
+            "From": 0,
+            "Code": {
+                "hasCode": false,
+                "language": null,
+                "code": ""
+            },
+            "Parameters": [],
+            "IsAsync": false,
+            "BelongType": "Character"
+        },
+        {
+            "Uid": "e00f3eb2019b43f593b479b49e46165c",
+            "Name": "name",
+            "Type": "String",
+            "Description": "名字",
+            "MemberType": 1,
+            "From": 0,
+            "Code": {
+                "hasCode": false,
+                "language": null,
+                "code": ""
+            },
+            "IsAsync": false,
+            "BelongType": "Character"
+        },
+        {
+            "Uid": "d9104d81651b46629c0503e2264d2b6e",
+            "Name": "Move",
+            "Type": "Void",
+            "Description": "移动",
+            "MemberType": 2,
+            "From": 0,
+            "Code": {
+                "hasCode": false,
+                "language": null,
+                "code": ""
+            },
+            "Parameters": [
+                {
+                    "Uid": "42f4fea06af34c68b43037e74ac59375",
+                    "Name": "x",
+                    "Type": "Number"
+                }
+            ],
+            "IsAsync": false,
+            "BelongType": "Character"
+        },
+        {
+            "Uid": "22c2af1bac4c47e5b461c85509359d6d",
+            "Name": "Say",
+            "Type": "Void",
+            "Description": "说话",
+            "MemberType": 2,
+            "From": 0,
+            "Code": {
+                "hasCode": false,
+                "language": null,
+                "code": ""
+            },
+            "Parameters": [
+                {
+                    "Uid": "e24c1e1258d04643bfa1ac95e5ce48b5",
+                    "Name": "content",
+                    "Type": "Any"
+                }
+            ],
+            "IsAsync": false,
+            "BelongType": "Character"
+        },
+        {
+            "Uid": "e3f9bf250cb542d4b86f3ffad03d93eb",
+            "Name": "test_11_sub",
+            "Type": "Bool",
+            "MemberType": 2,
+            "From": 1,
+            "Source": "asyncflow.call_sub(\"AI.test_11_sub\", $self)",
+            "Parameters": [],
+            "IsAsync": false,
+            "BelongType": "Character"
+        },
+        {
+            "Uid": "776aeac384d446939879d254f71147cc",
+            "Name": "test_17_sub",
+            "Type": "Bool",
+            "MemberType": 2,
+            "From": 1,
+            "Source": "asyncflow.call_sub(\"AI.test_17_sub\", $self)",
+            "Parameters": [],
+            "IsAsync": false,
+            "BelongType": "Character"
+        },
+        {
+            "Uid": "af02449ff83d4b23841102223807e4fe",
+            "Name": "SubchartTest_04_sub",
+            "Type": "Bool",
+            "MemberType": 2,
+            "From": 1,
+            "Source": "asyncflow.call_sub(\"Subchart.SubchartTest_04_sub\", $self)",
+            "Parameters": [],
+            "IsAsync": false,
+            "BelongType": "Character"
+        },
+        {
+            "Uid": "8ad08ff2b4a24af69bb3fc7db54d687b",
+            "Name": "SubchartTest_01_sub",
+            "Type": "Number",
+            "MemberType": 2,
+            "From": 1,
+            "Source": "asyncflow.call_sub(\"Subchart.SubchartTest_01_sub\", $self)",
+            "Parameters": [],
+            "IsAsync": false,
+            "BelongType": "Character"
+        },
+        {
+            "Uid": "4ef8399c5c194e10beb5da9d6d16d14c",
+            "Name": "SubchartTest_07_sub",
+            "Type": "Number",
+            "MemberType": 2,
+            "From": 1,
+            "Source": "asyncflow.call_sub(\"Subchart.SubchartTest_07_sub\", $self)",
+            "Parameters": [],
+            "IsAsync": false,
+            "BelongType": "Character"
+        },
+        {
+            "Uid": "2505ab88ff28455c98c4c5b823671bda",
+            "Name": "SubchartTest_10_sub",
+            "Type": "Number",
+            "MemberType": 2,
+            "From": 1,
+            "Source": "asyncflow.call_sub(\"Subchart.SubchartTest_10_sub\", $self)",
+            "Parameters": [],
+            "IsAsync": false,
+            "BelongType": "Character"
+        },
+        {
+            "Uid": "b3fa05ae4fbd4663b1611c463eca3988",
+            "Name": "test_06_sub",
+            "Type": "Number",
+            "MemberType": 2,
+            "From": 1,
+            "Source": "asyncflow.call_sub(\"AI.test_06_sub\", $self)",
+            "Parameters": [],
+            "IsAsync": false,
+            "BelongType": "Character"
+        },
+        {
+            "Uid": "e833554600694100b30aa5e560dee358",
+            "Name": "test_07_sub",
+            "Type": "Number",
+            "MemberType": 2,
+            "From": 1,
+            "Source": "asyncflow.call_sub(\"AI.test_07_sub\", $self, $params)",
+            "Parameters": [
+                null,
+                null
+            ],
+            "IsAsync": false,
+            "BelongType": "Character"
         }
-      ],
-      "member_type": 2,
-      "source": "asyncflow.call_sub(\"AI.test_07_sub\", $self, $params)",
-      "From": 1,
-      "Name": "test_07_sub",
-      "type": "Number"
-    },
-    {
-      "Parameters": [],
-      "member_type": 2,
-      "source": "asyncflow.call_sub(\"AI.test_11_sub\", $self)",
-      "From": 1,
-      "Name": "test_11_sub",
-      "type": "Bool"
-    },
-    {
-      "Parameters": [],
-      "member_type": 2,
-      "source": "asyncflow.call_sub(\"AI.test_17_sub\", $self)",
-      "From": 1,
-      "Name": "test_17_sub",
-      "type": "Bool"
-    },
-    {
-      "Parameters": [],
-      "member_type": 2,
-      "source": "asyncflow.call_sub(\"Subchart.SubchartTest_01_sub\", $self)",
-      "From": 1,
-      "Name": "SubchartTest_01_sub",
-      "type": "Number"
-    },
-    {
-      "Parameters": [],
-      "member_type": 2,
-      "source": "asyncflow.call_sub(\"Subchart.SubchartTest_04_sub\", $self)",
-      "From": 1,
-      "Name": "SubchartTest_04_sub",
-      "type": "Bool"
-    },
-    {
-      "Parameters": [],
-      "member_type": 2,
-      "source": "asyncflow.call_sub(\"Subchart.SubchartTest_07_sub\", $self)",
-      "From": 1,
-      "Name": "SubchartTest_07_sub",
-      "type": "Number"
-    },
-    {
-      "Parameters": [],
-      "member_type": 2,
-      "source": "asyncflow.call_sub(\"Subchart.SubchartTest_10_sub\", $self)",
-      "From": 1,
-      "Name": "SubchartTest_10_sub",
-      "type": "Number"
-    }
-  ],
-  "Source": 2
+    ],
+    "Inherits": []
 }

@@ -1,129 +1,237 @@
 {
-  "Uid": "1e32ffbcd85e4954bac3a2425c00baf1",
-  "Name": "Global",
-  "Inherits": [],
-  "Members": [
-    {
-      "Parameters": [],
-      "member_type": 2,
-      "Name": "callback",
-      "Description": "回调",
-      "type": "Any"
-    },
-    {
-      "Parameters": [
+    "Uid": "1e32ffbcd85e4954bac3a2425c00baf1",
+    "Name": "Global",
+    "Source": 2,
+    "Members": [
         {
-          "Name": "v",
-          "type": "Number"
-        }
-      ],
-      "member_type": 2,
-      "Name": "probability",
-      "Description": "随机概率",
-      "type": "Void"
-    },
-    {
-      "member_type": 1,
-      "source": "asyncflow.time()",
-      "Name": "time",
-      "Description": "世界的逻辑时间，单位秒",
-      "type": "Number"
-    },
-    {
-      "Parameters": [
+            "Uid": "21a5acc23b9d4ef4b1d1218f03b8441c",
+            "Name": "callback",
+            "Type": "Any",
+            "Description": "回调",
+            "MemberType": 2,
+            "From": 0,
+            "Code": {
+                "hasCode": false,
+                "language": null,
+                "code": ""
+            },
+            "Parameters": [],
+            "IsAsync": false,
+            "BelongType": "Global"
+        },
         {
-          "Name": "obj",
-          "type": "Character"
-        }
-      ],
-      "member_type": 2,
-      "source": "asyncflow.deregister",
-      "Name": "deregister",
-      "type": "Void"
-    },
-    {
-      "Parameters": [
+            "Uid": "264dabf1de294607a9f19fce68c86ba5",
+            "Name": "probability",
+            "Type": "Void",
+            "Description": "随机概率",
+            "MemberType": 2,
+            "From": 0,
+            "Code": {
+                "hasCode": false,
+                "language": null,
+                "code": ""
+            },
+            "Parameters": [
+                {
+                    "Uid": "8f651b0a1613490db9da6bc2cae35ad2",
+                    "Name": "v",
+                    "Type": "Number"
+                }
+            ],
+            "IsAsync": false,
+            "BelongType": "Global"
+        },
         {
-          "Name": "#NodeId",
-          "type": "NodeRef"
-        }
-      ],
-      "member_type": 2,
-      "Name": "gotonode",
-      "Description": "停止指定若干节点",
-      "type": "Void"
-    },
-    {
-      "Parameters": [
+            "Uid": "0916736fbe684987a1de174fb0b711d3",
+            "Name": "time",
+            "Type": "Number",
+            "Description": "世界的逻辑时间，单位秒",
+            "MemberType": 1,
+            "From": 0,
+            "Source": "asyncflow.time()",
+            "Code": {
+                "hasCode": false,
+                "language": null,
+                "code": ""
+            },
+            "Parameters": [],
+            "IsAsync": false,
+            "BelongType": "Global"
+        },
         {
-          "Name": "content",
-          "type": "String"
-        }
-      ],
-      "member_type": 2,
-      "Name": "Print",
-      "Description": "打印",
-      "type": "Void"
-    },
-    {
-      "Parameters": [
+            "Uid": "e61a9a6e8ced4bc8ba3a0cc4e3153ec5",
+            "Name": "deregister",
+            "Type": "Void",
+            "MemberType": 2,
+            "From": 0,
+            "Code": {
+                "hasCode": false,
+                "language": null,
+                "code": ""
+            },
+            "Parameters": [
+                {
+                    "Uid": "2789bf7236dd4ad28ce012bf51019639",
+                    "Name": "obj",
+                    "Type": "Character"
+                }
+            ],
+            "IsAsync": false,
+            "BelongType": "Global"
+        },
         {
-          "Name": "result",
-          "type": "Any"
-        }
-      ],
-      "member_type": 2,
-      "source": "asyncflow.ret",
-      "Name": "return",
-      "Description": "返回",
-      "type": "Void"
-    },
-    {
-      "Parameters": [
+            "Uid": "4d8ea36d699040999e7f5830f9ddd572",
+            "Name": "gotonode",
+            "Type": "Void",
+            "Description": "停止指定若干节点",
+            "MemberType": 2,
+            "From": 0,
+            "Code": {
+                "hasCode": false,
+                "language": null,
+                "code": ""
+            },
+            "Parameters": [
+                {
+                    "Uid": "e38473070a8e43eabd2de4bb07636392",
+                    "Name": "#NodeId",
+                    "Type": "Undefined"
+                }
+            ],
+            "IsAsync": false,
+            "BelongType": "Global"
+        },
         {
-          "Count": -1,
-          "Name": "NodeId",
-          "type": "String"
-        }
-      ],
-      "member_type": 2,
-      "source": "asyncflow.stop_flow",
-      "Name": "stopflow",
-      "Description": "停止指定若干节点及其后继流程",
-      "type": "Void"
-    },
-    {
-      "Parameters": [
+            "Uid": "adca409d2e044b3ba3040a64961bf298",
+            "Name": "Print",
+            "Type": "Void",
+            "Description": "打印",
+            "MemberType": 2,
+            "From": 0,
+            "Code": {
+                "hasCode": false,
+                "language": null,
+                "code": ""
+            },
+            "Parameters": [
+                {
+                    "Uid": "5a3e92510e554df081a79ba12821355a",
+                    "Name": "content",
+                    "Type": "String"
+                }
+            ],
+            "IsAsync": false,
+            "BelongType": "Global"
+        },
         {
-          "Count": -1,
-          "Name": "NodeId",
-          "type": "String"
-        }
-      ],
-      "member_type": 2,
-      "source": "asyncflow.stop_node",
-      "Name": "stopnode",
-      "Description": "停止指定若干节点",
-      "type": "Void"
-    },
-    {
-      "Parameters": [
+            "Uid": "a815dcc7116140dfa92ea40cdb83fca1",
+            "Name": "return",
+            "Type": "Void",
+            "Description": "返回",
+            "MemberType": 2,
+            "From": 0,
+            "Source": "asyncflow.ret",
+            "Code": {
+                "hasCode": false,
+                "language": null,
+                "code": ""
+            },
+            "Parameters": [
+                {
+                    "Uid": "0ffae1b5ffdd4d10822c2b8a3b9da269",
+                    "Name": "result",
+                    "Type": "Any"
+                }
+            ],
+            "IsAsync": false,
+            "BelongType": "Global"
+        },
         {
-          "Name": "time",
-          "type": "Number"
+            "Uid": "c75b80fe0a014eec9f7a97cec9e10706",
+            "Name": "stopflow",
+            "Type": "Void",
+            "Description": "停止指定若干节点及其后继流程",
+            "MemberType": 2,
+            "From": 0,
+            "Source": "asyncflow.stop_flow",
+            "Code": {
+                "hasCode": false,
+                "language": null,
+                "code": ""
+            },
+            "Parameters": [
+                {
+                    "Uid": "44cbead332aa4b98b8d213e8a6243660",
+                    "Name": "NodeId",
+                    "Type": "String",
+                    "Count": -1
+                }
+            ],
+            "IsAsync": false,
+            "BelongType": "Global"
+        },
+        {
+            "Uid": "7aa2753f608847e88b48f55fc521f50a",
+            "Name": "stopnode",
+            "Type": "Void",
+            "Description": "停止指定若干节点",
+            "MemberType": 2,
+            "From": 0,
+            "Source": "asyncflow.stop_node",
+            "Code": {
+                "hasCode": false,
+                "language": null,
+                "code": ""
+            },
+            "Parameters": [
+                {
+                    "Uid": "4b4110e21ca8487aa1452ccf8364edd0",
+                    "Name": "NodeId",
+                    "Type": "String",
+                    "Count": -1
+                }
+            ],
+            "IsAsync": false,
+            "BelongType": "Global"
+        },
+        {
+            "Uid": "727e897ae4f941cea109769a24a83345",
+            "Name": "wait",
+            "Type": "Void",
+            "MemberType": 2,
+            "From": 0,
+            "Source": "asyncflow.wait",
+            "Code": {
+                "hasCode": false,
+                "language": null,
+                "code": ""
+            },
+            "Parameters": [
+                {
+                    "Uid": "1a3a65ffc27140b59228c59219b3c1e4",
+                    "Name": "time",
+                    "Type": "Number"
+                }
+            ],
+            "IsAsync": false,
+            "BelongType": "Global"
+        },
+        {
+            "Uid": "a5245d3f7f60498995cb5c5a71a6cbdc",
+            "Name": "waitall",
+            "Type": "Void",
+            "MemberType": 2,
+            "From": 0,
+            "Source": "",
+            "Code": {
+                "hasCode": false,
+                "language": null,
+                "code": ""
+            },
+            "Parameters": [],
+            "IsAsync": false,
+            "BelongType": "Global"
         }
-      ],
-      "member_type": 2,
-      "source": "asyncflow.wait",
-      "Name": "wait",
-      "type": "Void"
-    },
-    {
-      "Parameters": [],
-      "member_type": 2,
-      "Name": "wait_all",
-      "type": "Void"
-    }
-  ],
-  "Source": 2
+    ],
+    "Inherits": []
 }

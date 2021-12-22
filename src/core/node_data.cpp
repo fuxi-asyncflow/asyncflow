@@ -15,24 +15,24 @@ NodeData::~NodeData()
 	delete node_func_;
 }
 
-bool NodeData::InitFromJson(rapidjson::Value& jobj, const std::unordered_map<std::string, int>& map, ChartData* chart_data)
+bool NodeData::InitFromJson(rapidjson::Value& jobj, const std::unordered_map<std::string, int>& id_map, ChartData* chart_data)
 {
 	//get uid
-	auto uid = jobj.FindMember("uid");
+	auto const uid = jobj.FindMember("uid");
 	if (uid != jobj.MemberEnd())
 	{
 		node_uid_ = uid->value.GetString();
 	}
 
 	//get text
-	auto text = jobj.FindMember("text");
+	auto const text = jobj.FindMember("text");
 	if (text != jobj.MemberEnd())
 	{
 		text_ = text->value.GetString();
 	}
 
 	//get funcname
-	auto funcName = jobj.FindMember("funcName");
+	auto const funcName = jobj.FindMember("funcName");
 	std::string func_name;
 	if (funcName != jobj.MemberEnd())
 	{
@@ -40,10 +40,10 @@ bool NodeData::InitFromJson(rapidjson::Value& jobj, const std::unordered_map<std
 	}
 
 	//get type
-	auto type = jobj.FindMember("type");
+	auto const type = jobj.FindMember("type");
 	if (type != jobj.MemberEnd())
 	{
-		auto funcType = type->value.GetString();
+		auto* funcType = type->value.GetString();
 		if (strcmp(funcType, "function") == 0)
 		{
 			node_func_ = chart_data->CreateNodeFunc("", func_name);
@@ -58,33 +58,42 @@ bool NodeData::InitFromJson(rapidjson::Value& jobj, const std::unordered_map<std
 			auto params = jobj.FindMember("param");
 			if (params != jobj.MemberEnd())
 			{
-				auto paramsArray = params->value.GetArray();
+				auto const paramsArray = params->value.GetArray();
 				std::vector<int> paramsVec;
-				for (auto it = paramsArray.begin(); it != paramsArray.end(); ++it)
+				for (auto* it = paramsArray.begin(); it != paramsArray.end(); ++it)
 				{
-					paramsVec.push_back(map.find(it->GetString())->second);
+					auto iter = id_map.find(it->GetString());
+					if(iter != id_map.end())
+					{
+						paramsVec.push_back(iter->second);
+					}
+					else
+					{
+						ASYNCFLOW_ERR("load node data error in {0}[{1}]({2}), param contains invalid uid"
+							, chart_data->Name(), this->GetId(), this->GetUid());
+					}
 				}
 				if (func_name == "wait_all")
 				{
-					node_func_ = NodeInnerFunc::CreateInnerFunc(&Manager::WaitAll, paramsVec);
+					node_func_ = ControlNodeFunc::Create(&Manager::WaitAll, paramsVec);
 				}
 				else if (func_name == "stop_node")
 				{
-					node_func_ = NodeInnerFunc::CreateInnerFunc(&Manager::StopNode, paramsVec);
+					node_func_ = ControlNodeFunc::Create(&Manager::StopNode, paramsVec);
 				}
 				else if (func_name == "stop_flow")
 				{
-					node_func_ = NodeInnerFunc::CreateInnerFunc(&Manager::StopFlow, paramsVec);
+					node_func_ = ControlNodeFunc::Create(&Manager::StopFlow, paramsVec);
 				}
 				else
 				{
-					ASYNCFLOW_ERR("control node can not create funcname{0}!", func_name);
+					ASYNCFLOW_ERR("control node can not create funcname {0}!", func_name);
 				}
 			}
 		}
 		else
 		{
-			ASYNCFLOW_ERR("invalid functype{0}!", funcType);
+			ASYNCFLOW_ERR("load node data error invalid functype{0}!", funcType);
 		}
 	}
 
@@ -96,24 +105,30 @@ bool NodeData::InitFromJson(rapidjson::Value& jobj, const std::unordered_map<std
 	}
 
 	// get subsequence
-	auto successObj = jobj.FindMember("success");
-	if (successObj != jobj.MemberEnd())
-	{
-		auto successArray = successObj->value.GetArray();
-		for (auto it = successArray.begin(); it != successArray.end(); ++it)
-		{
-			children_[1].push_back(map.find(it->GetString())->second);
-		}
-	}
+	std::vector<std::pair<int, std::string>> kvs { {1, "success"}, {0, "fail"} };
 
-	auto failObj = jobj.FindMember("fail");
-	if (failObj != jobj.MemberEnd())
+	for(auto& kv : kvs)
 	{
-		auto failArray = failObj->value.GetArray();
-		for (auto it = failArray.begin(); it != failArray.end(); ++it)
+		auto const& subsequence_name = kv.second;
+		auto const child_id = kv.first;
+		auto successObj = jobj.FindMember(subsequence_name.c_str());
+		if (successObj != jobj.MemberEnd())
 		{
-			children_[0].push_back(map.find(it->GetString())->second);
-		}
+			auto successArray = successObj->value.GetArray();
+			for (auto* it = successArray.begin(); it != successArray.end(); ++it)
+			{
+				auto iter = id_map.find(it->GetString());
+				if (iter != id_map.end())
+				{
+					children_[child_id].push_back(iter->second);
+				}
+				else
+				{
+					ASYNCFLOW_ERR("load node data error in {0}[{1}]({2}), {3} contains invalid uid"
+						, chart_data->Name(), this->GetId(), this->GetUid(), subsequence_name.c_str());
+				}
+			}
+		}	
 	}
 	return true;
 }

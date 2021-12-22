@@ -8,9 +8,9 @@ using namespace asyncflow::core;
 
 void AsyncManager::Step()
 {
-	for (auto node : activate_nodes)
+	for (auto* node : activate_nodes)
 	{
-		bool flag = node->GetSkip();
+		auto const flag = node->GetSkip();
 		node->Stop();
 		node->SetSkip(flag);
 		RemoveNode(node);
@@ -55,7 +55,7 @@ void AsyncManager::ContinueBreakpoint(Chart* chart)
 	{
 		if (n->GetChart() == chart && n->GetData()->IsBreakPoint())
 		{
-			auto func = dynamic_cast<BreakpointFunc*>(n->GetData()->GetNodeFunc());
+			auto* func = dynamic_cast<BreakpointFunc*>(n->GetData()->GetNodeFunc());
 			if (func == nullptr)
 				ASYNCFLOW_WARN("Continue Breakpoint error, node {} in chart {} is not breakpoint.", n->GetData()->GetUid(), chart->Name());
 			else

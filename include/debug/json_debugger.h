@@ -14,12 +14,13 @@ namespace asyncflow
 			std::string PrepareChartDebugData(core::Chart* chart) override;
 			void ChartDataToJson(core::ChartData* chart_data, rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer);
 			std::string ErrorReply(int code, const std::string& error_msg, int id) override;
-			std::string NormalMessage(const std::string& method, const std::vector<std::string>& result, int id) override;
+			std::string SimpleReply(const std::string& method, const std::vector<std::string>& result, int id) override;
 			std::string SimpleReply(const std::string& method, const std::unordered_map<std::string, std::string>& result, int id) override;
 			std::string StopMessage(const std::string& chart_name) override;
 			std::string ChartInitData(const std::string& method, core::ChartData* chart_data, int id) override;
 			std::string ChartInfo(core::Chart* chart) override;
 			std::string GetChartList(core::Manager* manager, const std::string& obj_name, const std::string& chart_name, int id) override;
+			std::string HeartBeat() override;
 
 			void HandleMessage(const std::string& msg, core::Manager* manager_, DebugConnection* obj) override;
 		};

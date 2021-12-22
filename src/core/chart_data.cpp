@@ -26,7 +26,7 @@ ChartData::ChartData()
 
 bool ChartData::InitParamsFromJson(rapidjson::Value& paramsObj)
 {
-	auto varArray = paramsObj.GetArray();
+	auto const varArray = paramsObj.GetArray();
 	variables_.clear();
 	int paramsCount = 0;
 	for (auto it = varArray.begin(); it != varArray.end(); ++it)
@@ -46,14 +46,14 @@ bool ChartData::FromJson(rapidjson::Value& jobj)
 {
 	ChartData* chartData = this;
 	//read full path of chart
-	auto chartFullPath = jobj.FindMember("path");
+	auto const chartFullPath = jobj.FindMember("path");
 	if (chartFullPath == jobj.MemberEnd())
 	{
 		ASYNCFLOW_ERR("missing chart Path");
 		delete chartData;
 		return false;
 	}
-	std::string fullPath = chartFullPath->value.GetString();
+	const std::string fullPath = chartFullPath->value.GetString();
 
 	//read variable info
 	auto varCountObj = jobj.FindMember("varCount");
@@ -65,7 +65,7 @@ bool ChartData::FromJson(rapidjson::Value& jobj)
 		bool r = chartData->InitParamsFromJson(varObj->value);
 		if( r == false )
 		{
-			ASYNCFLOW_ERR("read parameters error in chart %s", fullPath.c_str());
+			ASYNCFLOW_ERR("read parameters error in chart {0}", fullPath);
 			delete chartData;
 			return false;
 		}
@@ -75,7 +75,7 @@ bool ChartData::FromJson(rapidjson::Value& jobj)
 	auto nodesArrayIter = jobj.FindMember("nodes");
 	if (nodesArrayIter == jobj.MemberEnd())
 	{
-		ASYNCFLOW_ERR("missing nodes in chart %s", fullPath.c_str());
+		ASYNCFLOW_ERR("missing nodes in chart {0}", fullPath);
 		delete chartData;
 		return false;
 	}
@@ -84,7 +84,7 @@ bool ChartData::FromJson(rapidjson::Value& jobj)
 	auto startList = jobj.FindMember("start");
 	if (startList == jobj.MemberEnd())
 	{
-		ASYNCFLOW_ERR("missing start in chart %s", fullPath.c_str());
+		ASYNCFLOW_ERR("missing start in chart {0}", fullPath);
 		delete chartData;
 		return false;
 	}

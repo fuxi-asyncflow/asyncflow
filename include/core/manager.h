@@ -34,11 +34,14 @@ namespace asyncflow
 			bool	Event(int event_id, Agent* obj, void* args, int arg_count, bool immediate = false);
 			int		ImportFile(const std::string& file_name);
 			int		ImportJson(const std::string& json_str);
+			int		ImportChatData(const std::vector<ChartData*>& data_list);
+			std::vector<ChartData*> ParseChartsFromJson(const std::string& json_str);
 			int		ImportEvent(const std::string& file_name);
-			bool	ReloadChartData(ChartData* new_data);
+			bool	ReloadChartData(ChartData* new_data) const;
 			bool	UnregisterGameObject(Agent* agent);
 
 			Chart* AttachChart(Agent* agent, const std::string& chart_name);
+			void RestartChart(const std::string& chart_name);
 
 			TimerManager& GetTimerManager() { return timer_manager_; }
 			EventManager& GetEventManager() { return eventManager; }
