@@ -1,4 +1,5 @@
 ![example workflow](https://github.com/fuxi-asyncflow/asyncflow/actions/workflows/cmake.yml/badge.svg?branch=main)
+
 # 编译
 
 ## 环境要求
@@ -12,14 +13,14 @@
 
 项目支持的 cmake 编译选项如下：
 
-| 编译选项            | 默认值 | 说明                                                         |
-| ------------------- | ------ | ------------------------------------------------------------ |
-| FLOWCHART_DEBUG     | OFF    | 开启远程调试功能，外放版本请不要打开                         |
-| BUILD_PYTHON        | OFF    | 编译 python 模块                                             |
-| BUILD_LUAJIT        | OFF    | 编译 luajit 模块，为ON时，需要配置 `LUAJIT_INCLUDE_PATH` 与 `LUAJIT_LIB` |
-| LUAJIT_INCLUDE_PATH | -      | luajit 的头文件目录                                          |
-| LUAJIT_LIB          | -      | luajit 的库文件                                              |
-| BUILD_WASM          | OFF    | 编译为 WASM  模块                                            |
+| 编译选项                | 默认值 | 说明                                                          |
+| ------------------- | --- | ----------------------------------------------------------- |
+| FLOWCHART_DEBUG     | OFF | 开启远程调试功能，外放版本请不要打开                                          |
+| BUILD_PYTHON        | OFF | 编译 python 模块                                                |
+| BUILD_LUAJIT        | OFF | 编译 luajit 模块，为ON时，需要配置 `LUAJIT_INCLUDE_PATH` 与 `LUAJIT_LIB` |
+| LUAJIT_INCLUDE_PATH | -   | luajit 的头文件目录                                               |
+| LUAJIT_LIB          | -   | luajit 的库文件                                                 |
+| BUILD_WASM          | OFF | 编译为 WASM  模块                                                |
 
 `FLOWCHART_DEBUG` 为`ON`时编译带有调试功能的版本
 
@@ -36,10 +37,9 @@ windows 上编译 luajit  与 python 模块：
 ```shell
 REM win_build.bat
 cmake . -Bwin-build -G "Visual Studio 16 2019" -Ax64 ^
-	-DBUILD_LUAJIT=ON -DBUILD_PYTHON=ON -DBUILD_TEST=ON -DFLOWCHART_DEBUG=ON ^
-	-DLUAJIT_INCLUDE_PATH=./thirdparty/LuaJIT-2.1.0-beta3/src ^
-	-DLUAJIT_LIB=./thirdparty/LuaJIT-2.1.0-beta3/src/lua51.lib
-	
+    -DBUILD_LUAJIT=ON -DBUILD_PYTHON=ON -DBUILD_TEST=ON -DFLOWCHART_DEBUG=ON ^
+    -DLUAJIT_INCLUDE_PATH=./thirdparty/LuaJIT-2.1.0-beta3/src ^
+    -DLUAJIT_LIB=./thirdparty/LuaJIT-2.1.0-beta3/src/lua51.lib
 ```
 
 linux 上编译 lua 模块可以直接使用 `build_lua.sh`
@@ -57,18 +57,16 @@ $ emcmake cmake .. -DBUILD_WASM=ON -DCMAKE_BUILD_TYPE=Debug
 由于CMake对于Visual Studio项目的Debug配置中，一些选项参数没有与Release进行区分导致的。
 
 + 预定义宏里面加上`_DEBUG `， 这是由于Python的`pyconfig.h`里面:
-
-  ```c++
-  #			if defined(_DEBUG)
-  #				pragma comment(lib,"python36_d.lib")
-  #			elif defined(Py_LIMITED_API)
-  #				pragma comment(lib,"python3.lib")
-  #			else
-  #				pragma comment(lib,"python36.lib")
-  #			endif /* _DEBUG */
-  ```
-
   
+  ```c++
+  #            if defined(_DEBUG)
+  #                pragma comment(lib,"python36_d.lib")
+  #            elif defined(Py_LIMITED_API)
+  #                pragma comment(lib,"python3.lib")
+  #            else
+  #                pragma comment(lib,"python36.lib")
+  #            endif /* _DEBUG */
+  ```
 
 + c/c++ => 代码生成 => 运行库 修改为 `/MDd`
 
@@ -82,8 +80,6 @@ $ emcmake cmake .. -DBUILD_WASM=ON -DCMAKE_BUILD_TYPE=Debug
 ### linux 链接 luajit 时提示使用 -fPIC
 
 luajit 的默认编译方式为 `mixed` 会生成一个静态链接的 `luajit`，在 `luajit` 的 `makefile` 里面修改为 `BUILDMODE= dynamic` 即可
-
-
 
 # 使用
 
@@ -112,4 +108,13 @@ luajit 的默认编译方式为 `mixed` 会生成一个静态链接的 `luajit`�
 
 + deregister(obj: object); 将对象从流程图管理中移除，该对象将不再受流程图的控制
 + exit(); 销毁整个流程图管理器
+
+
+
+# 论文介绍
+
+对于 asyncflow 的结构可以参见 [Asyncflow: A visual programming tool for game artificial intelligence - ScienceDirect](https://www.sciencedirect.com/science/article/pii/S2468502X21000498)
+
+引用信息见仓库里面的 [asyncflow.bib](./asyncflow.bib) 文件
+
 
