@@ -17,9 +17,7 @@ option (BUILD_WASM "build WASM version" OFF)
 option (BUILD_LUAJIT "build luajit version" OFF)
 option (BUILD_TEST   "build test project" OFF)
 
-if(${BUILD_WASM})
-    add_definitions(-DBUILD_WASM)
-endif(${BUILD_WASM})
+
 
 if(${BUILD_TEST})
     if(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
@@ -92,6 +90,13 @@ target_include_directories(asyncflow PUBLIC "include")
 target_compile_features(asyncflow PUBLIC cxx_std_11)
 set_target_properties(asyncflow PROPERTIES CXX_EXTENSIONS OFF)
 target_link_libraries(asyncflow PUBLIC msgpack rapidjson)
+
+if(${BUILD_WASM})
+    target_compile_definitions(asyncflow PUBLIC BUILD_WASM)
+else()
+    find_package(Threads REQUIRED)
+    target_link_libraries(asyncflow PUBLIC Threads::Threads)
+endif(${BUILD_WASM})
 
 if(FLOWCHART_DEBUG)
     # asio
