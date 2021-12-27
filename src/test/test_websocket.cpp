@@ -1,7 +1,6 @@
-#if 0
 #ifdef FLOWCHART_DEBUG
 #include <fstream>
-#include <thread>
+
 #include "export_lua.h"
 #include "lua_manager.h"
 #include "lua_chart_builder.h"
@@ -14,36 +13,27 @@
 
 typedef websocketpp::client<websocketpp::config::asio_client> client;
 
-
-using websocketpp::lib::placeholders::_1;
-using websocketpp::lib::placeholders::_2;
-using websocketpp::lib::bind;
-
 const char* get_list = "{ \"jsonrpc\": \"2.0\", \"method\": \"get_chart_list\", \"params\" : { \"chart_name\":\"\", \"obj_name\":\"\" }, \"id\":1}";
 const char* quick_debug = "{\"jsonrpc\": \"2.0\",\"method\": \"quick_debug\",\"params\": {\"chart_name\": \"test_websocket\"}, \"id\": 4 }";
 const char* gm_str = "{\"jsonrpc\": \"2.0\",\"method\": \"gm\",\"params\": {\"script\":\"return agent:get_charts()[1], 111\"}, \"id\": 1 }";
 const char* set_breakpoint = "{\"jsonrpc\": \"2.0\",\"method\": \"break_point\",\"params\": {\"chart_name\":\"test_websocket\",\"command\":\"set\",\"node_uid\": \"00000\"},\"id\":5}";
 const char* delete_breakpoint = "{\"jsonrpc\": \"2.0\",\"method\": \"break_point\",\"params\": {\"chart_name\":\"test_websocket\",\"command\":\"delete\",\"node_uid\": \"00000\"},\"id\":6}";
-bool runflag;
+bool runflag, openflag;
 int message_count;
-const int THREAD_TOTAL_TIME = 3000; // milliseconds
+const int DURATION = 100;
+const int THREAD_MAX_TIME = 10000; // milliseconds
 
-void run_step()
+void ws_loop(client* c)
 {
-	for (int i = 0; i < THREAD_TOTAL_TIME / 10; i++)
+	int frame = 0;
+	while (runflag && frame < THREAD_MAX_TIME / DURATION)
 	{
 		dostring(L, "asyncflow.step(100)");
-		std::this_thread::sleep_for(std::chrono::milliseconds(10));
-	}
-}
-
-void run_web(client* c) {
-	for(int i=0; i< THREAD_TOTAL_TIME / 10; i++)
-	{
 		if (c->stopped())
 			c->reset();
 		c->poll();
-		std::this_thread::sleep_for(std::chrono::milliseconds(10));
+		std::this_thread::sleep_for(std::chrono::milliseconds(DURATION));
+		++frame;
 	}
 }
 
@@ -78,6 +68,7 @@ void on_open(client* c, const char* str, websocketpp::connection_hdl hdl)
 	try
 	{
 		c->send(hdl, str, websocketpp::frame::opcode::text);
+		openflag = true;
 	}
 	catch (websocketpp::exception const& ec)
 	{
@@ -120,8 +111,8 @@ TEST_CASE("get list test")
 	std::string url = "ws://localhost:9000";
 	c.init_asio();
 	c.clear_access_channels(websocketpp::log::alevel::all);
-	c.set_message_handler(bind(&on_message, &c, ::_1, ::_2));
-	c.set_open_handler(bind(&on_open, &c, get_list, ::_1));
+	c.set_message_handler([&c](websocketpp::connection_hdl hdl, client::message_ptr msg) { on_message(&c, hdl, msg); });
+	c.set_open_handler([&c](websocketpp::connection_hdl hdl) { on_open(&c, get_list, hdl); });	
 	websocketpp::lib::error_code ec;
 	auto hdl = c.get_connection(url, ec);
 	if (ec)
@@ -131,10 +122,8 @@ TEST_CASE("get list test")
 	}
 	c.connect(hdl);
 	runflag = true;
-	std::thread t1([&]() {run_step(); });
-	std::thread t2([&c]() {run_web(&c); });
-	t1.join();
-	t2.join();
+
+	ws_loop(&c);
 
 	////////////////////////////////////////////////////////////////////////////////////////////
 	DESTROY_LUA
@@ -149,6 +138,8 @@ void debug_chart_on_message(client* c, websocketpp::connection_hdl hdl, client::
 		REQUIRE(false);
 	}
 	//std::cout << msg->get_payload() << std::endl;
+	if (strcmp(doc["method"].GetString(), "heart_beat") == 0)
+		return;
 	REQUIRE(strcmp(doc["method"].GetString(), "debug_chart") == 0);
 	if (message_count == 0)
 	{
@@ -214,9 +205,10 @@ std::string command_str(const std::string& str, const std::string& chart_name, i
 
 void run_event(Agent* agent)
 {
-	for (int i = 0; i < THREAD_TOTAL_TIME / 10; i++)
+	int frame = 0;
+	while(runflag && frame < THREAD_MAX_TIME/DURATION)
 	{
-		manager->Step(10);
+		manager->Step(100);
 		lua_pushstring(L, "first");
 		int arg_ref = luaL_ref(L, LUA_REGISTRYINDEX);
 		int* args = new int[2];
@@ -225,7 +217,8 @@ void run_event(Agent* agent)
 		arg_ref = luaL_ref(L, LUA_REGISTRYINDEX);
 		args[1] = arg_ref;
 		manager->Manager::Event(5, agent, args, 2, false);
-		std::this_thread::sleep_for(std::chrono::milliseconds(10));
+		std::this_thread::sleep_for(std::chrono::milliseconds(DURATION));
+		++frame;
 	}
 }
 
@@ -273,9 +266,9 @@ TEST_CASE("debug chart test")
 	std::string url = "ws://localhost:9000";
 	c.init_asio();
 	c.clear_access_channels(websocketpp::log::alevel::all);
-	c.set_message_handler(bind(&debug_chart_on_message, &c, ::_1, ::_2));
+	c.set_message_handler([&c](websocketpp::connection_hdl hdl, client::message_ptr msg) { debug_chart_on_message(&c, hdl, msg); });	
 	auto debug_str = command_str("debug_chart", "test_debug_chart", agent->GetId(), 2);
-	c.set_open_handler(bind(&on_open, &c, debug_str.c_str(), ::_1));
+	c.set_open_handler([&c, &debug_str](websocketpp::connection_hdl hdl) { on_open(&c, debug_str.c_str(), hdl); });	
 	websocketpp::lib::error_code ec;
 	auto hdl = c.get_connection(url, ec);
 	if (ec)
@@ -286,10 +279,8 @@ TEST_CASE("debug chart test")
 	c.connect(hdl);
 	runflag = true;
 	message_count = 0;
-	std::thread t1([&agent]() {run_event(agent); });
-	std::thread t2([&c]() {run_web(&c); });
-	t1.join();
-	t2.join();
+
+	ws_loop(&c);
 
 	////////////////////////////////////////////////////////////////////////////////////////////
 	DESTROY_LUA
@@ -302,8 +293,10 @@ void stop_chart_on_message(client* c, Agent* agent, websocketpp::connection_hdl 
 	if (!valid_json)
 	{
 		REQUIRE(false);
-	}
+	}	
 	//std::cout << msg->get_payload() << std::endl;
+	if (strcmp(doc["method"].GetString(), "heart_beat") == 0)
+		return;
 	auto* chart = agent->FindChart("test_websocket", nullptr);
 	auto& map = manager->GetWebsocketManager().GetChartMap();
 	if (message_count == 0)
@@ -348,10 +341,10 @@ TEST_CASE("stop chart test")
 	client c;
 	std::string url = "ws://localhost:9000";
 	c.init_asio();
-	c.clear_access_channels(websocketpp::log::alevel::all);
-	c.set_message_handler(bind(&stop_chart_on_message, &c, agent, ::_1, ::_2));
+	c.clear_access_channels(websocketpp::log::alevel::all);	
 	auto debug_str = command_str("debug_chart", "test_websocket", agent->GetId(), 3);
-	c.set_open_handler(bind(&on_open, &c, debug_str.c_str(), ::_1));
+	c.set_message_handler([&c, agent](websocketpp::connection_hdl hdl, client::message_ptr msg) { stop_chart_on_message(&c, agent, hdl, msg); });
+	c.set_open_handler([&c, &debug_str](websocketpp::connection_hdl hdl) { on_open(&c, debug_str.c_str(), hdl); });
 	websocketpp::lib::error_code ec;
 	auto hdl = c.get_connection(url, ec);
 	if (ec)
@@ -362,10 +355,8 @@ TEST_CASE("stop chart test")
 	c.connect(hdl);
 	runflag = true;
 	message_count = 0;
-	std::thread t1([&]() {run_step(); });
-	std::thread t2([&c]() {run_web(&c); });
-	t1.join();
-	t2.join();
+
+	ws_loop(&c);
 
 	////////////////////////////////////////////////////////////////////////////////////////////
 	DESTROY_LUA
@@ -375,14 +366,21 @@ TEST_CASE("stop chart test")
 void run_and_attach(Agent* agent)
 {
 	int frame = 0;
-	for (int i = 0; i < THREAD_TOTAL_TIME / 10; i++)
+	while(runflag && frame< THREAD_MAX_TIME / DURATION)
 	{
-		manager->Step(10);
-		std::this_thread::sleep_for(std::chrono::milliseconds(10));
-		if (frame == 150)
+		manager->Step(100);
+		std::this_thread::sleep_for(std::chrono::milliseconds(DURATION));
+		if (openflag == true)
 		{
+			for (int i = 0; i < 10; i++)
+			{
+				manager->Step(100);
+				std::this_thread::sleep_for(std::chrono::milliseconds(DURATION));
+				++frame;
+			}
 			manager->Manager::AttachChart(agent, "test_websocket");
 			agent->Start();
+			openflag = false;
 		}
 		++frame;
 	}
@@ -396,6 +394,8 @@ void quick_debug_on_message(client* c, Agent* agent, websocketpp::connection_hdl
 		REQUIRE(false);
 	}
 	//std::cout << msg->get_payload() << std::endl;
+	if (strcmp(doc["method"].GetString(), "heart_beat") == 0)
+		return;
 	auto& map = manager->GetWebsocketManager().GetChartMap();
 	if (message_count == 0)
 	{
@@ -456,8 +456,9 @@ TEST_CASE("quick debug test")
 	std::string url = "ws://localhost:9000";
 	c.init_asio();
 	c.clear_access_channels(websocketpp::log::alevel::all);
-	c.set_message_handler(bind(&quick_debug_on_message, &c, agent, ::_1, ::_2));
-	c.set_open_handler(bind(&on_open, &c, quick_debug, ::_1));
+	c.set_message_handler([&c, agent](websocketpp::connection_hdl hdl, client::message_ptr msg) { quick_debug_on_message(&c, agent, hdl, msg); });
+	c.set_open_handler([&c](websocketpp::connection_hdl hdl) { on_open(&c, quick_debug, hdl); });	
+	
 	websocketpp::lib::error_code ec;
 	auto hdl = c.get_connection(url, ec);
 	if (ec)
@@ -467,11 +468,10 @@ TEST_CASE("quick debug test")
 	}
 	c.connect(hdl);
 	runflag = true;
+	openflag = false;
 	message_count = 0;
-	std::thread t1([&agent]() {run_and_attach(agent); });
-	std::thread t2([&c]() {run_web(&c); });
-	t1.join();
-	t2.join();
+
+	ws_loop(&c);
 
 	////////////////////////////////////////////////////////////////////////////////////////////
 	DESTROY_LUA
@@ -485,6 +485,8 @@ void breakpoint_on_message(client* c, Agent* agent, websocketpp::connection_hdl 
 		REQUIRE(false);
 	}
 	//std::cout << msg->get_payload() << std::endl;
+	if (strcmp(doc["method"].GetString(), "heart_beat") == 0)
+		return;
 	auto& map = manager->GetWebsocketManager().GetChartMap();
 	if (message_count == 0)
 	{
@@ -575,8 +577,8 @@ TEST_CASE("breakpoint test")
 	std::string url = "ws://localhost:9000";
 	c.init_asio();
 	c.clear_access_channels(websocketpp::log::alevel::all);
-	c.set_message_handler(bind(&breakpoint_on_message, &c, agent, ::_1, ::_2));
-	c.set_open_handler(bind(&on_open, &c, set_breakpoint, ::_1));
+	c.set_message_handler([&c, agent](websocketpp::connection_hdl hdl, client::message_ptr msg) { breakpoint_on_message(&c, agent, hdl, msg); });
+	c.set_open_handler([&c](websocketpp::connection_hdl hdl) { on_open(&c, set_breakpoint, hdl); });
 	websocketpp::lib::error_code ec;
 	auto hdl = c.get_connection(url, ec);
 	if (ec)
@@ -586,11 +588,10 @@ TEST_CASE("breakpoint test")
 	}
 	c.connect(hdl);
 	runflag = true;
+	openflag = false;
 	message_count = 0;
-	std::thread t1([&agent]() {run_and_attach(agent); });
-	std::thread t2([&c]() {run_web(&c); });
-	t1.join();
-	t2.join();
+
+	ws_loop(&c);
 
 	////////////////////////////////////////////////////////////////////////////////////////////
 	DESTROY_LUA
@@ -619,8 +620,8 @@ TEST_CASE("gm test")
 	std::string url = "ws://localhost:9000";
 	c.init_asio();
 	c.clear_access_channels(websocketpp::log::alevel::all);
-	c.set_message_handler(bind(&gm_on_message, &c, ::_1, ::_2));
-	c.set_open_handler(bind(&on_open, &c, gm_str, ::_1));
+	c.set_message_handler([&c](websocketpp::connection_hdl hdl, client::message_ptr msg) { gm_on_message(&c, hdl, msg); });
+	c.set_open_handler([&c](websocketpp::connection_hdl hdl) { on_open(&c, gm_str, hdl); });
 	websocketpp::lib::error_code ec;
 	auto hdl = c.get_connection(url, ec);
 	if (ec)
@@ -630,15 +631,12 @@ TEST_CASE("gm test")
 	}
 	c.connect(hdl);
 	runflag = true;
-	std::thread t1([&]() {run_step(); });
-	std::thread t2([&c]() {run_web(&c); });
-	t1.join();
-	t2.join();
+
+	ws_loop(&c);
 
 	////////////////////////////////////////////////////////////////////////////////////////////
 	DESTROY_LUA
 	delete chart_data;
 }
 
-#endif
 #endif
