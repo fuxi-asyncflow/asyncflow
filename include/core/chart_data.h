@@ -22,6 +22,7 @@ namespace asyncflow
 			ChartData();
 			virtual ~ChartData();
 			std::string& Name() { return chart_name_; }
+			std::string& StartFuncName() { return start_func_name_; }
 			bool FromJson(rapidjson::Value& jobj);
 			virtual NodeFunc* CreateNodeFunc(const std::string& code, const std::string& name) = 0;
 			int		GetVarCount() { return variable_count_; }
@@ -47,6 +48,7 @@ namespace asyncflow
 			std::vector<Parameter> variables_;
 			std::vector<NodeData*> node_list_;
 			std::string chart_name_;	
+			std::string start_func_name_;
 #ifdef FLOWCHART_DEBUG
 			bool quick_debug_;		// true means that it directly enters the debugging state in the next time
 #endif

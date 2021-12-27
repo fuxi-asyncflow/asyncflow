@@ -110,6 +110,14 @@ bool ChartData::FromJson(rapidjson::Value& jobj)
 		startNode->GetSubsequenceIds(false).push_back(id_map[it->GetString()]);
 		startNode->GetSubsequenceIds(true).push_back(id_map[it->GetString()]);
 	}
+	// read init function name, the function will be called at the beginning of start chart
+	auto initFuncName = jobj.FindMember("start_func");
+	if (initFuncName != jobj.MemberEnd())
+	{
+		start_func_name_ = initFuncName->value.GetString();
+		auto* func = CreateNodeFunc("", start_func_name_);
+		startNode->SetNodeFunc(func);
+	}
 	//add start node
 	chartData->node_list_.push_back(startNode);		
 

@@ -116,7 +116,8 @@ bool Agent::StartChart(Chart* chart, bool is_async /*= true*/)
 	chart->ResetVariables();
 	chart->SetStatus(Chart::Running);
 	auto* start_node = chart->GetNode(0);
-	start_node->SetSkip(true);
+	// if has start function, it will not be skipped
+	start_node->SetSkip(chart->GetData()->StartFuncName().empty());
 	if (is_async)
 	{
 		start_node->SetStatus(Node::Running);
