@@ -85,30 +85,7 @@ luajit 的默认编译方式为 `mixed` 会生成一个静态链接的 `luajit`�
 
 可以参考 `test`文件夹下`lua`和`python`文件夹中`test_`开头的lua或python文件。
 
-所有函数都位于 `asyncflow` module下
-
-**初始化函数**
-
-+ setup(interval : int); 初始化函数，参数为`step`的默认时间间隔
-+ importjson(filename: str); 加载流程图文件，参数为文件名，也可为json字符串
-+ import_event(filename: str); 加载event信息
-
-**对象函数**
-
-+ register(obj: object); 将对象纳入到流程图管理中来
-+ attach(obj: object, chart_name: str); 将流程图挂载的 obj 上
-+ start(obj: object); 启动对象运行
-
-**运行函数**
-
-+ step(milliseconds: int); 驱动流程图运行一次，参数用于控制流程图内部的时间流逝
-+ event(obj: object, event_id: int, params ...); 向指定对象发送事件，等待该事件的节点将被激活，并在接下来的 step 中开始运行
-
-**销毁函数**
-
-+ deregister(obj: object); 将对象从流程图管理中移除，该对象将不再受流程图的控制
-+ exit(); 销毁整个流程图管理器
-
+所有函数都位于 `asyncflow` module下，接口参见[lua版本导出接口](./doc/lua_api.md)
 
 
 # 论文介绍
