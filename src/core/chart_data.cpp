@@ -1,11 +1,8 @@
 #include "core/chart_data.h"
-#include "util/json.h"
 #include "util/log.h"
 #include "rapidjson/stringbuffer.h"
-#include "rapidjson/prettywriter.h"
 #include <rapidjson/document.h>
 #include "core/node_func.h"
-#include <util/file.h>
 #include <unordered_map>
 
 using namespace asyncflow::core;
@@ -29,7 +26,7 @@ bool ChartData::InitParamsFromJson(rapidjson::Value& paramsObj)
 	auto const varArray = paramsObj.GetArray();
 	variables_.clear();
 	int paramsCount = 0;
-	for (auto it = varArray.begin(); it != varArray.end(); ++it)
+	for (auto* it = varArray.begin(); it != varArray.end(); ++it)
 	{
 		auto name = it->FindMember("name")->value.GetString();
 		auto type = it->FindMember("type")->value.GetString();
@@ -49,8 +46,7 @@ bool ChartData::FromJson(rapidjson::Value& jobj)
 	auto const chartFullPath = jobj.FindMember("path");
 	if (chartFullPath == jobj.MemberEnd())
 	{
-		ASYNCFLOW_ERR("missing chart Path");
-		delete chartData;
+		ASYNCFLOW_ERR("missing chart Path");		
 		return false;
 	}
 	const std::string fullPath = chartFullPath->value.GetString();
@@ -65,8 +61,7 @@ bool ChartData::FromJson(rapidjson::Value& jobj)
 		bool r = chartData->InitParamsFromJson(varObj->value);
 		if( r == false )
 		{
-			ASYNCFLOW_ERR("read parameters error in chart {0}", fullPath);
-			delete chartData;
+			ASYNCFLOW_ERR("read parameters error in chart {0}", fullPath);			
 			return false;
 		}
 	}
@@ -75,8 +70,7 @@ bool ChartData::FromJson(rapidjson::Value& jobj)
 	auto nodesArrayIter = jobj.FindMember("nodes");
 	if (nodesArrayIter == jobj.MemberEnd())
 	{
-		ASYNCFLOW_ERR("missing nodes in chart {0}", fullPath);
-		delete chartData;
+		ASYNCFLOW_ERR("missing nodes in chart {0}", fullPath);		
 		return false;
 	}
 
@@ -84,8 +78,7 @@ bool ChartData::FromJson(rapidjson::Value& jobj)
 	auto startList = jobj.FindMember("start");
 	if (startList == jobj.MemberEnd())
 	{
-		ASYNCFLOW_ERR("missing start in chart {0}", fullPath);
-		delete chartData;
+		ASYNCFLOW_ERR("missing start in chart {0}", fullPath);		
 		return false;
 	}
 
@@ -119,15 +112,14 @@ bool ChartData::FromJson(rapidjson::Value& jobj)
 		startNode->SetNodeFunc(func);
 	}
 	//add start node
-	chartData->node_list_.push_back(startNode);		
+	chartData->node_list_.push_back(startNode);
 
 	nodeId = 1;
-	for (auto it = nodesArray.begin(); it != nodesArray.end(); ++it)
+	for (auto* it = nodesArray.begin(); it != nodesArray.end(); ++it)
 	{
-		auto nodeData = new NodeData(nodeId++);
+		auto* nodeData = new NodeData(nodeId++);
 		if (nodeData->InitFromJson(*it, id_map, this) == false)
-		{
-			delete chartData;
+		{			
 			return false;
 		}
 		chartData->node_list_.push_back(nodeData);
@@ -143,11 +135,10 @@ ChartData::~ChartData()
 		prev_ = nullptr;
 	}
 
-	for (auto node_data : node_list_)
+	for (auto* node_data : node_list_)
 	{
 		delete node_data;
 	}
-
 	
 	node_list_.clear();
 }
@@ -159,11 +150,10 @@ void ChartData::Update(ChartData* new_data)
 	new_data->SetVersion(version_ + 1);
 }
 
-
 void ChartData::SetNodes(std::vector<NodeData*>& nodes)
 {
 	node_list_.clear();
-	for (auto node : nodes)
+	for (auto* node : nodes)
 	{
 		node_list_.push_back(node);
 	}
@@ -171,15 +161,20 @@ void ChartData::SetNodes(std::vector<NodeData*>& nodes)
 
 NodeData* ChartData::GetNodeData(const std::string& uid)
 {
-	auto iter = std::find_if(node_list_.begin(), node_list_.end(), [uid](NodeData* n) {return n->GetUid() == uid; });
+	const auto iter = std::find_if(node_list_.begin(), node_list_.end()
+		, [&uid](NodeData* n) {return n->GetUid() == uid; });
 	if (iter == node_list_.end())
 		return nullptr;
 	return *iter;
 }
 
-std::string ChartData::GetVariableName(int idx)
+const std::string& ChartData::GetVariableName(int idx) const
 {
-	if (idx < 0 || idx >= variables_.size())
-		return "";
+	if (idx < 0 || idx >= static_cast<int>(variables_.size()))
+	{
+		ASYNCFLOW_WARN("get chart variable name error: variable index {0} out of range {1}", idx, variables_.size());
+		return "__error";
+	}
+		
 	return variables_[idx].name;
 }

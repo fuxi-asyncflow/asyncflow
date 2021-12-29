@@ -180,6 +180,7 @@ std::vector<ChartData*> Manager::ParseChartsFromJson(const std::string& json_str
 				if (!data->FromJson(chart_obj))
 				{
 					ASYNCFLOW_ERR("init chart data error");
+					delete data;
 				}
 				else
 				{
