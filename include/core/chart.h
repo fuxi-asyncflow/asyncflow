@@ -39,7 +39,7 @@ namespace asyncflow
 			Status	GetStatus() { return status_; }
 			void	SetStatus(Status s) { status_ = s; }
 			ChartData* GetData() { return data_; }
-			std::string& Name() { return data_->Name(); }
+			const std::string& Name() { return data_->Name(); }
 
 #ifdef FLOWCHART_DEBUG
 			void	StartDebug() { if(!debug_) debug_ = true; }

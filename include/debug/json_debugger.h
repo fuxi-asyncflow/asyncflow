@@ -3,6 +3,8 @@
 #include "debug/debugger.h"
 #include "rapidjson/prettywriter.h"
 #include "debug_common.h"
+#include <functional>
+#include <unordered_map>
 
 namespace asyncflow
 {
@@ -11,18 +13,35 @@ namespace asyncflow
 		class JsonDebugger : public Debugger
 		{
 		public:
-			std::string PrepareChartDebugData(core::Chart* chart) override;
-			void ChartDataToJson(core::ChartData* chart_data, rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer);
-			std::string ErrorReply(int code, const std::string& error_msg, int id) override;
-			std::string SimpleReply(const std::string& method, const std::vector<std::string>& result, int id) override;
-			std::string SimpleReply(const std::string& method, const std::unordered_map<std::string, std::string>& result, int id) override;
-			std::string StopMessage(const std::string& chart_name) override;
-			std::string ChartInitData(const std::string& method, core::ChartData* chart_data, int id) override;
-			std::string ChartInfo(core::Chart* chart) override;
-			std::string GetChartList(core::Manager* manager, const std::string& obj_name, const std::string& chart_name, int id) override;
-			std::string HeartBeat() override;
+			JsonDebugger();
+			~JsonDebugger() = default;
 
 			void HandleMessage(const std::string& msg, core::Manager* manager_, DebugConnection* obj) override;
+		
+			std::string PrepareChartDebugData(Chart* chart) override;
+			std::string StopMessage(const std::string& chart_name) override;
+			std::string ChartInfo(Chart* chart) override;
+			std::string HeartBeat() override;
+
+		private:
+			static void ChartDataToJson(core::ChartData* chart_data, rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer);
+			static std::string ErrorReply(int code, const std::string& error_msg, int id);
+			static std::string SimpleReply(const std::string& method, const std::vector<std::string>& result, int id);
+			static std::string SimpleReply(const std::string& method, const std::unordered_map<std::string, std::string>& result, int id);			
+			static std::string ChartInitData(const std::string& method, core::ChartData* chart_data, int id);			
+			static std::string GetChartList(core::Manager* manager, const std::string& obj_name, const std::string& chart_name, int id);
+			static std::string GenChartInfo(Chart* chart);
+
+			using MessageHandler = std::function<void(rapidjson::Document&, Manager*, DebugConnection*, int)>;		
+			std::unordered_map<std::string, MessageHandler> handlers_;
+			static void GetChartListHandler(rapidjson::Document& doc, Manager* manager, DebugConnection* connect, int manager_id);
+			static void DebugChartHandler(rapidjson::Document& doc, Manager* manager, DebugConnection* connect, int manager_id);
+			static void StopChartHandler(rapidjson::Document& doc, Manager* manager, DebugConnection* connect, int manager_id);
+			static void QuickDebugHandler(rapidjson::Document& doc, Manager* manager, DebugConnection* connect, int manager_id);
+			static void BreakPointHandler(rapidjson::Document& doc, Manager* manager, DebugConnection* connect, int manager_id);
+			static void ContinueHandler(rapidjson::Document& doc, Manager* manager, DebugConnection* connect, int manager_id);
+			static void GmHandler(rapidjson::Document& doc, Manager* manager, DebugConnection* connect, int manager_id);
+			static void HotFixHandler(rapidjson::Document& doc, Manager* manager, DebugConnection* connect, int manager_id);
 		};
 
 		typedef rapidjson::PrettyWriter<rapidjson::StringBuffer> Writer;

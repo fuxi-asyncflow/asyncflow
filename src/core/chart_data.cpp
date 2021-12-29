@@ -8,6 +8,8 @@
 using namespace asyncflow::core;
 using namespace asyncflow::util;
 
+const std::string _error_var_name = "__error";
+
 ChartData::ChartData()
 	: variable_count_(0)
 	, params_count_(0)
@@ -173,7 +175,7 @@ const std::string& ChartData::GetVariableName(int idx) const
 	if (idx < 0 || idx >= static_cast<int>(variables_.size()))
 	{
 		ASYNCFLOW_WARN("get chart variable name error: variable index {0} out of range {1}", idx, variables_.size());
-		return "__error";
+		return _error_var_name;
 	}
 		
 	return variables_[idx].name;

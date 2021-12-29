@@ -19,6 +19,19 @@ DebugChartInfo GetDebugChartInfoFromJson(const rapidjson::Document::Object& para
 	return DebugChartInfo(agent_id, (Node*)owner_node_addr, nullptr, chart_name);
 }
 
+JsonDebugger::JsonDebugger()
+{
+	handlers_["get_chart_list"] = GetChartListHandler;
+	handlers_["debug_chart"] = DebugChartHandler;
+	handlers_["stop_chart"] = StopChartHandler;
+	handlers_["quick_debug"] = QuickDebugHandler;
+	handlers_["break_point"] = BreakPointHandler;
+	handlers_["continue"] = ContinueHandler;
+	handlers_["gm"] = GmHandler;
+	handlers_["hotfix"] = HotFixHandler;
+}
+
+
 std::string JsonDebugger::GetChartList(Manager* manager, const std::string& obj_name, const std::string& chart_name, int msg_id)
 {
 	auto v = manager->GetDebugChartList(chart_name, obj_name);
@@ -253,6 +266,11 @@ std::string JsonDebugger::SimpleReply(const std::string& method, const std::unor
 
 std::string JsonDebugger::ChartInfo(Chart* chart)
 {
+	return GenChartInfo(chart);
+}
+
+std::string JsonDebugger::GenChartInfo(Chart* chart)
+{
 	rapidjson::StringBuffer sb;
 	rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(sb);
 	writer.StartObject();
@@ -284,163 +302,27 @@ void JsonDebugger::HandleMessage(const std::string& msg, Manager* manager_, Debu
 	}
 	try
 	{
-		if (doc.HasMember("jsonrpc"))
+		if (!doc.HasMember("jsonrpc"))
+			return;
+
+		int msg_id = -1;
+		if (doc.HasMember("id"))
 		{
-			std::string func_name = doc["method"].GetString();
-			auto params = doc["params"].GetObject();
-			int msg_id = -1;
-			if (doc.HasMember("id"))
-			{
-				msg_id = doc["id"].GetInt();
-			}
-			if (func_name == "get_chart_list")
-			{
-				auto chart_name = params["chart_name"].GetString();
-				auto obj_name = params["obj_name"].GetString();
-				if (chart_name == nullptr)
-					chart_name = "";
-				if (obj_name == nullptr)
-					obj_name = "";
-				connection->Reply(JsonDebugger::GetChartList(manager_, chart_name, obj_name, msg_id));
-			}
-			else if (func_name == "debug_chart")
-			{
-				auto chartInfo = GetDebugChartInfoFromJson(params);
-				connection->Reply(DebugChart(manager_, chartInfo, msg_id));
-				auto* chart = chartInfo.chart;
-				if (chart != nullptr)
-				{
-					connection->StartDebugChart(chart);
-				}
-			}
-			else if (func_name == "stop_chart")
-			{
-				auto chartInfo = GetDebugChartInfoFromJson(params);
-
-				connection->Reply(StopChart(manager_, chartInfo, msg_id));
-				auto* chart = chartInfo.chart;
-				if (chart != nullptr)
-				{
-					connection->StopDebugChart(chart);
-				}
-			}
-			else if (func_name == "quick_debug")
-			{
-				auto chart_name = params["chart_name"].GetString();
-				auto chart_list = manager_->GetChartsByName(chart_name);
-				//Run the first chart in chart list by default
-				if (chart_list.size() > 0)
-				{
-					auto chart = chart_list.front();
-					connection->Reply(ChartInitData("quick_debug", chart->GetData(), msg_id));
-					connection->Reply(ChartInfo(chart));
-					connection->StartDebugChart(chart);
-					return;
-				}
-				auto chart_data = manager_->GetChartData(chart_name);
-				if (chart_data == nullptr)
-				{
-					connection->Reply(ErrorReply(-10, "The chart is not exist in chart_data", msg_id));
-				}
-				else
-				{
-					connection->QuickDebugChart(chart_data);
-					connection->Reply(ChartInitData("quick_debug", chart_data, msg_id));
-				}
-			}
-			else if (func_name == "break_point")
-			{
-				auto chart_name = params["chart_name"].GetString();
-				auto chart_data = manager_->GetChartData(chart_name);
-				if (chart_data == nullptr)
-				{
-					connection->Reply(ErrorReply(-10, "The chart is not exist in chart_data", msg_id));
-					return;
-				}
-				auto uid = params["node_uid"].GetString();
-				auto node_data = chart_data->GetNodeData(uid);
-				if (node_data == nullptr)
-				{
-					connection->Reply(ErrorReply(-4, "The uid is not exist in chart_data", msg_id));
-					return;
-				}
-				auto command = params["command"].GetString();
-				std::unordered_map<std::string, std::string> result;
-				result["chart_name"] = chart_name;
-				result["node_uid"] = uid;
-				if (strcmp(command, "set") == 0)
-				{
-					if (!node_data->IsBreakPoint())
-					{
-						node_data->SetBreakPoint(true);
-						manager_->SetBreakpoint(node_data);
-					}
-					result["command"] = "set";
-					connection->Reply(SimpleReply("break_point", result, msg_id));
-				}
-				else
-				{
-					assert(strcmp(command, "delete") == 0);
-					if (node_data->IsBreakPoint())
-					{
-						node_data->SetBreakPoint(false);
-						manager_->DeleteBreakpoint(node_data);
-					}
-					result["command"] = "delete";
-					connection->Reply(SimpleReply("break_point", result, msg_id));
-				}
-			}
-			else if (func_name == "continue")
-			{
-				auto chartInfo = GetDebugChartInfoFromJson(params);
-				connection->Reply(ContinueDebug(manager_, chartInfo, msg_id));
-				auto* chart = chartInfo.chart;
-				if (chart != nullptr)
-				{
-					connection->ContinueDebugChart(chart);
-				}
-			}
-			else if (func_name == "gm")
-			{
-				auto script = params["script"].GetString();
-				auto result = manager_->RunScript(script);
-				if (result.first)
-				{
-					connection->Reply(SimpleReply("gm", result.second, msg_id));
-				}
-				else
-					connection->Reply(ErrorReply(-10, result.second.front(), msg_id));
-			}
-			else if (func_name == "hotfix")
-			{
-				auto charts_func = params["charts_func"].GetString();
-				auto result = manager_->RunScript(charts_func);
-				if (!result.first)
-				{
-					connection->Reply(ErrorReply(-15, "run charts_func error", msg_id));
-					return;
-				}
-				auto* charts_data_str = params["charts_data"].GetString();
-				auto chart_data_list = manager_->ParseChartsFromJson(charts_data_str);
-				manager_->ImportChatData(chart_data_list);
-				for (auto data : chart_data_list)
-				{
-					manager_->RestartChart(data->Name());
-				}
-
-				if (chart_data_list.empty())
-				{
-					connection->Reply(ErrorReply(-15, "import charts_data error", msg_id));
-					return;
-				}
-				connection->Reply(SimpleReply("hotfix", std::vector<std::string>(), msg_id));
-			}
-
-			else
-			{
-				connection->Reply(ErrorReply(-32601, "method not find", msg_id));
-			}
+			msg_id = doc["id"].GetInt();
 		}
+
+		std::string func_name = doc["method"].GetString();
+		auto it = handlers_.find(func_name);
+		if(it == handlers_.end())
+		{
+			std::stringstream ss;
+			ss << "method " << func_name << " not find";
+			connection->Reply(ErrorReply(-32601, ss.str().c_str(), msg_id));
+			return;
+		}
+
+		auto& handler = it->second;
+		handler(doc, manager_, connection, msg_id);		
 	}
 	catch (std::exception e)
 	{
@@ -645,6 +527,182 @@ std::string JsonDebugger::HeartBeat()
 	writer.String("heart_beat");
 	writer.EndObject();
 	return std::string(sb.GetString());
+}
+
+void JsonDebugger::GetChartListHandler(rapidjson::Document& doc, Manager* manager_, DebugConnection* connection, int msg_id)
+{
+	auto params = doc["params"].GetObject();
+	const auto* chart_name = params["chart_name"].GetString();
+	const auto* obj_name = params["obj_name"].GetString();
+	if (chart_name == nullptr)
+		chart_name = "";
+	if (obj_name == nullptr)
+		obj_name = "";
+	connection->Reply(GetChartList(manager_, chart_name, obj_name, msg_id));
+}
+
+void JsonDebugger::DebugChartHandler(rapidjson::Document& doc, Manager* manager_, DebugConnection* connection, int msg_id)
+{
+	auto params = doc["params"].GetObject();
+	auto chartInfo = GetDebugChartInfoFromJson(params);
+	auto msg = FindChart(manager_, chartInfo);
+	auto* chart = chartInfo.chart;
+	if (chart == nullptr)
+	{
+		connection->Reply(ErrorReply(-1, msg, msg_id));
+	}
+	else
+	{
+		connection->Reply(ChartInitData("debug_chart", chart->GetData(), msg_id));
+		connection->StartDebugChart(chart);
+	}
+}
+
+void JsonDebugger::StopChartHandler(rapidjson::Document& doc, Manager* manager_, DebugConnection* connection, int msg_id)
+{
+	auto params = doc["params"].GetObject();
+	auto chartInfo = GetDebugChartInfoFromJson(params);
+	auto msg = FindChart(manager_, chartInfo);
+	auto* chart = chartInfo.chart;
+	if (chart == nullptr)
+	{
+		connection->Reply(ErrorReply(-1, msg, msg_id));
+	}
+	else
+	{
+		std::unordered_map<std::string, std::string> result;
+		result["chart_name"] = chartInfo.chart_name;
+		connection->Reply(SimpleReply("stop_chart", result, msg_id));
+		connection->StopDebugChart(chart);
+	}
+}
+
+void JsonDebugger::QuickDebugHandler(rapidjson::Document& doc, Manager* manager_, DebugConnection* connection, int msg_id)
+{
+	auto params = doc["params"].GetObject();
+	auto chart_name = params["chart_name"].GetString();
+	auto chart_list = manager_->GetChartsByName(chart_name);
+	//Run the first chart in chart list by default
+	if (chart_list.size() > 0)
+	{
+		auto chart = chart_list.front();
+		connection->Reply(ChartInitData("quick_debug", chart->GetData(), msg_id));
+		connection->Reply(GenChartInfo(chart));
+		connection->StartDebugChart(chart);
+		return;
+	}
+	auto chart_data = manager_->GetChartData(chart_name);
+	if (chart_data == nullptr)
+	{
+		connection->Reply(ErrorReply(-10, "The chart is not exist in chart_data", msg_id));
+	}
+	else
+	{
+		connection->QuickDebugChart(chart_data);
+		connection->Reply(ChartInitData("quick_debug", chart_data, msg_id));
+	}
+}
+
+void JsonDebugger::BreakPointHandler(rapidjson::Document& doc, Manager* manager_, DebugConnection* connection, int msg_id)
+{
+	auto params = doc["params"].GetObject();
+	auto chart_name = params["chart_name"].GetString();
+	auto chart_data = manager_->GetChartData(chart_name);
+	if (chart_data == nullptr)
+	{
+		connection->Reply(ErrorReply(-10, "The chart is not exist in chart_data", msg_id));
+		return;
+	}
+	auto uid = params["node_uid"].GetString();
+	auto node_data = chart_data->GetNodeData(uid);
+	if (node_data == nullptr)
+	{
+		connection->Reply(ErrorReply(-4, "The uid is not exist in chart_data", msg_id));
+		return;
+	}
+	auto command = params["command"].GetString();
+	std::unordered_map<std::string, std::string> result;
+	result["chart_name"] = chart_name;
+	result["node_uid"] = uid;
+	if (strcmp(command, "set") == 0)
+	{
+		if (!node_data->IsBreakPoint())
+		{
+			node_data->SetBreakPoint(true);
+			manager_->SetBreakpoint(node_data);
+		}
+		result["command"] = "set";
+		connection->Reply(SimpleReply("break_point", result, msg_id));
+	}
+	else
+	{
+		assert(strcmp(command, "delete") == 0);
+		if (node_data->IsBreakPoint())
+		{
+			node_data->SetBreakPoint(false);
+			manager_->DeleteBreakpoint(node_data);
+		}
+		result["command"] = "delete";
+		connection->Reply(SimpleReply("break_point", result, msg_id));
+	}
+}
+
+void JsonDebugger::ContinueHandler(rapidjson::Document& doc, Manager* manager_, DebugConnection* connection, int msg_id)
+{
+	auto params = doc["params"].GetObject();
+	auto chartInfo = GetDebugChartInfoFromJson(params);
+	auto msg = FindChart(manager_, chartInfo);
+	auto* chart = chartInfo.chart;
+	if (chart == nullptr)
+	{
+		connection->Reply(ErrorReply(-1, msg, msg_id));
+	}
+	else
+	{
+		std::unordered_map<std::string, std::string> result;
+		result["chart_name"] = chartInfo.chart_name;
+		connection->Reply(SimpleReply("continue", result, msg_id));
+		connection->ContinueDebugChart(chart);
+	}
+}
+
+void JsonDebugger::GmHandler(rapidjson::Document& doc, Manager* manager_, DebugConnection* connection, int msg_id)
+{
+	auto params = doc["params"].GetObject();
+	auto script = params["script"].GetString();
+	auto result = manager_->RunScript(script);
+	if (result.first)
+	{
+		connection->Reply(SimpleReply("gm", result.second, msg_id));
+	}
+	else
+		connection->Reply(ErrorReply(-10, result.second.front(), msg_id));
+}
+
+void JsonDebugger::HotFixHandler(rapidjson::Document& doc, Manager* manager_, DebugConnection* connection, int msg_id)
+{
+	auto params = doc["params"].GetObject();
+	auto charts_func = params["charts_func"].GetString();
+	auto result = manager_->RunScript(charts_func);
+	if (!result.first)
+	{
+		connection->Reply(ErrorReply(-15, "run charts_func error", msg_id));
+		return;
+	}
+	auto* charts_data_str = params["charts_data"].GetString();
+	auto chart_data_list = manager_->ParseChartsFromJson(charts_data_str);
+	manager_->ImportChatData(chart_data_list);
+	for (auto* data : chart_data_list)
+	{
+		manager_->RestartChart(data->Name());
+	}
+
+	if (chart_data_list.empty())
+	{
+		connection->Reply(ErrorReply(-15, "import charts_data error", msg_id));
+		return;
+	}
+	connection->Reply(SimpleReply("hotfix", std::vector<std::string>(), msg_id));
 }
 
 #endif
