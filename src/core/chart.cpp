@@ -105,7 +105,7 @@ bool Chart::CheckRunning()
 #ifdef 	FLOWCHART_DEBUG
 void Chart::SendNodeStatus(int id, const std::string& uid, Node::Status old_status, Node::Status new_status, bool result)
 {
-	if (old_status != new_status &&(old_status == Node::Status::Idle || new_status == Node::Status::EndRun))
+	if (old_status != new_status)
 	{
 		auto* data = new debug::NodeStatusData(id, uid, old_status, new_status, result);
 		data->id = debug_data_count_++;
