@@ -60,7 +60,7 @@ namespace asyncflow
 			bool StopNode(span<const int> args);
 			bool StopFlow(span<const int> args);
 			bool WaitEvent(Agent* agent, int event_id);
-			bool Subchart(std::string chart_name, Agent* agent, void* args, int arg_count);
+			bool Subchart(const std::string& chart_name, Agent* agent, void* args, int arg_count);
 			int64_t	 CreateAsyncContext();	//Save current context
 
 			virtual Chart* CreateChart() = 0;
@@ -97,6 +97,7 @@ namespace asyncflow
 
 		public:
 			const static int DEFAULT_AGENT_TICK;
+			bool AUTO_REGISTER;
 			static DataManager dataManager;
 			bool IsImmediateSub() { return immediate_subchart_; }
 			void SetImmediateSub(bool flag) { immediate_subchart_ = flag; }

@@ -37,12 +37,22 @@ void DfsExecutor::RunFlow(Node* start_node)
 
 		if (loop_check_ && node->RunFlag() && !node->GetData()->IsEventNode())	//loop
 		{
-			current_agent_->WaitEvent(node, AsyncEventBase::TICK_EVENT);			
+			current_agent_->WaitEvent(node, AsyncEventBase::TICK_EVENT);
 		}
 		else
 		{
+#ifdef ENABLE_PERF
+			auto start_time = std::chrono::high_resolution_clock::now();
+#endif
 			current_node_ = node;
 			node->Run();
+
+#ifdef ENABLE_PERF
+			auto end_time = std::chrono::high_resolution_clock::now();
+			auto cost = std::chrono::duration_cast<std::chrono::nanoseconds>(end_time - start_time);
+			node->GetData()->AddRunCount();
+			node->GetData()->AddTimeCost(cost);
+#endif
 
 			//If the node finishes executing(not in running stateus),the subsequent node is added to the list
 			if (!node->IsRunning())

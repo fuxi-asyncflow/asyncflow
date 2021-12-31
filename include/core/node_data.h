@@ -3,6 +3,7 @@
 #include "rapidjson/document.h"
 #include <unordered_map>
 #include <string>
+#include <chrono>
 
 namespace asyncflow
 {
@@ -21,6 +22,10 @@ namespace asyncflow
 				, text_("")
 #ifdef FLOWCHART_DEBUG
 				, break_point(false)
+#endif
+#ifdef ENABLE_PERF
+				, run_count_(0)
+				, time_cost_(0)
 #endif
 
 			{
@@ -45,6 +50,16 @@ namespace asyncflow
 			std::vector<int> children_[3];
 			NodeFunc* node_func_;
 			std::string text_;
+#ifdef ENABLE_PERF
+		private:
+			int run_count_;
+			std::chrono::nanoseconds time_cost_;
+		public:
+			void AddRunCount() { run_count_++; };
+			int GetRunCount() { return run_count_; };
+			void AddTimeCost(std::chrono::nanoseconds cur_cost) { time_cost_ += cur_cost; };
+			std::chrono::nanoseconds GetTimeCost() { return time_cost_; };
+#endif
 
 #ifdef FLOWCHART_DEBUG
 		public:

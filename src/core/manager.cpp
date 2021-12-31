@@ -10,6 +10,7 @@
 #include "core/node_func.h"
 #include <set>
 #include <queue>
+#include <fstream>
 
 using namespace asyncflow::core;
 using namespace asyncflow::util;
@@ -26,6 +27,7 @@ Manager::Manager()
 	, current_event_(nullptr)
 	, default_time_interval_(100)
 	, immediate_subchart_(false)
+    , AUTO_REGISTER(true)
 #ifdef FLOWCHART_DEBUG
 	, websocket_manager_(this)
 #endif
@@ -36,6 +38,32 @@ Manager::Manager()
 Manager::~Manager()
 {	
 	current_event_ = nullptr;
+#ifdef ENABLE_PERF
+	auto now = std::chrono::system_clock::now();
+	auto in_time_t = std::chrono::system_clock::to_time_t(now);	
+	std::stringstream ss;
+	ss << "asyncflow_perf_" << std::to_string(in_time_t) << ".txt";
+	
+	FILE* f;
+	fopen_s(&f, ss.str().c_str(), "wt");
+	if (f != nullptr)
+	{
+		for (auto it = chart_data_dict_->begin(); it != chart_data_dict_->end(); ++it)
+		{
+			auto* chartData = it->second;
+			fprintf(f, "%s\n", chartData->Name().c_str());			
+			for (int i = 0; i < chartData->GetNodeCount(); ++i)
+			{
+				auto* nodeData = chartData->GetNodeData(i);
+				auto run_count = nodeData->GetRunCount();
+				auto time_cost = nodeData->GetTimeCost();
+				fprintf(f, "%d %d %lld\n", i, run_count, time_cost.count());
+			}
+		}
+		fclose(f);
+	}
+#endif
+
 	dataManager.ClearChartDataMap(chart_data_dict_);	
 }
 
@@ -379,12 +407,13 @@ bool Manager::WaitEvent(Agent* agent, int event_id)
 	return true;
 }
 
-bool Manager::Subchart(std::string chart_name, Agent* agent, void* args, int arg_count)
+bool Manager::Subchart(const std::string& chart_name, Agent* agent, void* args, int arg_count)
 {
 	//There are several cases to consider
 	//Run for the first time, and loop
 	//Whether the object that called the subchart is same as the object of the owner chart
 	//Whether the object called again is same as the object called before
+	if (agent == nullptr) return false;
 	auto* node = GetCurrentNode();
 	//Since the node status has already been checked in runflow, the running status check is deleted
 
