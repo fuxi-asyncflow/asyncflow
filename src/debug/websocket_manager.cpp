@@ -27,25 +27,33 @@ WebsocketManager::~WebsocketManager()
 void WebsocketManager::Init(const std::string& ip, int port)
 {
 #ifndef BUILD_WASM
-	server_.init_asio();
-	server_.clear_access_channels(websocketpp::log::alevel::all);
-	server_.set_message_handler([this](websocketpp::connection_hdl hdl, WebsocketAsioServer::message_ptr msg)
+	try
 	{
-		OnMessage(hdl, msg);
-	});
+		server_.init_asio();
+		server_.clear_access_channels(websocketpp::log::alevel::all);
+		server_.set_message_handler([this](websocketpp::connection_hdl hdl, WebsocketAsioServer::message_ptr msg)
+			{
+				OnMessage(hdl, msg);
+			});
 
-	//check available port start from port
-	int max_delta = 100;
-	for (int i = 0; i < max_delta; i++)
-	{
-		if (IsPortAvailable(ip.c_str(), port + i))
+		//check available port start from port
+		int max_delta = 100;
+		for (int i = 0; i < max_delta; i++)
 		{
-			server_.listen(asio::ip::address::from_string(ip), port + i);
-			server_.start_accept();
-			ASYNCFLOW_LOG("[deubg] Init debug server success for ip {0} port {1}", ip, port + i);
-			break;
+			if (IsPortAvailable(ip.c_str(), port + i))
+			{
+				server_.listen(asio::ip::address::from_string(ip), port + i);
+				server_.start_accept();
+				ASYNCFLOW_LOG("[deubg] Init debug server success for ip {0} port {1}", ip, port + i);
+				break;
+			}
 		}
 	}
+	catch(const std::exception& e)
+	{
+		ASYNCFLOW_LOG("[deubg] Init websocket manager error {}", e.what());
+	}
+	
 #endif
 }
 
@@ -54,42 +62,53 @@ void WebsocketManager::Step()
 #ifndef BUILD_WASM
 	ASYNCFLOW_DBG("[deubg] debugging chart count {0}", chart_map_.size());
 	//send data
-	std::vector<Chart *> check_chart;
+	std::vector<Chart *> charts_not_debugging;
 	for (auto& chart_kv : chart_map_)
 	{
 		std::string str;
-		if (chart_kv.first->GetDebugData().size() == 0)
+		auto* chart = chart_kv.first;
+		auto& conns = chart_kv.second;
+		if (chart->GetDebugData().empty())
 			str = debugger_->HeartBeat();
 		else
-			str = debugger_->PrepareChartDebugData(chart_kv.first);
+			str = debugger_->PrepareChartDebugData(chart);
 		ASYNCFLOW_DBG("[deubg] chart json {0}", str);
-		auto iter = chart_kv.second.begin();
-		while (iter != chart_kv.second.end())
+		auto iter = conns.begin();
+		while (iter != conns.end())
 		{
 			try
 			{
 				server_.send(*iter, str, websocketpp::frame::opcode::TEXT);
 				++iter;
 			}
-			catch (std::exception e)
+			catch (const std::exception& e)
 			{
-				iter = chart_kv.second.erase(iter);
-				if (chart_kv.second.size() == 0)
-					check_chart.push_back(chart_kv.first);
-				ASYNCFLOW_WARN("[deubg] websocket send error for chart {}, the reason is {}", chart_kv.first->Name(), e.what());
+				iter = conns.erase(iter);
+				if (conns.empty())
+					charts_not_debugging.push_back(chart);
+				ASYNCFLOW_WARN("[deubg] websocket send error for chart {}, the reason is {}", chart->Name(), e.what());
 			}
-
 		}
 	}
 
-	for (auto chart : check_chart)
+	// clear chart which not debugging any more
+	for (auto* chart : charts_not_debugging)
 	{
 		chart->StopDebug();
 		chart_map_.erase(chart_map_.find(chart));
 	}
-	server_.poll();
-	if (server_.stopped())
-		server_.reset();
+
+	try
+	{
+		server_.poll();
+		if (server_.stopped())
+			server_.reset();
+	}
+	catch (const std::exception& e)
+	{
+		ASYNCFLOW_WARN("[deubg] websocket step error {0}", e.what());
+	}
+	
 #endif
 
 }
@@ -133,6 +152,16 @@ void WebsocketManager::StartDebugChart(Chart* chart, websocketpp::connection_hdl
 	{
 		hdls.insert(hdls.end(), hdl);
 		chart->StartDebug();
+
+		for (auto* node : chart->GetNodeList())
+		{
+			if (node->GetStatus() == Node::Running)
+			{
+				chart->SendNodeStatus(node->GetData()->GetId(), node->GetData()->GetUid(),
+					Node::Idle, Node::Running, true);
+			}
+
+		}
 	}
 	return;
 }
