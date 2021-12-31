@@ -53,6 +53,13 @@ int asyncflow::lua::setup(lua_State* L)
 			}
 		}
 
+		lua_getfield(L, 1, "auto_register");
+		if (lua_isboolean(L, -1))
+		{
+			mgr->AUTO_REGISTER = lua_toboolean(L, -1);
+			ASYNCFLOW_LOG("auto_register is set to {0}.", mgr->AUTO_REGISTER);
+		}
+
 #ifdef FLOWCHART_DEBUG
 		std::string ip = WebsocketManager::IP;
 		int port = WebsocketManager::START_PORT;
@@ -529,12 +536,7 @@ int asyncflow::lua::wait_event(lua_State* L)
 		lua_pushboolean(L, 0);
 		return 1;
 	}
-	Agent* agent = luaManager->GetAgent((void*)obj);
-	if (agent == nullptr)
-	{
-		ASYNCFLOW_ERR("wait event obj {} is not registered", obj);
-		agent = luaManager->RegisterGameObject(const_cast<void*>(obj), Manager::DEFAULT_AGENT_TICK);
-	}
+	Agent* agent = luaManager->TryGetAgent((void*)obj);
 	res = luaManager->WaitEvent(agent, event_id);
 	lua_pushboolean(L, res);
 	return 1;

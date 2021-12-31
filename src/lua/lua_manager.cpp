@@ -40,26 +40,20 @@ Agent* LuaManager::RegisterGameObject(void* obj, int tick)
 		ASYNCFLOW_LOG("object has registered to asyncflow");
 		return nullptr;
 	}
-	auto agent = agent_manager_.Register(obj);	// -1	
+	auto* agent = agent_manager_.Register(obj);
 	agent->SetTickInterval(tick);
 	return agent;
 }
 
 bool LuaManager::UnregisterGameObject(void* obj)
 {
-	auto agent = agent_manager_.GetAgent(obj);
+	auto* agent = agent_manager_.GetAgent(obj);
 	return Manager::UnregisterGameObject(agent);
 }
 
 bool LuaManager::Event(int event_id, void* obj, int* args, int arg_count, bool immediate)
-{
-	auto agent = agent_manager_.GetAgent(obj);
-	if (agent == nullptr)
-	{
-		ASYNCFLOW_WARN("obj {} is not registered", obj);
-		agent = agent_manager_.Register(obj);
-	}
-	return Manager::Event(event_id, agent, (void*)args, arg_count, immediate);
+{	
+	return Manager::Event(event_id, TryGetAgent(obj), (void*)args, arg_count, immediate);
 }
 
 std::pair<bool, std::vector<std::string>> LuaManager::RunScript(const char * str)

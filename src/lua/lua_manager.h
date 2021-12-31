@@ -90,23 +90,23 @@ namespace asyncflow
 			void GetEventParam(lua_State* obj, int event_id, int param_idx);
 			void Return(lua_State* L);
 			BasicAgentManager& GetAgentManager() override { return agent_manager_; }
-			LuaAgent* GetAgent(void* obj)
+			LuaAgent* GetAgent(void* obj) {	return (LuaAgent*)agent_manager_.GetAgent(obj);	}
+			Agent* TryGetAgent(void* obj)
 			{
-				return (LuaAgent*)agent_manager_.GetAgent(obj);
+				Agent* agent = GetAgent(obj);				
+				if(agent == nullptr && AUTO_REGISTER)
+				{
+					agent = agent_manager_.Register(obj);
+					agent->SetTickInterval(DEFAULT_AGENT_TICK);
+				}
+				return agent;
 			}
 
 			std::pair<bool, std::vector<std::string>> RunScript(const char* str) override;
 
 			bool Subchart(const std::string& chart_name, void* obj, lua_State* L, int arg_count)
 			{
-				auto* agent = agent_manager_.GetAgent(obj);
-				//if the obj was not registered, create a new agent
-				if (agent == nullptr)
-				{
-					ASYNCFLOW_ERR("subchart object {0} is not registered", obj);
-					agent = agent_manager_.Register(obj);
-				}
-				return Manager::Subchart(chart_name, agent, L, arg_count);
+				return Manager::Subchart(chart_name, TryGetAgent(obj), L, arg_count);
 			}
 
 			bool StartAgent(void* obj)
