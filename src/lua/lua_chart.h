@@ -28,6 +28,7 @@ namespace asyncflow
 #ifdef FLOWCHART_DEBUG
 			void SendEventStatus(std::string node_uid, const AsyncEventBase* event) override;
 			void SendVariableStatus(std::string var_id, std::string old_value, std::string new_value);
+			std::string ValueToString(lua_State* L, int index, const std::string& type);
 #endif
 			Ref		variables_;
 			Ref		call_;		// return被调用，或者无可用节点时调用

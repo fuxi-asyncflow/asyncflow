@@ -180,3 +180,15 @@ const std::string& ChartData::GetVariableName(int idx) const
 		
 	return variables_[idx].name;
 }
+
+const Parameter* ChartData::GetVariable(int idx) const
+{
+	if (idx < 0 || idx >= static_cast<int>(variables_.size()))
+	{
+		ASYNCFLOW_WARN("get chart variable name error: variable index {0} out of range {1}", idx, variables_.size());
+		return nullptr;
+	}
+
+	return &variables_[idx];
+}
+

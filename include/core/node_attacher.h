@@ -4,9 +4,6 @@
 #include <map>
 #include "ratas.h"
 
-#include "gsl/span"
-using gsl::span;
-
 namespace asyncflow
 {
 	namespace core
@@ -69,7 +66,7 @@ namespace asyncflow
 			NodeWaitAll(Node* node);
 			~NodeWaitAll();
 
-			void Init(span<const int> args);
+			void Init(const std::vector<int>& args);
 			bool Run(int id);
 			void Stop() override;
 		private:

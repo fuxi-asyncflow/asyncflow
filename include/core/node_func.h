@@ -3,9 +3,6 @@
 #include "core/manager.h"
 #include <string>
 #include <vector>
-#include "gsl/span"
-
-using gsl::span;
 
 namespace asyncflow
 {
@@ -20,7 +17,7 @@ namespace asyncflow
 			virtual ~NodeFunc() = default;
 		};
 
-		typedef bool(Manager::*ControlFunc)(span<const int>);
+		typedef bool(Manager::*ControlFunc)(const std::vector<int>&);
 
 		class ControlNodeFunc : public NodeFunc
 		{

@@ -1,8 +1,10 @@
 #include "lua_common.h"
 
-std::string asyncflow::lua::ToString(lua_State* L, int idx)
+std::string asyncflow::lua::ToString(lua_State* L, int idx)		// +0
 {
-	if (!luaL_callmeta(L, idx, "__tostring")) {  /* no metafield? */
+	// from luaB_tostring			
+	if (!luaL_callmeta(L, idx, "__tostring"))
+	{
 		switch (lua_type(L, idx))
 		{
 		case LUA_TNUMBER: {
@@ -25,9 +27,9 @@ std::string asyncflow::lua::ToString(lua_State* L, int idx)
 		}
 	}
 
-	auto str = lua_tolstring(L, -1, NULL);
+	auto str = lua_tolstring(L, -1, NULL); // +0
 	if (str == nullptr)
 		str = "-";
-	lua_pop(L, 1);
+	lua_pop(L, 1);	// -1
 	return str;
 }

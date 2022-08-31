@@ -562,13 +562,14 @@ int asyncflow::lua::wait_all(lua_State* L)
 		return 0;
 
 	int argc = (int)lua_gettop(L);
-	int* ids = new int[argc];
+	std::vector<int> ids(argc);
+	
 	for (int i = 0; i < argc; i++)
 	{
 		ids[i] = (int)lua_tonumber(L, i + 1);
 	}
-	LuaManager::currentManager->WaitAll(span<int>(ids, argc));
-	delete[] ids;
+	LuaManager::currentManager->WaitAll(ids);
+	
 	return 0;
 }
 
@@ -619,14 +620,8 @@ int asyncflow::lua::stop_node(lua_State* L)
 		lua_pushboolean(L, 0);
 		return 1;
 	}
-
-	int* ids = new int[top];
-	for (int i = 0; i < top; i++)
-	{
-		ids[i] = (int)lua_tointeger(L, i + 1);
-	}
-	LuaManager::currentManager->StopNode(span<int>(ids, top));
-	delete[] ids;
+	std::vector<int> ids(top);	
+	LuaManager::currentManager->StopNode(ids);	
 	lua_pushboolean(L, 1);
 	return 1;
 }
@@ -640,13 +635,12 @@ int asyncflow::lua::stop_flow(lua_State* L)
 		return 1;
 	}
 
-	int* ids = new int[top];
+	std::vector<int> ids(top);
 	for (int i = 0; i < top; i++)
 	{
 		ids[i] = (int)lua_tointeger(L, i + 1);
 	}
-	LuaManager::currentManager->StopFlow(span<int>(ids, top));
-	delete[] ids;
+	LuaManager::currentManager->StopFlow(ids);	
 	lua_pushboolean(L, 1);
 	return 1;
 }

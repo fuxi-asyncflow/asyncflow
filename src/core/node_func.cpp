@@ -5,7 +5,7 @@ using namespace asyncflow::core;
 bool ControlNodeFunc::call(Agent* agent)
 {
 	auto* mgr = agent->GetManager();
-	return (mgr->*func)(span<int>{params_});
+	return (mgr->*func)(params_);
 }
 
 NodeFunc* ControlNodeFunc::Create(ControlFunc func, const std::vector<int>& params)

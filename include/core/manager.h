@@ -17,9 +17,6 @@
 #include "core/executor.h"
 #include "core/event_queue.h"
 #include "core/dying_agents.h"
-#include "gsl/span"
-using gsl::span;
-
 
 namespace asyncflow
 {
@@ -56,9 +53,9 @@ namespace asyncflow
 		public:
 			// inside node function
 			void Wait(int milliseconds);
-			bool WaitAll(span<const int> args);
-			bool StopNode(span<const int> args);
-			bool StopFlow(span<const int> args);
+			bool WaitAll(const std::vector<int>& args);
+			bool StopNode(const std::vector<int>& args);
+			bool StopFlow(const std::vector<int>& args);
 			bool WaitEvent(Agent* agent, int event_id);
 			bool Subchart(const std::string& chart_name, Agent* agent, void* args, int arg_count);
 			int64_t	 CreateAsyncContext();	//Save current context

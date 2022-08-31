@@ -68,7 +68,7 @@ NodeWaitAll::~NodeWaitAll()
 
 }
 
-void NodeWaitAll::Init(span<const int> args)
+void NodeWaitAll::Init(const std::vector<int>& args)
 {
 	node_ids_.clear();
 	for(auto id: args)

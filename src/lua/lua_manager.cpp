@@ -104,7 +104,14 @@ void LuaManager::GetVar(lua_State* L, int var_id)
 
 void LuaManager::GetEventParam(lua_State* L, int event_id, int param_idx)
 {
-	assert(current_event_ != nullptr);
+	if (current_event_ == nullptr)
+	{
+		// pause
+		ASYNCFLOW_WARN("current_event is null, get event param must right after event node");
+		lua_pushnil(L);
+		return;
+	}
+
 	if (event_id != current_event_->Id())
 	{
 		ASYNCFLOW_WARN("event id unmatch when get event param");
