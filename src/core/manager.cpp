@@ -312,7 +312,7 @@ void Manager::Wait(int milliseconds)
 	node->SetStatus(Node::Running);
 }
 
-bool Manager::WaitAll(span<const int> args)
+bool Manager::WaitAll(const std::vector<int>& args)
 {
 	auto* node = GetCurrentNode();
 	node->SetWaitAllFlag(true);
@@ -336,7 +336,7 @@ bool Manager::WaitAll(span<const int> args)
 	return result;
 }
 
-bool Manager::StopNode(span<const int> args)
+bool Manager::StopNode(const std::vector<int>& args)
 {
 	auto* chart = GetCurrentNode()->GetChart();
 	auto const max_id = chart->GetNodesCount();
@@ -356,7 +356,7 @@ bool Manager::StopNode(span<const int> args)
 	return true;
 }
 
-bool Manager::StopFlow(span<const int> args)
+bool Manager::StopFlow(const std::vector<int>& args)
 {
 	Chart* chart = GetCurrentNode()->GetChart();
 	auto const max_id = chart->GetNodesCount();
@@ -528,11 +528,13 @@ std::vector<asyncflow::debug::ChartInfo*> Manager::GetDebugChartList(const std::
 				{
 					auto* owner_node = chart->GetOwnerNode();
 					ci->owner_node_id = owner_node->GetId();
+					ci->owner_node_uid = owner_node->GetData()->GetUid();
 					ci->owner_chart_name = owner_node->GetChart()->Name();
 				}
 				else
 				{
 					ci->owner_node_id = -1;
+					ci->owner_node_uid = "";
 					ci->owner_chart_name = "";
 				}
 

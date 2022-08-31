@@ -12,6 +12,7 @@ namespace asyncflow
 			int			agent_id{ -1 };
 			void*		owner_node_addr{ (void*)-1 };
 			int			owner_node_id{ -1 };
+			std::string owner_node_uid{ "" };
 			std::string object_name{ "" };
 			std::string chart_name{ "" };
 			std::string owner_chart_name{ "" };

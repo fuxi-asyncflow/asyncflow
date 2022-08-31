@@ -85,7 +85,11 @@ void DfsExecutor::RunFlow(Node* start_node)
 			chart->SetStatus(Chart::Status::Idle);
 		}
 #ifdef	FLOWCHART_DEBUG
-		if (chart->IsDebug())
+		// common chart will stop debugging
+		// subchart will not stop debugging while owner chart is running
+		bool isSubChart = chart->GetOwnerNode() != nullptr;
+		if ((!isSubChart && chart->IsDebug())
+			|| (isSubChart && !chart->GetOwnerNode()->GetChart()->IsDebug()))
 		{
 			chart->GetAgent()->GetManager()->GetWebsocketManager().StopDebugChart(chart);
 		}

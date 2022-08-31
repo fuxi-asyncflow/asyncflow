@@ -12,6 +12,11 @@ LuaChart::LuaChart()
 
 LuaChart::~LuaChart()
 {
+	// to avoid attach chart with duplicate name then agent will be nullptr
+	if (agent_ == nullptr)
+	{
+		return;
+	}
 	ClearVariables();
 	auto mgr = dynamic_cast<LuaManager*>(agent_->GetManager());
 	if (call_ != LUA_NOREF)
@@ -154,11 +159,15 @@ void LuaChart::SetVar(lua_State* L, int idx)     //[-0, +0, -]
 	lua_rawgeti(L, -1, variables_);                                     //+1
 #ifdef FLOWCHART_DEBUG
 	lua_rawgeti(L, -1, idx);                                            //+1
-	auto old_value = ToString(L, -1);
-	lua_pop(L, 1);                                                      //-1
-	lua_pushvalue(L, 1);                                               //+1
-	auto new_value = ToString(L, -1);
 	int pos = idx - 1;  //Lua index start from 1, need to convert to vector index;
+	auto* variable = GetData()->GetVariable(pos);
+	const std::string type = variable != nullptr ? variable->type : "unknown";
+
+	auto old_value = ValueToString(L, -1, type);
+	lua_pop(L, 1);                                                      //-1
+
+	lua_pushvalue(L, 1);                                             //+1
+	auto new_value = ValueToString(L, -1, type);
 	SendVariableStatus(data_->GetVariableName(pos), old_value, new_value);
 #else
 	lua_pushvalue(L, 1);
@@ -339,5 +348,26 @@ void LuaChart::SendVariableStatus(std::string var_name, std::string old_value, s
 		data->id = debug_data_count_++;
 		debug_data_list_.push_back(data);
 	}
+}
+
+std::string LuaChart::ValueToString(lua_State* L, int index, const std::string& type)	// +0
+{
+	std::stringstream str;
+	if (type.find("List") == 0 && lua_istable(L, -1))
+	{
+		str << "[";
+		int count = lua_gettop(L);
+		lua_pushnil(L);							// +1
+		while (lua_next(L, index - 1) != 0)		// -1 +2
+		{
+			auto value = ToString(L, -1);		// +0
+			str << value << ", ";
+			lua_pop(L, 1);						// -1
+		}
+		str << "]";
+		return str.str();
+	}
+	str << ToString(L, index);
+	return str.str();
 }
 #endif

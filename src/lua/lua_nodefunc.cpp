@@ -32,8 +32,7 @@ bool LuaNodeFunc::call(Agent* agent)
 			{
 				static_cast<LuaChart*>(temp_chart)->GetVar(L, var_id);
 				std::string var = ToString(L, -1);
-				int pos = var_id - 1;  //Lua index start from 1, need to convert to vector index;
-				ASYNCFLOW_ERR("va[{0}]: ${1} = {2}.", var_id, temp_chart->GetData()->GetVariableName(pos), var);
+				ASYNCFLOW_ERR("va[{0}]: ${1} = {2}.", var_id, temp_chart->GetData()->GetVariableName(var_id), var);
 				lua_pop(L, 1);
 			}
 			if (temp_chart->GetOwnerNode() == nullptr || chart_stack > 32)

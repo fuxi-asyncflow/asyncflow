@@ -345,6 +345,9 @@ void asyncflow::debug::Serialize_ChartInfo_Json(Writer& writer, const ChartInfo&
 	writer.String("owner_node_id");
 	writer.Int(ci.owner_node_id);
 
+	writer.String("owner_node_uid");
+	writer.String(ci.owner_node_uid.c_str());
+
 	writer.String("object_name");
 	writer.String(ci.object_name.c_str());
 
@@ -365,6 +368,8 @@ void asyncflow::debug::Deserialize_ChartInfo_Json(const rapidjson::Value& obj, C
 		ci.owner_node_addr = (void*)obj["owner_node_addr"].GetUint64();
 	if (obj.HasMember("owner_node_id") && obj["owner_node_id"].IsInt())
 		ci.owner_node_id = obj["owner_node_id"].GetInt();
+	if (obj.HasMember("owner_node_uid") && obj["owner_node_uid"].IsString())
+		ci.owner_node_uid = obj["owner_node_uid"].GetString();
 	if (obj.HasMember("object_name") && obj["object_name"].IsString())
 		ci.object_name = obj["object_name"].GetString();
 	if (obj.HasMember("chart_name") && obj["chart_name"].IsString())

@@ -31,6 +31,7 @@ namespace asyncflow
 			int		GetParamCount() { return params_count_; }
 			const std::vector<Parameter>& GetVariableInfo() { return variables_; }
 			const std::string& GetVariableName(int idx) const;
+			const Parameter* GetVariable(int idx) const;
 
 			int			GetNodeCount() { return (int)node_list_.size(); }
 			NodeData*	GetNodeData(int i) { return node_list_[i]; }
