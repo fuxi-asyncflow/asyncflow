@@ -16,7 +16,7 @@ cd ../..
 cp -f LuaJIT-2.1.0-beta3/src/libluajit.so LuaJIT-2.1.0-beta3/src/libluajit-5.1.so.2
 
 # make
-cmake .. -DCMAKE_BUILD_TYPE=Debug -DBUILD_PYTHON=ON -DBUILD_LUAJIT=ON -DLUAJIT_INCLUDE_PATH=./LuaJIT-2.1.0-beta3/src -DLUAJIT_LIB=./LuaJIT-2.1.0-beta3/src/libluajit.so -DBUILD_TEST=OFF \
+cmake .. -DCMAKE_BUILD_TYPE=Debug -DBUILD_PYTHON=ON -DBUILD_LUAJIT=ON -DLUAJIT_INCLUDE_PATH=./LuaJIT-2.1.0-beta3/src -DLUAJIT_LIB=./LuaJIT-2.1.0-beta3/src/libluajit.so -DBUILD_TEST=ON \
     -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DFLOWCHART_DEBUG=ON
 make -j8
 
