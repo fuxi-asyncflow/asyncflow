@@ -6,6 +6,8 @@
 #include <unordered_map>
 #include "core/manager.h"
 
+#include "rapidyaml.hpp"
+
 using namespace asyncflow::core;
 using namespace asyncflow::util;
 using std::string;
@@ -131,6 +133,36 @@ bool NodeData::InitFromJson(rapidjson::Value& jobj, const std::unordered_map<std
 		}	
 	}
 	return true;
+}
+
+bool NodeData::InitFromYaml(c4::yml::NodeRef& nodeRef, std::unordered_map<std::string, int>& id_map, ChartData* chart_data)
+{
+	auto tmp = nodeRef["uid"].val();
+	node_uid_ = std::string{ tmp.data(), tmp.size() };
+	id_map[node_uid_] = node_id_;
+	if (node_id_ == 0)
+		return true;
+
+	tmp = nodeRef["text"].val();
+	text_ = std::string{ tmp.data(), tmp.size() };
+
+	auto& codeRef = nodeRef["code"];
+
+	if(codeRef.valid())
+	{
+		auto&& typeRef = codeRef.find_child("type");
+		if(strcmp("FUNC", typeRef.val().str) == 0)
+		{
+			tmp = nodeRef["text"].val();
+			std::stringstream ss;
+			ss << "return function(self) \n" << std::string{ tmp.str, tmp.size() } << "\n end";
+			
+		    //chart_data->CreateNodeFunc(ss.str())
+		}
+	}
+
+
+	return true;    
 }
 
 void NodeData::SetChildren(const std::vector<int>& f, const std::vector<int>& s)

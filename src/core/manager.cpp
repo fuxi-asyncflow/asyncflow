@@ -2,6 +2,8 @@
 
 #include <unordered_map>
 #include "rapidjson/document.h"
+#define RYML_SINGLE_HDR_DEFINE_NOW
+#include "rapidyaml.hpp"
 #include "util/log.h"
 #include "core/node.h"
 #include "util/file.h"
@@ -180,7 +182,7 @@ int Manager::ImportFile(const std::string& file_name)
 //read chart info
 int Manager::ImportJson(const std::string& json_str)
 {
-	return ImportChatData(ParseChartsFromJson(json_str));	
+	return ImportChatData(ParseChartsFromYaml(json_str));	
 }
 
 int	Manager::ImportChatData(const std::vector<ChartData*>& data_list)
@@ -219,6 +221,64 @@ std::vector<ChartData*> Manager::ParseChartsFromJson(const std::string& json_str
 		}
 	}
 	ASYNCFLOW_ERR("import chars failed: not a valid json");
+	return data_list;
+}
+
+std::vector<ChartData*> Manager::ParseChartsFromYaml(const std::string& yaml_str)
+{
+	
+	std::vector<ChartData*> data_list;
+
+	//TODO error handle
+	ryml::Tree tree = ryml::parse_in_arena(ryml::to_csubstr(yaml_str));
+
+	
+
+	const ryml::NodeRef root = tree.rootref();	
+	if(root.is_stream())
+	{
+		auto doc_count = root.num_children();
+		for(const auto& doc : root.children())
+		{
+			auto path = doc["path"].val();			
+			printf("yaml chart : %.*s\n", path.size(), path.data());
+
+			auto* data = CreateChartData();
+			if (!data->FromYaml(doc))
+			{
+				ASYNCFLOW_ERR("init chart data error");
+				delete data;
+			}
+			else
+			{
+				data_list.push_back(data);
+			}
+		}
+		return data_list;	    
+	}
+
+
+	//if (JsonUtil::ParseJson(json_str, doc))
+	//{
+	//	if (doc.IsArray())
+	//	{
+	//		for (auto& chart_obj : doc.GetArray())
+	//		{
+	//			auto* data = CreateChartData();
+	//			if (!data->FromJson(chart_obj))
+	//			{
+	//				ASYNCFLOW_ERR("init chart data error");
+	//				delete data;
+	//			}
+	//			else
+	//			{
+	//				data_list.push_back(data);
+	//			}
+	//		}
+	//		return data_list;
+	//	}
+	//}
+	ASYNCFLOW_ERR("import chars failed: not a valid yaml");
 	return data_list;
 }
 

@@ -5,6 +5,8 @@
 #include "core/node_func.h"
 #include <unordered_map>
 
+#include "rapidyaml.hpp"
+
 using namespace asyncflow::core;
 using namespace asyncflow::util;
 
@@ -128,6 +130,60 @@ bool ChartData::FromJson(rapidjson::Value& jobj)
 	}
 	return true;
 }
+
+bool ChartData::FromYaml(const ryml::NodeRef& doc)
+{
+	ChartData* chartData = this;
+	//read full path of chart
+	auto const chartFullPath = doc.find_child("path");
+	//auto const chartFullPath = doc["path"];
+	if (!chartFullPath.valid())
+	{
+		ASYNCFLOW_ERR("missing chart Path");
+		return false;
+	}
+	const std::string fullPath = std::string(chartFullPath.val().data(), chartFullPath.val().size());
+
+	auto const chartVarsNode = doc.find_child("variables");
+	if(chartVarsNode.valid())
+	{
+		assert(chartVarsNode.is_seq());
+		variables_.clear();
+		for(auto varNode: chartVarsNode)
+		{
+			auto const nameNode = varNode.find_child("name");
+			printf("yaml var name: %.*s\n", (int)nameNode.val().size(), nameNode.val().data());
+			auto const typeNode = varNode.find_child("type");
+			auto const isParamNode = varNode.find_child("is_param");			
+
+			variables_.emplace_back(std::string {nameNode.val().data(), nameNode.val().size()}
+				, std::string { typeNode.val().data(), typeNode.val().size() }
+				, isParamNode.valid() && strcmp(isParamNode.val().str, "true") == 0);
+
+			params_count_ = static_cast<int>(std::count_if(variables_.begin(), variables_.end()
+				, [](const Parameter& v) { return v.is_params; }));
+		}
+	}
+
+	std::unordered_map<std::string, int> id_map;
+
+	int nodeId = 0;
+	auto const nodesNode = doc.find_child("nodes");
+	if(nodesNode.valid())
+	{
+		for(auto nodeNode: nodesNode)
+		{
+			auto* nodeData = new NodeData(nodeId++);
+			if (!nodeData->InitFromYaml(nodeNode, id_map, this))
+				return false;
+			chartData->node_list_.push_back(nodeData);
+		}		
+	}
+	
+
+	return true;
+}
+
 
 ChartData::~ChartData()
 {

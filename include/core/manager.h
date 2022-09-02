@@ -33,6 +33,7 @@ namespace asyncflow
 			int		ImportJson(const std::string& json_str);
 			int		ImportChatData(const std::vector<ChartData*>& data_list);
 			std::vector<ChartData*> ParseChartsFromJson(const std::string& json_str);
+			std::vector<ChartData*> ParseChartsFromYaml(const std::string& yaml_str);
 			int		ImportEvent(const std::string& file_name);
 			bool	ReloadChartData(ChartData* new_data) const;
 			bool	UnregisterGameObject(Agent* agent);
