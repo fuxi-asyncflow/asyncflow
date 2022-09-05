@@ -94,13 +94,13 @@ NodeFunc* LuaNodeFunc::GetFuncFromString(const std::string& code, const std::str
 	{
 		//TODO use pcall
 		luaL_dostring(L, code.c_str());							// +1
-		lua_pushlstring(L, code.c_str(), code.size());	// +1
-		lua_rawget(L, -2);								// 0
+		//lua_pushlstring(L, code.c_str(), code.size());	// +1
+		//lua_rawget(L, -2);								// 0
 
 		lua_rawgeti(L, LUA_REGISTRYINDEX, LuaManager::currentManager->FunctionRef);   //  +1
 		lua_pushvalue(L, -2);							// +1
-		auto ref = luaL_ref(L, -2);					// -1
-		lua_pop(L, 3);
+		func_ref = luaL_ref(L, -2);					// -1
+		lua_pop(L, 2);
 	}	
 
 	if (func_ref == LUA_NOREF)

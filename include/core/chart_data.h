@@ -35,6 +35,7 @@ namespace asyncflow
 			const std::vector<Parameter>& GetVariableInfo() { return variables_; }
 			const std::string& GetVariableName(int idx) const;
 			const Parameter* GetVariable(int idx) const;
+			int GetVarIndex(const std::string& name) const;
 
 			int			GetNodeCount() { return (int)node_list_.size(); }
 			NodeData*	GetNodeData(int i) { return node_list_[i]; }
@@ -58,6 +59,7 @@ namespace asyncflow
 			ChartData* next_;
 			int version_;
 			std::vector<Parameter> variables_;
+			std::unordered_map<std::string, int> variable_dict_;
 			std::vector<NodeData*> node_list_;
 			std::string chart_name_;	
 			std::string start_func_name_;

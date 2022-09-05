@@ -151,13 +151,13 @@ bool NodeData::InitFromYaml(c4::yml::NodeRef& nodeRef, std::unordered_map<std::s
 	if(codeRef.valid())
 	{
 		auto&& typeRef = codeRef.find_child("type");
-		if(strcmp("FUNC", typeRef.val().str) == 0)
+		if(strcmp("FUNC", std::string(typeRef.val().str, typeRef.val().size()).c_str()) == 0)
 		{
-			tmp = nodeRef["text"].val();
+			tmp = codeRef["content"].val();
 			std::stringstream ss;
 			ss << "return function(self) \n" << std::string{ tmp.str, tmp.size() } << "\n end";
 			
-			chart_data->CreateNodeFunc(ss.str(), "");
+			node_func_ = chart_data->CreateNodeFunc(ss.str(), "");
 		}
 	}
 

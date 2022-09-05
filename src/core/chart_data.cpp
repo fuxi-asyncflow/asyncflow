@@ -143,6 +143,7 @@ bool ChartData::FromYaml(const ryml::NodeRef& doc)
 		return false;
 	}
 	const std::string fullPath = std::string(chartFullPath.val().data(), chartFullPath.val().size());
+	chartData->chart_name_ = fullPath;
 
 	auto const chartVarsNode = doc.find_child("variables");
 	if(chartVarsNode.valid())
@@ -158,10 +159,15 @@ bool ChartData::FromYaml(const ryml::NodeRef& doc)
 
 			variables_.emplace_back(std::string {nameNode.val().data(), nameNode.val().size()}
 				, std::string { typeNode.val().data(), typeNode.val().size() }
-				, isParamNode.valid() && strcmp(isParamNode.val().str, "true") == 0);
+				, isParamNode.valid() && strcmp(isParamNode.val().str, "true") == 0);			
+		}
+		variable_count_ = variables_.size();
+		params_count_ = static_cast<int>(std::count_if(variables_.begin(), variables_.end()
+			, [](const Parameter& v) { return v.is_params; }));
 
-			params_count_ = static_cast<int>(std::count_if(variables_.begin(), variables_.end()
-				, [](const Parameter& v) { return v.is_params; }));
+		for (int i = 0; i < variable_count_; i++)
+		{
+			variable_dict_[variables_[i].name] == i;
 		}
 	}
 
@@ -210,7 +216,7 @@ bool ChartData::FromYaml(const ryml::NodeRef& doc)
 				return false;
 			}
 			start_node->AddSubsequence(it->second, type);
-			ASYNCFLOW_WARN("connect {0} -> {1}", start_node->GetText(), it->second);
+			//ASYNCFLOW_WARN("connect {0} -> {1}", start_node->GetText(), it->second);
 	    }
 	}
 	
@@ -280,5 +286,13 @@ const Parameter* ChartData::GetVariable(int idx) const
 	}
 
 	return &variables_[idx];
+}
+
+int ChartData::GetVarIndex(const std::string& name) const
+{
+	auto it = variable_dict_.find(name);
+	if (it != variable_dict_.end())
+		return it->second;
+	return -1;
 }
 

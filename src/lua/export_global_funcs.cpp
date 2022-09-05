@@ -455,7 +455,19 @@ int asyncflow::lua::get_var(lua_State* L)
 	if (LuaManager::currentManager == nullptr)
 		return 0;
 
-	int var_id = (int)lua_tonumber(L, 1);
+	int var_id;
+
+	if (lua_type(L, 1) == LUA_TSTRING)
+	{
+		size_t len;
+		auto name = lua_tolstring(L, 1, &len);
+		var_id = LuaManager::currentManager->GetCurrentNode()->GetChart()->GetData()->GetVarIndex(std::string(name, len));
+	}
+	else
+	{
+		var_id = (int)lua_tonumber(L, 1);
+	}
+
 	LuaManager::currentManager->GetVar(L, var_id);
 	return 1;
 }
@@ -464,8 +476,20 @@ int asyncflow::lua::set_var(lua_State* L)
 {
 	if (LuaManager::currentManager == nullptr)
 		return 0;
+	//TODO  optimization
+	int var_id;
 
-	int var_id = (int)lua_tonumber(L, 1);
+	if(lua_type(L, 1) == LUA_TSTRING)
+	{
+		size_t len;
+		auto name = lua_tolstring(L, 1, &len);		
+		var_id = LuaManager::currentManager->GetCurrentNode()->GetChart()->GetData()->GetVarIndex(std::string(name, len));
+	}
+	else
+	{
+		var_id = (int)lua_tonumber(L, 1);	    
+	}
+	
 	lua_remove(L, 1);   // set var in 1 idx of stack
 	LuaManager::currentManager->SetVar(L, var_id);
 	if (lua_type(L, 1) == LUA_TNUMBER)
