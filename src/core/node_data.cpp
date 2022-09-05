@@ -157,7 +157,7 @@ bool NodeData::InitFromYaml(c4::yml::NodeRef& nodeRef, std::unordered_map<std::s
 			std::stringstream ss;
 			ss << "return function(self) \n" << std::string{ tmp.str, tmp.size() } << "\n end";
 			
-		    //chart_data->CreateNodeFunc(ss.str())
+			chart_data->CreateNodeFunc(ss.str(), "");
 		}
 	}
 
@@ -171,4 +171,23 @@ void NodeData::SetChildren(const std::vector<int>& f, const std::vector<int>& s)
 	children_[0].insert(children_[0].end(), f.begin(), f.end());
 	children_[1].clear();
 	children_[1].insert(children_[1].end(), s.begin(), s.end());
+}
+
+void NodeData::AddSubsequence(int id, int type)
+{
+	switch(type)
+	{
+	case 0:
+		children_[0].push_back(id);
+		break;
+	case 1:
+		children_[1].push_back(id);
+		break;
+	case 2:
+		children_[0].push_back(id);
+		children_[1].push_back(id);
+		break;
+	default:
+		break;
+	}
 }

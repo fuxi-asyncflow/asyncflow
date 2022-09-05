@@ -51,6 +51,7 @@ namespace asyncflow
 			bool IsEventNode() { return is_event_; }
 			void SetEventNode(bool b) { is_event_ = b; }
 			int GetVarId() { return var_id_; }
+			void AddSubsequence(int id, int type);
 
 		private:
 			int node_id_;

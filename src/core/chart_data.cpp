@@ -179,6 +179,40 @@ bool ChartData::FromYaml(const ryml::NodeRef& doc)
 			chartData->node_list_.push_back(nodeData);
 		}		
 	}
+
+	auto const connectorsNode = doc.find_child("connectors");
+	if(connectorsNode.valid())
+	{
+	    for(auto connectorNode : connectorsNode)
+	    {
+			auto start_val = connectorNode["start"].val();
+			auto start_str = std::string(start_val.data(), start_val.size());
+
+			auto end_val = connectorNode["end"].val();
+			auto end_str = std::string(end_val.data(), end_val.size());
+
+			auto type_val = connectorNode["type"].val();
+			auto type_str = std::string(type_val.data(), type_val.size());
+
+			int type = std::stoi(type_str);
+			auto it = id_map.find(start_str);
+			if(it == id_map.end())
+			{
+				ASYNCFLOW_ERR("graph has no node `{0}` used in connectors", start_str);
+				return false;
+			}
+			auto start_node = chartData->node_list_[it->second];
+
+			it = id_map.find(end_str);
+			if(it == id_map.end())
+			{
+				ASYNCFLOW_ERR("graph has no node `{0}` used in connectors", end_str);
+				return false;
+			}
+			start_node->AddSubsequence(it->second, type);
+			ASYNCFLOW_WARN("connect {0} -> {1}", start_node->GetText(), it->second);
+	    }
+	}
 	
 
 	return true;
