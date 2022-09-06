@@ -151,13 +151,54 @@ bool NodeData::InitFromYaml(c4::yml::NodeRef& nodeRef, std::unordered_map<std::s
 	if(codeRef.valid())
 	{
 		auto&& typeRef = codeRef.find_child("type");
-		if(strcmp("FUNC", std::string(typeRef.val().str, typeRef.val().size()).c_str()) == 0)
+		auto type_str = std::string(typeRef.val().str, typeRef.val().size());
+		if(strcmp("FUNC", type_str.c_str()) == 0)
 		{
 			tmp = codeRef["content"].val();
 			std::stringstream ss;
 			ss << "return function(self) \n" << std::string{ tmp.str, tmp.size() } << "\n end";
 			
 			node_func_ = chart_data->CreateNodeFunc(ss.str(), "");
+		}
+		else if(strcmp("CONTROL", type_str.c_str()) == 0)
+		{
+			auto contentsRef = codeRef.find_child("content");
+			if(contentsRef.valid())
+			{
+				int i = 0;
+				std::vector<int> params;
+				std::string func_name;
+                for (auto contentRef : contentsRef)
+                {
+					if (i == 0)
+						func_name = std::string(contentRef.val().str, contentRef.val().size());
+					else 
+					{
+						auto id = id_map.find(std::string(contentRef.val().str, contentRef.val().size()));
+						if(id != id_map.end())
+						    params.emplace_back(id->second);
+						else
+						{
+							ASYNCFLOW_ERR("load node data error in {0}[{1}]({2}), param contains invalid uid"
+								, chart_data->Name(), this->GetId(), this->GetUid());
+							return false;
+						}
+					}
+					i++;
+                }
+				if(func_name == "stopflow")
+					node_func_ = ControlNodeFunc::Create(&Manager::StopFlow, params);
+				else if(func_name == "stopnode")
+					node_func_ = ControlNodeFunc::Create(&Manager::StopNode, params);
+				else if(func_name == "waitall")
+					node_func_ = ControlNodeFunc::Create(&Manager::WaitAll, params);
+			}
+		}
+		else if (strcmp("ERROR", type_str.c_str()) == 0)
+		{
+			ASYNCFLOW_ERR("load node data error in {0}[{1}]({2}), node type is error"
+				, chart_data->Name(), this->GetId(), this->GetUid());
+			return false;
 		}
 	}
 
