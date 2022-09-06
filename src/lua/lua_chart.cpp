@@ -172,6 +172,10 @@ void LuaChart::SetVar(lua_State* L, int idx)     //[-0, +0, -]
 		auto new_value = ValueToString(L, -1, type);
 		SendVariableStatus(data_->GetVariableName(pos), old_value, new_value);
 	}
+	else
+	{
+		lua_pushvalue(L, 1);
+	}
 #else
 	lua_pushvalue(L, 1);
 #endif
