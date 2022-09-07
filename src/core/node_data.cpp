@@ -152,13 +152,14 @@ bool NodeData::InitFromYaml(c4::yml::NodeRef& nodeRef, std::unordered_map<std::s
 	{
 		auto&& typeRef = codeRef.find_child("type");
 		auto type_str = std::string(typeRef.val().str, typeRef.val().size());
-		if(strcmp("FUNC", type_str.c_str()) == 0)
+		if(strcmp("FUNC", type_str.c_str()) == 0 || strcmp("EVENT", type_str.c_str()) == 0)
 		{
 			tmp = codeRef["content"].val();
 			std::stringstream ss;
 			ss << "return function(self) \n" << std::string{ tmp.str, tmp.size() } << "\n end";
 			
 			node_func_ = chart_data->CreateNodeFunc(ss.str(), "");
+			is_event_ = (strcmp("EVENT", type_str.c_str()) == 0);
 		}
 		else if(strcmp("CONTROL", type_str.c_str()) == 0)
 		{
@@ -179,8 +180,8 @@ bool NodeData::InitFromYaml(c4::yml::NodeRef& nodeRef, std::unordered_map<std::s
 						    params.emplace_back(id->second);
 						else
 						{
-							ASYNCFLOW_ERR("load node data error in {0}[{1}]({2}), param contains invalid uid"
-								, chart_data->Name(), this->GetId(), this->GetUid());
+							ASYNCFLOW_ERR("load node data error in {0}[{1}]({2}), param contains invalid uid `{3}`"
+								, chart_data->Name(), this->GetId(), this->GetUid(), std::string(contentRef.val().str, contentRef.val().size()));
 							return false;
 						}
 					}
