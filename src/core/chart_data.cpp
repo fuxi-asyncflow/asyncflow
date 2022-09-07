@@ -167,22 +167,36 @@ bool ChartData::FromYaml(const ryml::NodeRef& doc)
 
 		for (int i = 0; i < variable_count_; i++)
 		{
-			variable_dict_[variables_[i].name] == i;
+			variable_dict_[variables_[i].name] = i;
 		}
 	}
 
 	std::unordered_map<std::string, int> id_map;
 
-	int nodeId = 0;
+	
 	auto const nodesNode = doc.find_child("nodes");
 	if(nodesNode.valid())
 	{
-		for(auto nodeNode: nodesNode)
+		int nodeId = 0;
+		for (auto nodeNode : nodesNode)
 		{
 			auto* nodeData = new NodeData(nodeId++);
-			if (!nodeData->InitFromYaml(nodeNode, id_map, this))
-				return false;
+			auto uidNode = nodeNode.find_child("uid");
+			if(uidNode.valid())
+			{
+				auto  uid = std::string{ uidNode.val().str, uidNode.val().size() };
+				nodeData->SetUid(uid);
+				id_map[uid] = nodeData->GetId();
+			}
 			chartData->node_list_.push_back(nodeData);
+		}
+
+		nodeId = 0;
+		for(auto nodeNode: nodesNode)
+		{
+			auto* nodeData = chartData->node_list_[nodeId++];
+			if (!nodeData->InitFromYaml(nodeNode, id_map, this))
+				return false;			
 		}		
 	}
 
