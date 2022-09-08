@@ -154,6 +154,10 @@ bool NodeData::InitFromYaml(c4::yml::NodeRef& nodeRef, std::unordered_map<std::s
 		auto type_str = std::string(typeRef.val().str, typeRef.val().size());
 		if(strcmp("FUNC", type_str.c_str()) == 0 || strcmp("EVENT", type_str.c_str()) == 0)
 		{
+			auto ret_name = codeRef.find_child("return_var_name");
+			if(ret_name.valid())
+				var_id_ = chart_data->GetVarIndex(std::string{ ret_name.val().str, ret_name.val().size()});
+			
 			tmp = codeRef["content"].val();
 			std::stringstream ss;
 			ss << "return function(self) \n" << std::string{ tmp.str, tmp.size() } << "\n end";

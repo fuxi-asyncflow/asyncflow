@@ -159,11 +159,11 @@ bool ChartData::FromYaml(const ryml::NodeRef& doc)
 
 			variables_.emplace_back(std::string {nameNode.val().data(), nameNode.val().size()}
 				, std::string { typeNode.val().data(), typeNode.val().size() }
-				, isParamNode.valid() && strcmp(isParamNode.val().str, "true") == 0);			
+				, isParamNode.valid() && std::string(isParamNode.val().str, isParamNode.val().size()) == "true");
 		}
 		variable_count_ = variables_.size();
 		params_count_ = static_cast<int>(std::count_if(variables_.begin(), variables_.end()
-			, [](const Parameter& v) { return v.is_params; }));
+			, [](const Parameter& v) { return v.is_params; }));		
 
 		for (int i = 0; i < variable_count_; i++)
 		{
