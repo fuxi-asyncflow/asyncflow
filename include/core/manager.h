@@ -1,6 +1,7 @@
 #pragma once
 
 #include <deque>
+#include <random>
 #include <string>
 #include <vector>
 
@@ -50,6 +51,7 @@ namespace asyncflow
 			Agent* GetCurrentAgent() { return executor_.GetCurrentAgent(); }
 			Node* GetCurrentNode() { return executor_.GetCurrentNode(); }
 			int64_t Now() { return GetTimerManager().Now(); }
+			std::string uuid4_str();
 
 		public:
 			// inside node function
@@ -79,6 +81,9 @@ namespace asyncflow
 			DfsExecutor		executor_;
 			EventQueue		event_queue_;
 			DyingAgents		dying_agents_;
+
+			std::random_device rd;
+			std::uniform_int_distribution<uint64_t> dist;
 
 			std::unordered_map<std::string, ChartData*>* chart_data_dict_;
 

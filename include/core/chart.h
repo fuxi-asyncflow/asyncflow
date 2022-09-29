@@ -40,6 +40,8 @@ namespace asyncflow
 			void	SetStatus(Status s) { status_ = s; }
 			ChartData* GetData() { return data_; }
 			const std::string& Name() { return data_->Name(); }
+			void SetUid(std::string&& uid) { uid_ = uid; }
+			const std::string& GetUid() { return uid_; }
 
 #ifdef FLOWCHART_DEBUG
 			void	StartDebug() { if(!debug_) debug_ = true; }
@@ -58,6 +60,7 @@ namespace asyncflow
 			Agent*		agent_;
 			Status		status_;
 			std::vector<Node*>		node_list_;
+			std::string uid_;
 
 		protected:
 			bool debug_;

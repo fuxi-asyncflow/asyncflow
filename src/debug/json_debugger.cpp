@@ -106,6 +106,8 @@ std::string JsonDebugger::PrepareChartDebugData(Chart* chart)
 	writer.StartObject();
 	writer.String("chart_name");
 	writer.String(chart->Name().c_str());
+	writer.String("chart_uid");
+	writer.String(chart->GetUid().c_str());
 	writer.String("running_data");
 	writer.StartArray();
 	for (debug::DebugData* data : chart->GetDebugData())

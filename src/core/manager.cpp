@@ -30,6 +30,7 @@ Manager::Manager()
 	, default_time_interval_(100)
 	, immediate_subchart_(false)
     , AUTO_REGISTER(true)
+	, rd(std::to_string(reinterpret_cast<int>(this)))	
 #ifdef FLOWCHART_DEBUG
 	, websocket_manager_(this)
 #endif
@@ -551,6 +552,32 @@ bool Manager::UnregisterGameObject(Agent* agent)
 	dying_agents_.AddDyingAgent(agent, in_step_);	
 	return true;
 }
+
+std::string Manager::uuid4_str()
+{
+	char uustr[] = "00000000000000000000000000000000";
+	constexpr char encode[] = "0123456789abcdef";
+
+	auto tmp = (dist(rd) & 0xFFFFFFFFFFFF0FFFULL) | 0x0000000000004000ULL;
+
+	size_t bit = 15;
+	for (size_t i = 0; i < 16; i++) 
+	{		
+		uustr[i] = encode[tmp >> 4 * bit & 0x0f];
+		bit--;
+	}
+
+	tmp = (dist(rd) & 0x3FFFFFFFFFFFFFFFULL) | 0x8000000000000000ULL;
+	bit = 15;
+	for (size_t i = 16; i < 32; i++) 
+	{		
+		uustr[i] = encode[dist(rd) >> 4 * bit & 0x0f];
+		bit--;
+	}
+
+	return std::string(uustr);
+}
+
 
 #ifdef FLOWCHART_DEBUG
 std::vector<asyncflow::debug::ChartInfo*> Manager::GetDebugChartList(const std::string& object_name, const std::string& chart_name)
