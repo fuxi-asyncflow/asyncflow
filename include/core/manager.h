@@ -51,6 +51,7 @@ namespace asyncflow
 			Agent* GetCurrentAgent() { return executor_.GetCurrentAgent(); }
 			Node* GetCurrentNode() { return executor_.GetCurrentNode(); }
 			int64_t Now() { return GetTimerManager().Now(); }
+			int64_t GetFrame() { return current_frame_; }
 			std::string uuid4_str();
 
 		public:
