@@ -1,6 +1,7 @@
 #ifdef FLOWCHART_DEBUG
 #include "rapidjson/document.h"
 #include "debug/json_debugger.h"
+#include "util/file.h"
 #include "util/json.h"
 #include "rapidjson/prettywriter.h"
 #include "core/manager.h"
@@ -701,7 +702,8 @@ void JsonDebugger::HotFixHandler(rapidjson::Document& doc, Manager* manager_, De
 		return;
 	}
 	auto* charts_data_str = params["charts_data"].GetString();
-	auto chart_data_list = manager_->ParseChartsFromJson(charts_data_str);
+	auto yaml_str = asyncflow::util::Base64::base64_decode(charts_data_str);
+	auto chart_data_list = manager_->ParseChartsFromYaml(yaml_str);
 	manager_->ImportChatData(chart_data_list);
 	for (auto* data : chart_data_list)
 	{
