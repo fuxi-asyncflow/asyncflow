@@ -1,6 +1,7 @@
 #include "util/file.h"
 
 #include <fstream>
+#include <algorithm>
 using namespace asyncflow::util;
 
 std::string File::ReadAllText(const std::string& file_path)

@@ -30,7 +30,7 @@ Manager::Manager()
 	, default_time_interval_(100)
 	, immediate_subchart_(false)
     , AUTO_REGISTER(true)
-	, rd(std::to_string(reinterpret_cast<int>(this)))	
+	, rd(std::to_string(reinterpret_cast<int64_t>(this)))	
 #ifdef FLOWCHART_DEBUG
 	, websocket_manager_(this)
 #endif
@@ -242,7 +242,7 @@ std::vector<ChartData*> Manager::ParseChartsFromYaml(const std::string& yaml_str
 		for(const auto& doc : root.children())
 		{
 			auto path = doc["path"].val();			
-			printf("yaml chart : %.*s\n", path.size(), path.data());
+			printf("yaml chart : %.*s\n", static_cast<int>(path.size()), path.data());
 
 			auto* data = CreateChartData();
 			if (!data->FromYaml(doc))

@@ -146,7 +146,7 @@ bool NodeData::InitFromYaml(c4::yml::NodeRef& nodeRef, std::unordered_map<std::s
 	tmp = nodeRef["text"].val();
 	text_ = std::string{ tmp.data(), tmp.size() };
 
-	auto& codeRef = nodeRef["code"];
+	auto codeRef = nodeRef["code"];
 
 	if(codeRef.valid())
 	{
