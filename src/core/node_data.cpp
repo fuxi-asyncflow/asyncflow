@@ -3,6 +3,7 @@
 #include "util/log.h"
 
 #include <string>
+#include <sstream>
 #include <unordered_map>
 #include "core/manager.h"
 
