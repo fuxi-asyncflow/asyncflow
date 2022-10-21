@@ -17,7 +17,10 @@ option (BUILD_WASM "build WASM version" OFF)
 option (BUILD_LUAJIT "build luajit version" OFF)
 option (BUILD_TEST   "build test project" OFF)
 
-
+if(TARGET xlua)
+    message(STATUS ">>> finx xlua target")
+    set(BUILD_LUAJIT ON)
+endif(TARGET xlua)
 
 if(${BUILD_TEST})
     if(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
@@ -150,7 +153,10 @@ if(${BUILD_PYTHON})
     endif (MSVC)  
 endif(${BUILD_PYTHON})
 
-if(${BUILD_LUAJIT})    
+if(${BUILD_LUAJIT})
+    if(TARGET xlua)
+        add_library(luajit ALIAS xlua)
+    else()
     set(LUAJIT_INCLUDE_PATH CACHE PATH "luajit header files folder")
     set(LUAJIT_LIB CACHE FILEPATH "fullpath of luajit lib")    
 
@@ -158,6 +164,7 @@ if(${BUILD_LUAJIT})
     add_library(luajit STATIC IMPORTED)
     set_target_properties(luajit PROPERTIES IMPORTED_LOCATION "${LUAJIT_LIB}"
     INTERFACE_INCLUDE_DIRECTORIES "${LUAJIT_INCLUDE_PATH}")    
+    endif(TARGET xlua)
 
     aux_source_directory("src/lua" LUA_SRCS)
     add_library (asyncflow-lua SHARED ${LUA_SRCS})
