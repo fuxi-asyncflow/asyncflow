@@ -12,7 +12,7 @@ std::unordered_map<std::string, Ref> LuaExportClass::mt_dict;
 
 
 /////////////////////////////////////////////////////////////////////////////////////////
-
+#if LUA_VERSION_NUM >= 503
 static const char *luaL_findtable(lua_State *L, int idx, const char *fname, int szhint)
 {
     const char *e;
@@ -77,6 +77,7 @@ void luaL_openlib(lua_State *L, const char *libname, const luaL_Reg *l, int nup)
     else
         lua_pop(L, nup);
 }
+#endif
 
 
 void LuaExportModule::AddFunction(const std::string& func_name, lua_CFunction func)
