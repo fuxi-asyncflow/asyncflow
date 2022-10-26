@@ -22,6 +22,7 @@ namespace asyncflow
 			EventManager();
 
 			int InitFromJson(const std::string& json_str);
+            int InitFromYaml(const std::string& yaml_str);
 		
 			int GetEventArgsCount(int event_id)
 			{

@@ -319,21 +319,24 @@ void Manager::RestartChart(const std::string& chart_name)
 	}
 }
 
-
 int Manager::ImportEvent(const std::string& file_name)
 {
+    auto str = file_name;
+    if(File::Exists(file_name))
+    {
+        str = File::ReadAllText(file_name);
+        if (str.empty())
+        {
+            ASYNCFLOW_WARN("file is empty or cannot read {0}", file_name);
+            return 0;
+        }
+    }
+
 	rapidjson::Document doc;
 	rapidjson::ParseResult ok = doc.Parse<rapidjson::kParseCommentsFlag | rapidjson::kParseTrailingCommasFlag>(file_name.c_str());
 	if (ok)
-		return eventManager.InitFromJson(file_name);
-	auto const json_str = File::ReadAllText(file_name);
-	if (json_str.empty())
-	{
-		ASYNCFLOW_WARN("file is empty or cannot read {0}", file_name);
-		return 0;
-	}
-
-	return eventManager.InitFromJson(json_str);
+		return eventManager.InitFromJson(str);
+	return eventManager.InitFromYaml(str);
 }
 
 void Manager::HandleEvent(AsyncEventBase& event)
