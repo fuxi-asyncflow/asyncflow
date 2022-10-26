@@ -16,6 +16,12 @@ std::string File::ReadAllText(const std::string& file_path)
 	return std::string("");
 }
 
+bool File::Exists(const std::string& file_path)
+{
+    std::ifstream f(file_path);
+    return f.good();
+}
+
 // base64
 static const char* base64_chars[2] = {
              "ABCDEFGHIJKLMNOPQRSTUVWXYZ"

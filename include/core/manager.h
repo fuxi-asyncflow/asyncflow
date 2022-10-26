@@ -32,6 +32,7 @@ namespace asyncflow
 			bool	Event(int event_id, Agent* obj, void* args, int arg_count, bool immediate = false);
 			int		ImportFile(const std::string& file_name);
 			int		ImportJson(const std::string& json_str);
+            int     ImportYaml(const std::string& yaml_str);
 			int		ImportChatData(const std::vector<ChartData*>& data_list);
 			std::vector<ChartData*> ParseChartsFromJson(const std::string& json_str);
 			std::vector<ChartData*> ParseChartsFromYaml(const std::string& yaml_str);

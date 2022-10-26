@@ -8,6 +8,7 @@ namespace asyncflow
 		{
 		public:
 			static std::string ReadAllText(const std::string& file_path);
+            static bool Exists(const std::string& file_path);
 		};
 
 		class Base64

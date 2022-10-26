@@ -162,28 +162,30 @@ ChartData* Manager::GetChartData(const std::string& chart_name)
 //import the chart info with either a filename or a JSON string as an argument
 int Manager::ImportFile(const std::string& file_name)
 {
+    auto str = file_name;
+    if(File::Exists(file_name))
+    {
+        str = File::ReadAllText(file_name);
+    }
 	//import JSON string
 	rapidjson::Document doc;
-	rapidjson::ParseResult ok = doc.Parse<rapidjson::kParseCommentsFlag | rapidjson::kParseTrailingCommasFlag>(file_name.c_str());
-	if (ok)
-		return ImportJson(file_name);
-
-	//import filename
-	auto const json_str = File::ReadAllText(file_name);
-	if (json_str.empty())
-	{
-		ASYNCFLOW_WARN("file is empty or cannot read {0}", file_name);
-		return 0;
-	}
-
-	return ImportJson(json_str);
+	rapidjson::ParseResult ok = doc.Parse<rapidjson::kParseCommentsFlag | rapidjson::kParseTrailingCommasFlag>(str.c_str());
+    if (ok)
+        return ImportJson(str);
+    else
+        return ImportYaml(str);
 }
-
 
 //read chart info
 int Manager::ImportJson(const std::string& json_str)
 {
-	return ImportChatData(ParseChartsFromYaml(json_str));	
+	return ImportChatData(ParseChartsFromJson(json_str));
+}
+
+//read chart info
+int Manager::ImportYaml(const std::string& yaml_str)
+{
+    return ImportChatData(ParseChartsFromYaml(yaml_str));
 }
 
 int	Manager::ImportChatData(const std::vector<ChartData*>& data_list)
