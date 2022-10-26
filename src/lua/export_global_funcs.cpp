@@ -216,10 +216,10 @@ int asyncflow::lua::event(lua_State* L)
 	}
 
 	int args_count = lua_gettop(L);
-	if (args_count < 2 || !lua_isnumber(L, 2))
+	if (args_count < 2)
 	{
 		LUA_ERR(L, agr_err_msg);
-	}
+	}  
 
 	auto* obj = lua_topointer(L, 1);
 	if (obj == nullptr)
@@ -229,6 +229,13 @@ int asyncflow::lua::event(lua_State* L)
 		return 1;
 	}
 	int event_id = (int)lua_tonumber(L, 2);
+    if(event_id == 0)
+    {
+        ASYNCFLOW_ERR("2nd arg for event function should be an non-zero integer");
+        lua_pushboolean(L, 0);
+        return 1;
+    }
+
 	auto event_args = new int[args_count - 2];
 	for (int i = args_count - 3; i >= 0; i--)
 	{
