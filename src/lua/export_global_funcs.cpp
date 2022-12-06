@@ -444,6 +444,22 @@ int asyncflow::lua::stop(lua_State* L)
 	lua_pushboolean(L, 1);
 	return 1;
 }
+
+int asyncflow::lua::set_node_func(lua_State* L)
+{
+	if (LuaManager::currentManager == nullptr)
+	{
+		LUA_ERR(L, manager_null_msg);
+	}
+
+	lua_getglobal(L, "asyncflow");					// +1
+	lua_getfield(L, -1, "node_funcs");	// +1
+	lua_pushvalue(L, 1);		// +1
+	lua_pushvalue(L, 2);		// +1
+	lua_rawset(L, -3);		// -2
+
+	return 0;
+}
 #pragma endregion asyncflow_customer_func
 
 #pragma region asyncflow_inner_func

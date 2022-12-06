@@ -158,12 +158,20 @@ bool NodeData::InitFromYaml(c4::yml::NodeRef& nodeRef, std::unordered_map<std::s
 			auto ret_name = codeRef.find_child("return_var_name");
 			if(ret_name.valid())
 				var_id_ = chart_data->GetVarIndex(std::string{ ret_name.val().str, ret_name.val().size()});
+
+			auto func_name = codeRef.find_child("func_name");
+			if(func_name.valid())
+			{
+				node_func_ = chart_data->CreateNodeFunc(std::string(), std::string(func_name.val().str, func_name.val().size()));
+			}
+			else
+			{
+				tmp = codeRef["content"].val();
+				std::stringstream ss;
+				ss << "return function(self) \n" << std::string{ tmp.str, tmp.size() } << "\n end";
+				node_func_ = chart_data->CreateNodeFunc(ss.str(), "");
+			}
 			
-			tmp = codeRef["content"].val();
-			std::stringstream ss;
-			ss << "return function(self) \n" << std::string{ tmp.str, tmp.size() } << "\n end";
-			
-			node_func_ = chart_data->CreateNodeFunc(ss.str(), "");
 			is_event_ = (strcmp("EVENT", type_str.c_str()) == 0);
 		}
 		else if(strcmp("CONTROL", type_str.c_str()) == 0)

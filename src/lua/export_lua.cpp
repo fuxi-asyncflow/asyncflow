@@ -145,6 +145,7 @@ int luaopen_asyncflow(lua_State *L)
 	module.AddFunction("remove", remove);
 	module.AddFunction("start", start);
 	module.AddFunction("stop", stop);
+	module.AddFunction("set_node_func", set_node_func);
 
 	module.AddFunction("wait", wait);
 	module.AddFunction("set_var", set_var);

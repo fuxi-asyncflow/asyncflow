@@ -20,6 +20,7 @@ namespace asyncflow
 		int remove(lua_State* L);
 		int start(lua_State* L);
 		int stop(lua_State* L);
+		int set_node_func(lua_State* L);
 
 		int wait(lua_State* L);
 		int get_var(lua_State* L);
