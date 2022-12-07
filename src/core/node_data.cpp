@@ -188,7 +188,27 @@ bool NodeData::InitFromYaml(c4::yml::NodeRef& nodeRef, std::unordered_map<std::s
 						func_name = std::string(contentRef.val().str, contentRef.val().size());
 					else 
 					{
-						auto id = id_map.find(std::string(contentRef.val().str, contentRef.val().size()));
+						auto id_str = std::string(contentRef.val().str, contentRef.val().size());
+						if(id_str.length() == 32)
+						{
+							char dst[36];
+							dst[8] = dst[13] = dst[18] = dst[23] = '-';
+							const auto* src = id_str.c_str();
+							for(int x=0; x<8; x++)
+							{
+								dst[x] = src[x];
+								dst[24 + x] = src[20 + x];
+							}
+							for(int x = 0; x<4; x++)
+							{
+								dst[9 + x] = src[8 + x];
+								dst[14 + x] = src[12 + x];
+								dst[19 + x] = src[16 + x];
+								dst[32 + x] = src[28 + x];
+							}
+							id_str = std::string(dst, 36);
+						}
+						auto id = id_map.find(id_str);
 						if(id != id_map.end())
 						    params.emplace_back(id->second);
 						else
