@@ -2,6 +2,8 @@
 
 #include <unordered_map>
 #include "rapidjson/document.h"
+#define RYML_SINGLE_HDR_DEFINE_NOW
+#include "rapidyaml.hpp"
 #include "util/log.h"
 #include "core/node.h"
 #include "util/file.h"
@@ -28,6 +30,7 @@ Manager::Manager()
 	, default_time_interval_(100)
 	, immediate_subchart_(false)
     , AUTO_REGISTER(true)
+	, rd(std::to_string(reinterpret_cast<int64_t>(this)))	
 #ifdef FLOWCHART_DEBUG
 	, websocket_manager_(this)
 #endif
@@ -159,28 +162,30 @@ ChartData* Manager::GetChartData(const std::string& chart_name)
 //import the chart info with either a filename or a JSON string as an argument
 int Manager::ImportFile(const std::string& file_name)
 {
+    auto str = file_name;
+    if(File::Exists(file_name))
+    {
+        str = File::ReadAllText(file_name);
+    }
 	//import JSON string
 	rapidjson::Document doc;
-	rapidjson::ParseResult ok = doc.Parse<rapidjson::kParseCommentsFlag | rapidjson::kParseTrailingCommasFlag>(file_name.c_str());
-	if (ok)
-		return ImportJson(file_name);
-
-	//import filename
-	auto const json_str = File::ReadAllText(file_name);
-	if (json_str.empty())
-	{
-		ASYNCFLOW_WARN("file is empty or cannot read {0}", file_name);
-		return 0;
-	}
-
-	return ImportJson(json_str);
+	rapidjson::ParseResult ok = doc.Parse<rapidjson::kParseCommentsFlag | rapidjson::kParseTrailingCommasFlag>(str.c_str());
+    if (ok)
+        return ImportJson(str);
+    else
+        return ImportYaml(str);
 }
-
 
 //read chart info
 int Manager::ImportJson(const std::string& json_str)
 {
-	return ImportChatData(ParseChartsFromJson(json_str));	
+	return ImportChatData(ParseChartsFromJson(json_str));
+}
+
+//read chart info
+int Manager::ImportYaml(const std::string& yaml_str)
+{
+    return ImportChatData(ParseChartsFromYaml(yaml_str));
 }
 
 int	Manager::ImportChatData(const std::vector<ChartData*>& data_list)
@@ -222,6 +227,64 @@ std::vector<ChartData*> Manager::ParseChartsFromJson(const std::string& json_str
 	return data_list;
 }
 
+std::vector<ChartData*> Manager::ParseChartsFromYaml(const std::string& yaml_str)
+{
+	
+	std::vector<ChartData*> data_list;
+
+	//TODO error handle
+	ryml::Tree tree = ryml::parse_in_arena(ryml::to_csubstr(yaml_str));
+
+	
+
+	const ryml::NodeRef root = tree.rootref();	
+	if(root.is_stream())
+	{
+		auto doc_count = root.num_children();
+		for(const auto& doc : root.children())
+		{
+			auto path = doc["path"].val();			
+			printf("yaml chart : %.*s\n", static_cast<int>(path.size()), path.data());
+
+			auto* data = CreateChartData();
+			if (!data->FromYaml(doc))
+			{
+				ASYNCFLOW_ERR("init chart data error");
+				delete data;
+			}
+			else
+			{
+				data_list.push_back(data);
+			}
+		}
+		return data_list;	    
+	}
+
+
+	//if (JsonUtil::ParseJson(json_str, doc))
+	//{
+	//	if (doc.IsArray())
+	//	{
+	//		for (auto& chart_obj : doc.GetArray())
+	//		{
+	//			auto* data = CreateChartData();
+	//			if (!data->FromJson(chart_obj))
+	//			{
+	//				ASYNCFLOW_ERR("init chart data error");
+	//				delete data;
+	//			}
+	//			else
+	//			{
+	//				data_list.push_back(data);
+	//			}
+	//		}
+	//		return data_list;
+	//	}
+	//}
+	ASYNCFLOW_ERR("import chars failed: not a valid yaml");
+	return data_list;
+}
+
 bool Manager::ReloadChartData(ChartData* new_data) const
 {
 	if (new_data == nullptr) return false;
@@ -256,21 +319,24 @@ void Manager::RestartChart(const std::string& chart_name)
 	}
 }
 
-
 int Manager::ImportEvent(const std::string& file_name)
 {
+    auto str = file_name;
+    if(File::Exists(file_name))
+    {
+        str = File::ReadAllText(file_name);
+        if (str.empty())
+        {
+            ASYNCFLOW_WARN("file is empty or cannot read {0}", file_name);
+            return 0;
+        }
+    }
+
 	rapidjson::Document doc;
 	rapidjson::ParseResult ok = doc.Parse<rapidjson::kParseCommentsFlag | rapidjson::kParseTrailingCommasFlag>(file_name.c_str());
 	if (ok)
-		return eventManager.InitFromJson(file_name);
-	auto const json_str = File::ReadAllText(file_name);
-	if (json_str.empty())
-	{
-		ASYNCFLOW_WARN("file is empty or cannot read {0}", file_name);
-		return 0;
-	}
-
-	return eventManager.InitFromJson(json_str);
+		return eventManager.InitFromJson(str);
+	return eventManager.InitFromYaml(str);
 }
 
 void Manager::HandleEvent(AsyncEventBase& event)
@@ -491,6 +557,32 @@ bool Manager::UnregisterGameObject(Agent* agent)
 	dying_agents_.AddDyingAgent(agent, in_step_);	
 	return true;
 }
+
+std::string Manager::uuid4_str()
+{
+	char uustr[] = "00000000000000000000000000000000";
+	constexpr char encode[] = "0123456789abcdef";
+
+	auto tmp = (dist(rd) & 0xFFFFFFFFFFFF0FFFULL) | 0x0000000000004000ULL;
+
+	size_t bit = 15;
+	for (size_t i = 0; i < 16; i++) 
+	{		
+		uustr[i] = encode[tmp >> 4 * bit & 0x0f];
+		bit--;
+	}
+
+	tmp = (dist(rd) & 0x3FFFFFFFFFFFFFFFULL) | 0x8000000000000000ULL;
+	bit = 15;
+	for (size_t i = 16; i < 32; i++) 
+	{		
+		uustr[i] = encode[dist(rd) >> 4 * bit & 0x0f];
+		bit--;
+	}
+
+	return std::string(uustr);
+}
+
 
 #ifdef FLOWCHART_DEBUG
 std::vector<asyncflow::debug::ChartInfo*> Manager::GetDebugChartList(const std::string& object_name, const std::string& chart_name)

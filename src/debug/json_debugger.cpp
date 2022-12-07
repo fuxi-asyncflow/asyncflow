@@ -1,6 +1,7 @@
 #ifdef FLOWCHART_DEBUG
 #include "rapidjson/document.h"
 #include "debug/json_debugger.h"
+#include "util/file.h"
 #include "util/json.h"
 #include "rapidjson/prettywriter.h"
 #include "core/manager.h"
@@ -106,7 +107,13 @@ std::string JsonDebugger::PrepareChartDebugData(Chart* chart)
 	writer.StartObject();
 	writer.String("chart_name");
 	writer.String(chart->Name().c_str());
-	writer.String("running_data");
+	writer.String("frame");
+	writer.Int64(chart->GetAgent()->GetManager()->GetFrame());
+	writer.String("time");
+	writer.Int64(chart->GetAgent()->GetManager()->Now());
+	writer.String("chart_uid");
+	writer.String(chart->GetUid().c_str());
+	writer.String("running_data");	
 	writer.StartArray();
 	for (debug::DebugData* data : chart->GetDebugData())
 	{
@@ -688,14 +695,16 @@ void JsonDebugger::HotFixHandler(rapidjson::Document& doc, Manager* manager_, De
 {
 	auto params = doc["params"].GetObject();
 	auto charts_func = params["charts_func"].GetString();
-	auto result = manager_->RunScript(charts_func);
+	auto codes_str = asyncflow::util::Base64::base64_decode(charts_func);	
+	auto result = manager_->RunScript(codes_str.c_str());
 	if (!result.first)
 	{
 		connection->Reply(ErrorReply(-15, "run charts_func error", msg_id));
 		return;
 	}
 	auto* charts_data_str = params["charts_data"].GetString();
-	auto chart_data_list = manager_->ParseChartsFromJson(charts_data_str);
+	auto yaml_str = asyncflow::util::Base64::base64_decode(charts_data_str);
+	auto chart_data_list = manager_->ParseChartsFromYaml(yaml_str);
 	manager_->ImportChatData(chart_data_list);
 	for (auto* data : chart_data_list)
 	{

@@ -5,6 +5,15 @@
 #include <string>
 #include <chrono>
 
+namespace c4
+{
+	namespace yml
+	{
+		class NodeRef;
+	}
+
+}
+
 namespace asyncflow
 {
 	namespace core
@@ -33,6 +42,7 @@ namespace asyncflow
 			}
 			~NodeData();
 			bool InitFromJson(rapidjson::Value& jobj, const std::unordered_map<std::string, int>& id_map, ChartData* chart_data);
+			bool InitFromYaml(c4::yml::NodeRef& nodeRef, std::unordered_map<std::string, int>& id_map, ChartData* chart_data);
 			NodeFunc* GetNodeFunc() { return node_func_; }
 			int	GetId() { return node_id_; }
 			std::string GetUid() { return node_uid_; }
@@ -41,6 +51,7 @@ namespace asyncflow
 			bool IsEventNode() { return is_event_; }
 			void SetEventNode(bool b) { is_event_ = b; }
 			int GetVarId() { return var_id_; }
+			void AddSubsequence(int id, int type);
 
 		private:
 			int node_id_;

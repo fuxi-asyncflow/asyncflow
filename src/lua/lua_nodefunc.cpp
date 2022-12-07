@@ -57,7 +57,7 @@ bool LuaNodeFunc::call(Agent* agent)
 	return result;
 }
 
-Ref LuaNodeFunc::CompileFunction(const std::string& code, const std::string& name)
+Ref LuaNodeFunc::GetFunctionByName(const std::string& name)
 {
 	auto L = LuaManager::currentManager->L;
 	CheckLuaStack(0);
@@ -82,11 +82,30 @@ Ref LuaNodeFunc::CompileFunction(const std::string& code, const std::string& nam
 
 
 NodeFunc* LuaNodeFunc::GetFuncFromString(const std::string& code, const std::string& name)
-{
-	auto const func = CompileFunction(code, name);
-	if (func == LUA_NOREF)
+{	
+	auto L = LuaManager::currentManager->L;
+	CheckLuaStack(0);
+	Ref func_ref = LUA_NOREF;
+	if(code.empty())
+	{
+		 func_ref = GetFunctionByName(name);		
+	}
+	else
+	{
+		//TODO use pcall
+		luaL_dostring(L, code.c_str());							// +1
+		//lua_pushlstring(L, code.c_str(), code.size());	// +1
+		//lua_rawget(L, -2);								// 0
+
+		lua_rawgeti(L, LUA_REGISTRYINDEX, LuaManager::currentManager->FunctionRef);   //  +1
+		lua_pushvalue(L, -2);							// +1
+		func_ref = luaL_ref(L, -2);					// -1
+		lua_pop(L, 2);
+	}	
+
+	if (func_ref == LUA_NOREF)
 		return nullptr;
 	auto* f = new LuaNodeFunc;
-	f->func_ = func;
+	f->func_ = func_ref;
 	return f;
 }

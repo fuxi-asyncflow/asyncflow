@@ -1,6 +1,7 @@
 #pragma once
 
 #include <deque>
+#include <random>
 #include <string>
 #include <vector>
 
@@ -31,8 +32,10 @@ namespace asyncflow
 			bool	Event(int event_id, Agent* obj, void* args, int arg_count, bool immediate = false);
 			int		ImportFile(const std::string& file_name);
 			int		ImportJson(const std::string& json_str);
+            int     ImportYaml(const std::string& yaml_str);
 			int		ImportChatData(const std::vector<ChartData*>& data_list);
 			std::vector<ChartData*> ParseChartsFromJson(const std::string& json_str);
+			std::vector<ChartData*> ParseChartsFromYaml(const std::string& yaml_str);
 			int		ImportEvent(const std::string& file_name);
 			bool	ReloadChartData(ChartData* new_data) const;
 			bool	UnregisterGameObject(Agent* agent);
@@ -49,6 +52,8 @@ namespace asyncflow
 			Agent* GetCurrentAgent() { return executor_.GetCurrentAgent(); }
 			Node* GetCurrentNode() { return executor_.GetCurrentNode(); }
 			int64_t Now() { return GetTimerManager().Now(); }
+			int64_t GetFrame() { return current_frame_; }
+			std::string uuid4_str();
 
 		public:
 			// inside node function
@@ -78,6 +83,9 @@ namespace asyncflow
 			DfsExecutor		executor_;
 			EventQueue		event_queue_;
 			DyingAgents		dying_agents_;
+
+			std::random_device rd;
+			std::uniform_int_distribution<uint64_t> dist;
 
 			std::unordered_map<std::string, ChartData*>* chart_data_dict_;
 

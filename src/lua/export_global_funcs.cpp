@@ -216,10 +216,10 @@ int asyncflow::lua::event(lua_State* L)
 	}
 
 	int args_count = lua_gettop(L);
-	if (args_count < 2 || !lua_isnumber(L, 2))
+	if (args_count < 2)
 	{
 		LUA_ERR(L, agr_err_msg);
-	}
+	}  
 
 	auto* obj = lua_topointer(L, 1);
 	if (obj == nullptr)
@@ -229,6 +229,13 @@ int asyncflow::lua::event(lua_State* L)
 		return 1;
 	}
 	int event_id = (int)lua_tonumber(L, 2);
+    if(event_id == 0)
+    {
+        ASYNCFLOW_ERR("2nd arg for event function should be an non-zero integer");
+        lua_pushboolean(L, 0);
+        return 1;
+    }
+
 	auto event_args = new int[args_count - 2];
 	for (int i = args_count - 3; i >= 0; i--)
 	{
@@ -437,6 +444,17 @@ int asyncflow::lua::stop(lua_State* L)
 	lua_pushboolean(L, 1);
 	return 1;
 }
+
+int asyncflow::lua::set_node_func(lua_State* L)
+{
+	lua_getglobal(L, "asyncflow");					// +1
+	lua_getfield(L, -1, "node_funcs");	// +1
+	lua_pushvalue(L, 1);		// +1
+	lua_pushvalue(L, 2);		// +1
+	lua_rawset(L, -3);		// -2
+
+	return 0;
+}
 #pragma endregion asyncflow_customer_func
 
 #pragma region asyncflow_inner_func
@@ -455,7 +473,19 @@ int asyncflow::lua::get_var(lua_State* L)
 	if (LuaManager::currentManager == nullptr)
 		return 0;
 
-	int var_id = (int)lua_tonumber(L, 1);
+	int var_id;
+
+	if (lua_type(L, 1) == LUA_TSTRING)
+	{
+		size_t len;
+		auto name = lua_tolstring(L, 1, &len);
+		var_id = LuaManager::currentManager->GetCurrentNode()->GetChart()->GetData()->GetVarIndex(std::string(name, len));
+	}
+	else
+	{
+		var_id = (int)lua_tonumber(L, 1);
+	}
+
 	LuaManager::currentManager->GetVar(L, var_id);
 	return 1;
 }
@@ -464,8 +494,20 @@ int asyncflow::lua::set_var(lua_State* L)
 {
 	if (LuaManager::currentManager == nullptr)
 		return 0;
+	//TODO  optimization
+	int var_id;
 
-	int var_id = (int)lua_tonumber(L, 1);
+	if(lua_type(L, 1) == LUA_TSTRING)
+	{
+		size_t len;
+		auto name = lua_tolstring(L, 1, &len);		
+		var_id = LuaManager::currentManager->GetCurrentNode()->GetChart()->GetData()->GetVarIndex(std::string(name, len));
+	}
+	else
+	{
+		var_id = (int)lua_tonumber(L, 1);	    
+	}
+	
 	lua_remove(L, 1);   // set var in 1 idx of stack
 	LuaManager::currentManager->SetVar(L, var_id);
 	if (lua_type(L, 1) == LUA_TNUMBER)

@@ -5,6 +5,8 @@
 #include "core/node_func.h"
 #include <unordered_map>
 
+#include "rapidyaml.hpp"
+
 using namespace asyncflow::core;
 using namespace asyncflow::util;
 
@@ -129,6 +131,114 @@ bool ChartData::FromJson(rapidjson::Value& jobj)
 	return true;
 }
 
+bool ChartData::FromYaml(const ryml::NodeRef& doc)
+{
+	ChartData* chartData = this;
+	//read full path of chart
+	auto const chartFullPath = doc.find_child("path");
+	//auto const chartFullPath = doc["path"];
+	if (!chartFullPath.valid())
+	{
+		ASYNCFLOW_ERR("missing chart Path");
+		return false;
+	}
+	const std::string fullPath = std::string(chartFullPath.val().data(), chartFullPath.val().size());
+	chartData->chart_name_ = fullPath;
+
+	auto const chartVarsNode = doc.find_child("variables");
+	if(chartVarsNode.valid())
+	{
+		assert(chartVarsNode.is_seq());
+		variables_.clear();
+		for(auto varNode: chartVarsNode)
+		{
+			auto const nameNode = varNode.find_child("name");
+			printf("yaml var name: %.*s\n", (int)nameNode.val().size(), nameNode.val().data());
+			auto const typeNode = varNode.find_child("type");
+			auto const isParamNode = varNode.find_child("is_param");			
+
+			variables_.emplace_back(std::string {nameNode.val().data(), nameNode.val().size()}
+				, std::string { typeNode.val().data(), typeNode.val().size() }
+				, isParamNode.valid() && std::string(isParamNode.val().str, isParamNode.val().size()) == "true");
+		}
+		variable_count_ = variables_.size();
+		params_count_ = static_cast<int>(std::count_if(variables_.begin(), variables_.end()
+			, [](const Parameter& v) { return v.is_params; }));		
+
+		for (int i = 0; i < variable_count_; i++)
+		{
+			variable_dict_[variables_[i].name] = i;
+		}
+	}
+
+	std::unordered_map<std::string, int> id_map;
+
+	
+	auto const nodesNode = doc.find_child("nodes");
+	if(nodesNode.valid())
+	{
+		int nodeId = 0;
+		for (auto nodeNode : nodesNode)
+		{
+			auto* nodeData = new NodeData(nodeId++);
+			auto uidNode = nodeNode.find_child("uid");
+			if(uidNode.valid())
+			{
+				auto  uid = std::string{ uidNode.val().str, uidNode.val().size() };
+				nodeData->SetUid(uid);
+				id_map[uid] = nodeData->GetId();
+			}
+			chartData->node_list_.push_back(nodeData);
+		}
+
+		nodeId = 0;
+		for(auto nodeNode: nodesNode)
+		{
+			auto* nodeData = chartData->node_list_[nodeId++];
+			if (!nodeData->InitFromYaml(nodeNode, id_map, this))
+				return false;			
+		}		
+	}
+
+	auto const connectorsNode = doc.find_child("connectors");
+	if(connectorsNode.valid())
+	{
+	    for(auto connectorNode : connectorsNode)
+	    {
+			auto start_val = connectorNode["start"].val();
+			auto start_str = std::string(start_val.data(), start_val.size());
+
+			auto end_val = connectorNode["end"].val();
+			auto end_str = std::string(end_val.data(), end_val.size());
+
+			auto type_val = connectorNode["type"].val();
+			auto type_str = std::string(type_val.data(), type_val.size());
+
+			int type = std::stoi(type_str);
+			auto it = id_map.find(start_str);
+			if(it == id_map.end())
+			{
+				ASYNCFLOW_ERR("graph has no node `{0}` used in connectors", start_str);
+				return false;
+			}
+			auto start_node = chartData->node_list_[it->second];
+
+			it = id_map.find(end_str);
+			if(it == id_map.end())
+			{
+				ASYNCFLOW_ERR("graph has no node `{0}` used in connectors", end_str);
+				return false;
+			}
+			start_node->AddSubsequence(it->second, type);
+			//ASYNCFLOW_WARN("connect {0} -> {1}", start_node->GetText(), it->second);
+	    }
+	}
+	
+
+	return true;
+}
+
+
 ChartData::~ChartData()
 {
 	if (prev_ != nullptr && prev_ != this)
@@ -190,5 +300,13 @@ const Parameter* ChartData::GetVariable(int idx) const
 	}
 
 	return &variables_[idx];
+}
+
+int ChartData::GetVarIndex(const std::string& name) const
+{
+	auto it = variable_dict_.find(name);
+	if (it != variable_dict_.end())
+		return it->second;
+	return -1;
 }
 

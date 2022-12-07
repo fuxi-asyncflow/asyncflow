@@ -9,8 +9,8 @@ namespace asyncflow
 		class LuaNodeFunc: public core::NodeFunc
 		{
 		public:
-			bool call(core::Agent* self) override;
-			static Ref CompileFunction(const std::string& code, const std::string& name);
+			bool call(core::Agent* self) override;			
+			static Ref GetFunctionByName(const std::string& name);
 			static NodeFunc* GetFuncFromString(const std::string& code, const std::string& name);
 		private:			
 			std::string code_;

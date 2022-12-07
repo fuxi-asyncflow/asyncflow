@@ -158,17 +158,24 @@ void LuaChart::SetVar(lua_State* L, int idx)     //[-0, +0, -]
 	lua_rawgeti(L, LUA_REGISTRYINDEX, mgr->ChartVariableRef);    //+1
 	lua_rawgeti(L, -1, variables_);                                     //+1
 #ifdef FLOWCHART_DEBUG
-	lua_rawgeti(L, -1, idx);                                            //+1
-	int pos = idx - 1;  //Lua index start from 1, need to convert to vector index;
-	auto* variable = GetData()->GetVariable(pos);
-	const std::string type = variable != nullptr ? variable->type : "unknown";
+	if (IsDebug())
+	{
+		lua_rawgeti(L, -1, idx);                                            //+1
+		int pos = idx - 1;  //Lua index start from 1, need to convert to vector index;
+		auto* variable = GetData()->GetVariable(pos);
+		const std::string type = variable != nullptr ? variable->type : "unknown";
 
-	auto old_value = ValueToString(L, -1, type);
-	lua_pop(L, 1);                                                      //-1
+		auto old_value = ValueToString(L, -1, type);
+		lua_pop(L, 1);                                                      //-1
 
-	lua_pushvalue(L, 1);                                             //+1
-	auto new_value = ValueToString(L, -1, type);
-	SendVariableStatus(data_->GetVariableName(pos), old_value, new_value);
+		lua_pushvalue(L, 1);                                             //+1
+		auto new_value = ValueToString(L, -1, type);
+		SendVariableStatus(data_->GetVariableName(pos), old_value, new_value);
+	}
+	else
+	{
+		lua_pushvalue(L, 1);
+	}
 #else
 	lua_pushvalue(L, 1);
 #endif

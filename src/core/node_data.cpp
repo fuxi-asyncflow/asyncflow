@@ -3,8 +3,11 @@
 #include "util/log.h"
 
 #include <string>
+#include <sstream>
 #include <unordered_map>
 #include "core/manager.h"
+
+#include "rapidyaml.hpp"
 
 using namespace asyncflow::core;
 using namespace asyncflow::util;
@@ -133,10 +136,133 @@ bool NodeData::InitFromJson(rapidjson::Value& jobj, const std::unordered_map<std
 	return true;
 }
 
+bool NodeData::InitFromYaml(c4::yml::NodeRef& nodeRef, std::unordered_map<std::string, int>& id_map, ChartData* chart_data)
+{
+	auto tmp = nodeRef["uid"].val();
+	node_uid_ = std::string{ tmp.data(), tmp.size() };
+	id_map[node_uid_] = node_id_;
+	if (node_id_ == 0)
+		return true;
+
+	tmp = nodeRef["text"].val();
+	text_ = std::string{ tmp.data(), tmp.size() };
+
+	auto codeRef = nodeRef["code"];
+
+	if(codeRef.valid())
+	{
+		auto&& typeRef = codeRef.find_child("type");
+		auto type_str = std::string(typeRef.val().str, typeRef.val().size());
+		if(strcmp("FUNC", type_str.c_str()) == 0 || strcmp("EVENT", type_str.c_str()) == 0)
+		{
+			auto ret_name = codeRef.find_child("return_var_name");
+			if(ret_name.valid())
+				var_id_ = chart_data->GetVarIndex(std::string{ ret_name.val().str, ret_name.val().size()});
+
+			auto func_name = codeRef.find_child("func_name");
+			if(func_name.valid())
+			{
+				node_func_ = chart_data->CreateNodeFunc(std::string(), std::string(func_name.val().str, func_name.val().size()));
+			}
+			else
+			{
+				tmp = codeRef["content"].val();
+				std::stringstream ss;
+				ss << "return function(self) \n" << std::string{ tmp.str, tmp.size() } << "\n end";
+				node_func_ = chart_data->CreateNodeFunc(ss.str(), "");
+			}
+			
+			is_event_ = (strcmp("EVENT", type_str.c_str()) == 0);
+		}
+		else if(strcmp("CONTROL", type_str.c_str()) == 0)
+		{
+			auto contentsRef = codeRef.find_child("content");
+			if(contentsRef.valid())
+			{
+				int i = 0;
+				std::vector<int> params;
+				std::string func_name;
+                for (auto contentRef : contentsRef)
+                {
+					if (i == 0)
+						func_name = std::string(contentRef.val().str, contentRef.val().size());
+					else 
+					{
+						auto id_str = std::string(contentRef.val().str, contentRef.val().size());
+						if(id_str.length() == 32)
+						{
+							char dst[36];
+							dst[8] = dst[13] = dst[18] = dst[23] = '-';
+							const auto* src = id_str.c_str();
+							for(int x=0; x<8; x++)
+							{
+								dst[x] = src[x];
+								dst[24 + x] = src[20 + x];
+							}
+							for(int x = 0; x<4; x++)
+							{
+								dst[9 + x] = src[8 + x];
+								dst[14 + x] = src[12 + x];
+								dst[19 + x] = src[16 + x];
+								dst[32 + x] = src[28 + x];
+							}
+							id_str = std::string(dst, 36);
+						}
+						auto id = id_map.find(id_str);
+						if(id != id_map.end())
+						    params.emplace_back(id->second);
+						else
+						{
+							ASYNCFLOW_ERR("load node data error in {0}[{1}]({2}), param contains invalid uid `{3}`"
+								, chart_data->Name(), this->GetId(), this->GetUid(), std::string(contentRef.val().str, contentRef.val().size()));
+							return false;
+						}
+					}
+					i++;
+                }
+				if(func_name == "stopflow")
+					node_func_ = ControlNodeFunc::Create(&Manager::StopFlow, params);
+				else if(func_name == "stopnode")
+					node_func_ = ControlNodeFunc::Create(&Manager::StopNode, params);
+				else if(func_name == "waitall")
+					node_func_ = ControlNodeFunc::Create(&Manager::WaitAll, params);
+			}
+		}
+		else if (strcmp("ERROR", type_str.c_str()) == 0)
+		{
+			ASYNCFLOW_ERR("load node data error in {0}[{1}]({2}), node type is error"
+				, chart_data->Name(), this->GetId(), this->GetUid());
+			return false;
+		}
+	}
+
+
+	return true;    
+}
+
 void NodeData::SetChildren(const std::vector<int>& f, const std::vector<int>& s)
 {
 	children_[0].clear();
 	children_[0].insert(children_[0].end(), f.begin(), f.end());
 	children_[1].clear();
 	children_[1].insert(children_[1].end(), s.begin(), s.end());
+}
+
+void NodeData::AddSubsequence(int id, int type)
+{
+	switch(type)
+	{
+	case 0:
+		children_[0].push_back(id);
+		break;
+	case 1:
+		children_[1].push_back(id);
+		break;
+	case 2:
+		children_[0].push_back(id);
+		children_[1].push_back(id);
+		break;
+	default:
+		break;
+	}
 }

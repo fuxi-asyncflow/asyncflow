@@ -1,6 +1,7 @@
 #include "core/event_manager.h"
 #include "util/log.h"
 #include "util/json.h"
+#include "rapidyaml.hpp"
 
 using namespace asyncflow::core;
 
@@ -63,4 +64,29 @@ int EventManager::InitFromJson(const std::string& json_str)
 		++count;
 	}
 	return count;
+}
+
+int EventManager::InitFromYaml(const std::string& yaml_str)
+{  
+    ryml::Tree tree = ryml::parse_in_arena(ryml::to_csubstr(yaml_str));
+    const ryml::NodeRef root = tree.rootref();
+    if (!root.is_stream())
+        return -1;
+    for(const auto& doc : root.children())
+    {
+        event_info_list_.clear();
+        event_info_list_.emplace_back(EventInfo{ 0, 0, std::string("None") });
+        for(const auto& ev_node : doc.children())
+        {
+            auto id_val = ev_node["id"].val();
+            int id = std::stoi(std::string(id_val.data(), id_val.size()));
+            auto name_val = ev_node["name"].val();
+            auto name = std::string(name_val.data(), name_val.size());
+            auto params_node = ev_node.find_child("parameters");
+            auto argc = params_node.valid() ? params_node.num_children() : 0;
+            ASYNCFLOW_DBG("load event [{0}] {1} {2}", id, argc, id);
+            event_info_list_.emplace_back(id, static_cast<int>(argc), name);
+        }        
+    }
+    return static_cast<int>(event_info_list_.size()) - 1;
 }
