@@ -447,11 +447,6 @@ int asyncflow::lua::stop(lua_State* L)
 
 int asyncflow::lua::set_node_func(lua_State* L)
 {
-	if (LuaManager::currentManager == nullptr)
-	{
-		LUA_ERR(L, manager_null_msg);
-	}
-
 	lua_getglobal(L, "asyncflow");					// +1
 	lua_getfield(L, -1, "node_funcs");	// +1
 	lua_pushvalue(L, 1);		// +1
