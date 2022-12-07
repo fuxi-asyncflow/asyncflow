@@ -695,7 +695,8 @@ void JsonDebugger::HotFixHandler(rapidjson::Document& doc, Manager* manager_, De
 {
 	auto params = doc["params"].GetObject();
 	auto charts_func = params["charts_func"].GetString();
-	auto result = manager_->RunScript(charts_func);
+	auto codes_str = asyncflow::util::Base64::base64_decode(charts_func);	
+	auto result = manager_->RunScript(codes_str.c_str());
 	if (!result.first)
 	{
 		connection->Reply(ErrorReply(-15, "run charts_func error", msg_id));
