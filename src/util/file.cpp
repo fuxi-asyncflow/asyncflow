@@ -238,3 +238,41 @@ std::string Base64::base64_encode_mime(std::string const& s) {
     return encode_mime(s);
 }
 
+///////////////////////////////////////////////////////////////////////////////////
+
+
+bool UuidUtil::NtoD(const char* n, char* d)
+{    
+    d[8] = d[13] = d[18] = d[23] = '-';
+    
+    for (int x = 0; x < 8; x++)
+    {
+        d[x] = n[x];
+        d[24 + x] = n[20 + x];
+    }
+    for (int x = 0; x < 4; x++)
+    {
+        d[9 + x] = n[8 + x];
+        d[14 + x] = n[12 + x];
+        d[19 + x] = n[16 + x];
+        d[32 + x] = n[28 + x];
+    }
+    return true;
+}
+
+bool UuidUtil::DtoN(const char* d, char* n)
+{
+    for (int x = 0; x < 8; x++)
+    {
+        n[x] = d[x];
+        n[20 + x] = d[24 + x];
+    }
+    for (int x = 0; x < 4; x++)
+    {
+        n[8 + x] = d[9 + x];
+        n[12 + x] = d[14 + x];
+        n[16 + x] = d[19 + x];
+        n[28 + x] = d[32 + x];
+    }
+    return true;
+}

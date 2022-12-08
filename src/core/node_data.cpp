@@ -1,6 +1,7 @@
 #include "core/node_data.h"
 #include "core/node_func.h"
 #include "util/log.h"
+#include "util/file.h"
 
 #include <string>
 #include <sstream>
@@ -160,16 +161,26 @@ bool NodeData::InitFromYaml(c4::yml::NodeRef& nodeRef, std::unordered_map<std::s
 				var_id_ = chart_data->GetVarIndex(std::string{ ret_name.val().str, ret_name.val().size()});
 
 			auto func_name = codeRef.find_child("func_name");
+			auto content = codeRef.find_child("content");
 			if(func_name.valid())
 			{
 				node_func_ = chart_data->CreateNodeFunc(std::string(), std::string(func_name.val().str, func_name.val().size()));
 			}
-			else
+			else if(content.valid())
 			{
-				tmp = codeRef["content"].val();
+				tmp = content.val();
 				std::stringstream ss;
 				ss << "return function(self) \n" << std::string{ tmp.str, tmp.size() } << "\n end";
 				node_func_ = chart_data->CreateNodeFunc(ss.str(), "");
+			}
+			else
+			{
+				std::stringstream ss;
+				char normalUid[32];
+				UuidUtil::DtoN(node_uid_.c_str(), normalUid);
+				// "AI.test.00000000111122223333444444444444"
+				ss << chart_data->Name() << "." << std::string(normalUid, 32);
+				node_func_ = chart_data->CreateNodeFunc(std::string(), ss.str());
 			}
 			
 			is_event_ = (strcmp("EVENT", type_str.c_str()) == 0);
@@ -182,7 +193,7 @@ bool NodeData::InitFromYaml(c4::yml::NodeRef& nodeRef, std::unordered_map<std::s
 				int i = 0;
 				std::vector<int> params;
 				std::string func_name;
-                for (auto contentRef : contentsRef)
+                for (auto& contentRef : contentsRef)
                 {
 					if (i == 0)
 						func_name = std::string(contentRef.val().str, contentRef.val().size());
@@ -192,20 +203,7 @@ bool NodeData::InitFromYaml(c4::yml::NodeRef& nodeRef, std::unordered_map<std::s
 						if(id_str.length() == 32)
 						{
 							char dst[36];
-							dst[8] = dst[13] = dst[18] = dst[23] = '-';
-							const auto* src = id_str.c_str();
-							for(int x=0; x<8; x++)
-							{
-								dst[x] = src[x];
-								dst[24 + x] = src[20 + x];
-							}
-							for(int x = 0; x<4; x++)
-							{
-								dst[9 + x] = src[8 + x];
-								dst[14 + x] = src[12 + x];
-								dst[19 + x] = src[16 + x];
-								dst[32 + x] = src[28 + x];
-							}
+							UuidUtil::NtoD(id_str.c_str(), dst);
 							id_str = std::string(dst, 36);
 						}
 						auto id = id_map.find(id_str);
