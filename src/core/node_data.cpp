@@ -193,7 +193,7 @@ bool NodeData::InitFromYaml(c4::yml::NodeRef& nodeRef, std::unordered_map<std::s
 				int i = 0;
 				std::vector<int> params;
 				std::string func_name;
-                for (auto& contentRef : contentsRef)
+                for (auto&& contentRef : contentsRef)
                 {
 					if (i == 0)
 						func_name = std::string(contentRef.val().str, contentRef.val().size());

@@ -30,7 +30,7 @@ Manager::Manager()
 	, default_time_interval_(100)
 	, immediate_subchart_(false)
     , AUTO_REGISTER(true)
-	, rd(std::to_string(reinterpret_cast<int64_t>(this)))	
+	, rd("default")
 #ifdef FLOWCHART_DEBUG
 	, websocket_manager_(this)
 #endif
@@ -578,8 +578,7 @@ std::string Manager::uuid4_str()
 	{		
 		uustr[i] = encode[dist(rd) >> 4 * bit & 0x0f];
 		bit--;
-	}
-
+	}	
 	return std::string(uustr);
 }
 
