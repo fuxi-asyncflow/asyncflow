@@ -1,6 +1,7 @@
 #include "util/json.h"
 #include "util/log.h"
 #include "rapidjson/error/en.h"
+#include "rapidyaml.hpp"
 
 int get_line_number(const std::string& str, int pos)
 {
@@ -83,4 +84,23 @@ bool asyncflow::util::JsonUtil::ParseJson(const std::string& json_str, rapidjson
 		return false;
 	}
 	return true;
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+void asyncflow::util::YamlErrorHandler::on_error(const char* msg, size_t len, ryml::Location loc)
+{
+	throw std::runtime_error(ryml::formatrs<std::string>("{}:{}:{} ({}B): ERROR: {}",
+		loc.name, loc.line, loc.col, loc.offset, ryml::csubstr(msg, len)));
+}
+
+ryml::Callbacks asyncflow::util::YamlErrorHandler::callbacks()
+{
+	return ryml::Callbacks(this, nullptr, nullptr, YamlErrorHandler::s_error);
+}
+
+void asyncflow::util::YamlErrorHandler::s_error(const char* msg, size_t len, ryml::Location loc, void* this_)
+{
+	return ((YamlErrorHandler*)this_)->on_error(msg, len, loc);
 }
