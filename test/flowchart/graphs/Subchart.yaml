@@ -1,0 +1,930 @@
+--- 
+path: Subchart.SubchartTest_01
+uid: f99882fc-e13f-4775-834c-fdeb7b24a3cc
+type: Character
+nodes: 
+- 
+  uid: b3219dc6-fcdf-451e-9ce8-48855abcbe71
+- 
+  uid: 42a43a6e-5451-4e45-afcf-d15f46cbbe03
+  text: "Say(\"hello\")"
+  code: 
+    type: FUNC
+- 
+  uid: dca03dec-e2a0-4233-a561-8dc68c9cf5bd
+  text: "SubchartTest_01_sub()"
+  code: 
+    type: FUNC
+- 
+  uid: fc24d0b5-9b91-4be2-a62c-b8e93bb04aa9
+  text: "Say(\"end\")"
+  code: 
+    type: FUNC
+connectors: 
+- 
+  start: b3219dc6-fcdf-451e-9ce8-48855abcbe71
+  end: 42a43a6e-5451-4e45-afcf-d15f46cbbe03
+  type: 2
+- 
+  start: 42a43a6e-5451-4e45-afcf-d15f46cbbe03
+  end: dca03dec-e2a0-4233-a561-8dc68c9cf5bd
+  type: 2
+- 
+  start: dca03dec-e2a0-4233-a561-8dc68c9cf5bd
+  end: fc24d0b5-9b91-4be2-a62c-b8e93bb04aa9
+  type: 2
+- 
+  start: fc24d0b5-9b91-4be2-a62c-b8e93bb04aa9
+  end: 42a43a6e-5451-4e45-afcf-d15f46cbbe03
+  type: 2
+--- 
+path: Subchart.SubchartTest_01_sub
+uid: 8c727815-9811-4046-8eda-0b773d3e1689
+type: Character
+is_subgraph: true
+return_type: Number
+nodes: 
+- 
+  uid: 8bdcb809-7758-4a64-9545-eb7c25e470b2
+- 
+  uid: e73bdb60-cc12-4061-98c2-2d25bdaf9383
+  text: "Say(\"hellosub\")"
+  code: 
+    type: FUNC
+- 
+  uid: 26627676-2f0c-4ae5-9b8b-aa1b498f05b7
+  text: "wait(1)"
+  code: 
+    type: FUNC
+- 
+  uid: ea2ddbba-3448-4e36-a827-e2f73d8ac897
+  text: "return(1)"
+  code: 
+    type: FUNC
+connectors: 
+- 
+  start: 8bdcb809-7758-4a64-9545-eb7c25e470b2
+  end: e73bdb60-cc12-4061-98c2-2d25bdaf9383
+  type: 2
+- 
+  start: e73bdb60-cc12-4061-98c2-2d25bdaf9383
+  end: 26627676-2f0c-4ae5-9b8b-aa1b498f05b7
+  type: 2
+- 
+  start: 26627676-2f0c-4ae5-9b8b-aa1b498f05b7
+  end: ea2ddbba-3448-4e36-a827-e2f73d8ac897
+  type: 2
+--- 
+path: Subchart.SubchartTest_02
+uid: 83ed4d7f-fa71-4613-b20a-b511107d80bf
+type: Character
+variables: 
+- 
+  name: s1
+  type: Character
+nodes: 
+- 
+  uid: 245837d5-2db1-4238-9fa9-4fa3298d3dba
+- 
+  uid: 9c62aa07-bc89-4002-943a-f2b9760f9bf3
+  text: "$s1=CreateCharacter()"
+  code: 
+    type: FUNC
+- 
+  uid: fb738de1-dcfd-4041-a456-24584f8a6596
+  text: "Say(\"hello\")"
+  code: 
+    type: FUNC
+- 
+  uid: f67352ec-4c76-44dd-b0cf-903835f11f01
+  text: "$s1.SubchartTest_01_sub()"
+  code: 
+    type: FUNC
+- 
+  uid: a31dbf21-ae57-4b9e-aed2-d72273f22091
+  text: "Say(\"end\")"
+  code: 
+    type: FUNC
+connectors: 
+- 
+  start: 245837d5-2db1-4238-9fa9-4fa3298d3dba
+  end: 9c62aa07-bc89-4002-943a-f2b9760f9bf3
+  type: 2
+- 
+  start: 9c62aa07-bc89-4002-943a-f2b9760f9bf3
+  end: fb738de1-dcfd-4041-a456-24584f8a6596
+  type: 2
+- 
+  start: fb738de1-dcfd-4041-a456-24584f8a6596
+  end: f67352ec-4c76-44dd-b0cf-903835f11f01
+  type: 2
+- 
+  start: f67352ec-4c76-44dd-b0cf-903835f11f01
+  end: a31dbf21-ae57-4b9e-aed2-d72273f22091
+  type: 2
+- 
+  start: a31dbf21-ae57-4b9e-aed2-d72273f22091
+  end: fb738de1-dcfd-4041-a456-24584f8a6596
+  type: 2
+--- 
+path: Subchart.SubchartTest_03
+uid: c6f532dd-d80e-4078-bd51-3c69f207a45f
+type: Character
+variables: 
+- 
+  name: s1
+  type: Character
+- 
+  name: s2
+  type: Character
+- 
+  name: s
+  type: Array<Character>
+- 
+  name: index
+  type: Number
+nodes: 
+- 
+  uid: cdcbf11b-baca-4fb3-8cd9-8a5dc457b948
+- 
+  uid: 53d28596-1cbb-4034-82b0-40d60b7aa6ff
+  text: "$s1=CreateCharacter()"
+  code: 
+    type: FUNC
+- 
+  uid: d02f8ce0-37bf-4cb2-be04-40f504764ad0
+  text: "$s2=CreateCharacter()"
+  code: 
+    type: FUNC
+- 
+  uid: d802d108-97ae-4441-9a31-852331f1e491
+  text: "$s={$s1,$s2}"
+  code: 
+    type: FUNC
+- 
+  uid: ca65b52b-0dbb-4368-87af-98e9b59eba68
+  text: "$index=1"
+  code: 
+    type: FUNC
+- 
+  uid: 370b0b89-3381-472e-862e-c67b05ed37f5
+  text: "Say(\"hello\")"
+  code: 
+    type: FUNC
+- 
+  uid: b49315c6-f6d4-4c8d-a2a2-4371dc5e59aa
+  text: "$s[$index].SubchartTest_01_sub()"
+  code: 
+    type: FUNC
+- 
+  uid: 133c1db8-50f4-48bb-b58a-b69a64c08ee0
+  text: "$index=1+($index+1)%2"
+  code: 
+    type: FUNC
+- 
+  uid: 77c19948-1762-4bf1-be2a-13a3dd72eea4
+  text: "Say(\"end\")"
+  code: 
+    type: FUNC
+connectors: 
+- 
+  start: cdcbf11b-baca-4fb3-8cd9-8a5dc457b948
+  end: 53d28596-1cbb-4034-82b0-40d60b7aa6ff
+  type: 2
+- 
+  start: 53d28596-1cbb-4034-82b0-40d60b7aa6ff
+  end: d02f8ce0-37bf-4cb2-be04-40f504764ad0
+  type: 2
+- 
+  start: d02f8ce0-37bf-4cb2-be04-40f504764ad0
+  end: d802d108-97ae-4441-9a31-852331f1e491
+  type: 2
+- 
+  start: d802d108-97ae-4441-9a31-852331f1e491
+  end: ca65b52b-0dbb-4368-87af-98e9b59eba68
+  type: 2
+- 
+  start: ca65b52b-0dbb-4368-87af-98e9b59eba68
+  end: 370b0b89-3381-472e-862e-c67b05ed37f5
+  type: 2
+- 
+  start: 370b0b89-3381-472e-862e-c67b05ed37f5
+  end: b49315c6-f6d4-4c8d-a2a2-4371dc5e59aa
+  type: 2
+- 
+  start: b49315c6-f6d4-4c8d-a2a2-4371dc5e59aa
+  end: 133c1db8-50f4-48bb-b58a-b69a64c08ee0
+  type: 2
+- 
+  start: 133c1db8-50f4-48bb-b58a-b69a64c08ee0
+  end: 77c19948-1762-4bf1-be2a-13a3dd72eea4
+  type: 2
+- 
+  start: 77c19948-1762-4bf1-be2a-13a3dd72eea4
+  end: 370b0b89-3381-472e-862e-c67b05ed37f5
+  type: 2
+--- 
+path: Subchart.SubchartTest_04
+uid: b02ea2f7-58db-4b82-b085-b3acdf634b0b
+type: Character
+nodes: 
+- 
+  uid: 7ae40838-6123-46f6-968d-38df8674cc3c
+- 
+  uid: 94165897-646e-4b1c-a4f3-4c560a37a222
+  text: "Say(\"hello\")"
+  code: 
+    type: FUNC
+- 
+  uid: b1b6ff9b-e310-4b0c-ab7f-7af889e89d53
+  text: "SubchartTest_04_sub()"
+  code: 
+    type: FUNC
+- 
+  uid: 3d865c04-4334-4fc7-9e67-5f19126bba6f
+  text: "Say(\"end\")"
+  code: 
+    type: FUNC
+connectors: 
+- 
+  start: 7ae40838-6123-46f6-968d-38df8674cc3c
+  end: 94165897-646e-4b1c-a4f3-4c560a37a222
+  type: 2
+- 
+  start: 94165897-646e-4b1c-a4f3-4c560a37a222
+  end: b1b6ff9b-e310-4b0c-ab7f-7af889e89d53
+  type: 2
+- 
+  start: b1b6ff9b-e310-4b0c-ab7f-7af889e89d53
+  end: 3d865c04-4334-4fc7-9e67-5f19126bba6f
+  type: 2
+- 
+  start: 3d865c04-4334-4fc7-9e67-5f19126bba6f
+  end: 94165897-646e-4b1c-a4f3-4c560a37a222
+  type: 2
+--- 
+path: Subchart.SubchartTest_04_sub
+uid: 3ea07532-94a9-43e9-b061-73bddcda53db
+type: Character
+is_subgraph: true
+return_type: Void
+nodes: 
+- 
+  uid: 6f5bb7d4-063f-4735-88ae-a5bd59b12560
+- 
+  uid: 98a94c83-e042-4336-a633-ff94baa3a3e9
+  text: "Say(\"hellosub\")"
+  code: 
+    type: FUNC
+- 
+  uid: 22db35f7-3af8-4406-b441-e216f7dc4852
+  text: "wait(1)"
+  code: 
+    type: FUNC
+connectors: 
+- 
+  start: 6f5bb7d4-063f-4735-88ae-a5bd59b12560
+  end: 98a94c83-e042-4336-a633-ff94baa3a3e9
+  type: 2
+- 
+  start: 98a94c83-e042-4336-a633-ff94baa3a3e9
+  end: 22db35f7-3af8-4406-b441-e216f7dc4852
+  type: 2
+--- 
+path: Subchart.SubchartTest_05
+uid: 9bf20ab4-a9d9-45da-b88f-95e888e70569
+type: Character
+variables: 
+- 
+  name: s1
+  type: Character
+nodes: 
+- 
+  uid: 803c8d4f-bc76-4975-91ec-5dcc4066c68a
+- 
+  uid: d6cd6a2b-73e3-45fc-b276-e4e16ec9422e
+  text: "$s1=CreateCharacter()"
+  code: 
+    type: FUNC
+- 
+  uid: 4d0de389-1cf2-4f6b-a32e-8c2ce3b2efd9
+  text: "Say(\"hello\")"
+  code: 
+    type: FUNC
+- 
+  uid: 081c7692-91b4-4bd2-bc2c-49ab14ed6520
+  text: "$s1.SubchartTest_04_sub()"
+  code: 
+    type: FUNC
+- 
+  uid: eecc6db7-9724-45c9-b24d-38d3b5d6e02e
+  text: "Say(\"end\")"
+  code: 
+    type: FUNC
+connectors: 
+- 
+  start: 803c8d4f-bc76-4975-91ec-5dcc4066c68a
+  end: d6cd6a2b-73e3-45fc-b276-e4e16ec9422e
+  type: 2
+- 
+  start: d6cd6a2b-73e3-45fc-b276-e4e16ec9422e
+  end: 4d0de389-1cf2-4f6b-a32e-8c2ce3b2efd9
+  type: 2
+- 
+  start: 4d0de389-1cf2-4f6b-a32e-8c2ce3b2efd9
+  end: 081c7692-91b4-4bd2-bc2c-49ab14ed6520
+  type: 2
+- 
+  start: 081c7692-91b4-4bd2-bc2c-49ab14ed6520
+  end: eecc6db7-9724-45c9-b24d-38d3b5d6e02e
+  type: 2
+- 
+  start: eecc6db7-9724-45c9-b24d-38d3b5d6e02e
+  end: 4d0de389-1cf2-4f6b-a32e-8c2ce3b2efd9
+  type: 2
+--- 
+path: Subchart.SubchartTest_06
+uid: 578856c2-5a22-4a5d-94f7-63a57b2e4b8d
+type: Character
+variables: 
+- 
+  name: s1
+  type: Character
+- 
+  name: s2
+  type: Character
+- 
+  name: s
+  type: Array<Character>
+- 
+  name: index
+  type: Number
+nodes: 
+- 
+  uid: 32ea6b6c-67b2-4449-a63c-1556a6f20ae2
+- 
+  uid: 90ee7f98-deb0-4f14-b95c-689f558eacfa
+  text: "$s1=CreateCharacter()"
+  code: 
+    type: FUNC
+- 
+  uid: 57b18856-751b-4df2-8098-e7e0257bc109
+  text: "$s2=CreateCharacter()"
+  code: 
+    type: FUNC
+- 
+  uid: 0ded790c-a5d9-4adc-a086-35c4f0550e38
+  text: "$s={$s1,$s2}"
+  code: 
+    type: FUNC
+- 
+  uid: 07130982-db51-4acc-8381-dc1ac12ce561
+  text: "$index=1"
+  code: 
+    type: FUNC
+- 
+  uid: 119bffe1-0d05-4c47-9b41-c94e26f3df06
+  text: "Say(\"hello\")"
+  code: 
+    type: FUNC
+- 
+  uid: 767f30ee-29ce-4085-bc9c-0ee2f511f49d
+  text: "$s[$index].SubchartTest_04_sub()"
+  code: 
+    type: FUNC
+- 
+  uid: 1f7e7ecd-8cd6-4723-8ee2-77018e7744f6
+  text: "$index=1+($index+1)%2"
+  code: 
+    type: FUNC
+- 
+  uid: 4e2f23bb-6081-4ac1-9ad2-c0de288116d4
+  text: "Say(\"end\")"
+  code: 
+    type: FUNC
+connectors: 
+- 
+  start: 32ea6b6c-67b2-4449-a63c-1556a6f20ae2
+  end: 90ee7f98-deb0-4f14-b95c-689f558eacfa
+  type: 2
+- 
+  start: 90ee7f98-deb0-4f14-b95c-689f558eacfa
+  end: 57b18856-751b-4df2-8098-e7e0257bc109
+  type: 2
+- 
+  start: 57b18856-751b-4df2-8098-e7e0257bc109
+  end: 0ded790c-a5d9-4adc-a086-35c4f0550e38
+  type: 2
+- 
+  start: 0ded790c-a5d9-4adc-a086-35c4f0550e38
+  end: 07130982-db51-4acc-8381-dc1ac12ce561
+  type: 2
+- 
+  start: 07130982-db51-4acc-8381-dc1ac12ce561
+  end: 119bffe1-0d05-4c47-9b41-c94e26f3df06
+  type: 2
+- 
+  start: 119bffe1-0d05-4c47-9b41-c94e26f3df06
+  end: 767f30ee-29ce-4085-bc9c-0ee2f511f49d
+  type: 2
+- 
+  start: 767f30ee-29ce-4085-bc9c-0ee2f511f49d
+  end: 1f7e7ecd-8cd6-4723-8ee2-77018e7744f6
+  type: 2
+- 
+  start: 1f7e7ecd-8cd6-4723-8ee2-77018e7744f6
+  end: 4e2f23bb-6081-4ac1-9ad2-c0de288116d4
+  type: 2
+- 
+  start: 4e2f23bb-6081-4ac1-9ad2-c0de288116d4
+  end: 119bffe1-0d05-4c47-9b41-c94e26f3df06
+  type: 2
+--- 
+path: Subchart.SubchartTest_07
+uid: 01965f5b-edb4-427c-ba4e-5c28de849309
+type: Character
+nodes: 
+- 
+  uid: d2a054e9-689b-429b-b9ec-ea60a02795a8
+- 
+  uid: cc5b0382-30ff-4989-88d5-e3c97486f8d0
+  text: "Say(\"hello\")"
+  code: 
+    type: FUNC
+- 
+  uid: 9d7479fd-0ed6-4117-ac86-8fa914e6bf23
+  text: "SubchartTest_07_sub()"
+  code: 
+    type: FUNC
+- 
+  uid: 69f4517a-fe49-446d-8124-4fac4a1f69cc
+  text: "Say(\"end\")"
+  code: 
+    type: FUNC
+connectors: 
+- 
+  start: d2a054e9-689b-429b-b9ec-ea60a02795a8
+  end: cc5b0382-30ff-4989-88d5-e3c97486f8d0
+  type: 2
+- 
+  start: cc5b0382-30ff-4989-88d5-e3c97486f8d0
+  end: 9d7479fd-0ed6-4117-ac86-8fa914e6bf23
+  type: 2
+- 
+  start: 9d7479fd-0ed6-4117-ac86-8fa914e6bf23
+  end: 69f4517a-fe49-446d-8124-4fac4a1f69cc
+  type: 2
+- 
+  start: 69f4517a-fe49-446d-8124-4fac4a1f69cc
+  end: cc5b0382-30ff-4989-88d5-e3c97486f8d0
+  type: 2
+--- 
+path: Subchart.SubchartTest_07_sub
+uid: 846df26b-724b-4c1a-96a3-5755858ea491
+type: Character
+is_subgraph: true
+return_type: Number
+nodes: 
+- 
+  uid: 14025237-8bc6-42c6-89e1-18bf6d22e81d
+- 
+  uid: dc32fef0-0542-4047-a0cd-29588cf9304e
+  text: "Say(\"hellosub\")"
+  code: 
+    type: FUNC
+- 
+  uid: 3881148c-21a4-4fc2-9280-ff8b3330fa4f
+  text: "return(1)"
+  code: 
+    type: FUNC
+connectors: 
+- 
+  start: 14025237-8bc6-42c6-89e1-18bf6d22e81d
+  end: dc32fef0-0542-4047-a0cd-29588cf9304e
+  type: 2
+- 
+  start: dc32fef0-0542-4047-a0cd-29588cf9304e
+  end: 3881148c-21a4-4fc2-9280-ff8b3330fa4f
+  type: 2
+--- 
+path: Subchart.SubchartTest_08
+uid: af106dfa-26ca-4aa7-8ae6-c2a3a2292aa3
+type: Character
+variables: 
+- 
+  name: s1
+  type: Character
+nodes: 
+- 
+  uid: 260baa4e-c54e-44f5-ba89-5c853e0d113c
+- 
+  uid: ecb7cf4b-2d25-4ae3-8663-b6ca76241c22
+  text: "$s1=CreateCharacter()"
+  code: 
+    type: FUNC
+- 
+  uid: 0ce4ec77-462e-491e-b630-ae99e9650937
+  text: "Say(\"hello\")"
+  code: 
+    type: FUNC
+- 
+  uid: c2b07004-eedd-4cd5-aaec-c630dde26f8f
+  text: "$s1.SubchartTest_07_sub()"
+  code: 
+    type: FUNC
+- 
+  uid: 441812d2-ea63-4ca1-891a-2343159a0e9a
+  text: "Say(\"end\")"
+  code: 
+    type: FUNC
+connectors: 
+- 
+  start: 260baa4e-c54e-44f5-ba89-5c853e0d113c
+  end: ecb7cf4b-2d25-4ae3-8663-b6ca76241c22
+  type: 2
+- 
+  start: ecb7cf4b-2d25-4ae3-8663-b6ca76241c22
+  end: 0ce4ec77-462e-491e-b630-ae99e9650937
+  type: 2
+- 
+  start: 0ce4ec77-462e-491e-b630-ae99e9650937
+  end: c2b07004-eedd-4cd5-aaec-c630dde26f8f
+  type: 2
+- 
+  start: c2b07004-eedd-4cd5-aaec-c630dde26f8f
+  end: 441812d2-ea63-4ca1-891a-2343159a0e9a
+  type: 2
+- 
+  start: 441812d2-ea63-4ca1-891a-2343159a0e9a
+  end: 0ce4ec77-462e-491e-b630-ae99e9650937
+  type: 2
+--- 
+path: Subchart.SubchartTest_09
+uid: 9488e9af-2da2-4bdb-a18f-38382749452c
+type: Character
+variables: 
+- 
+  name: s1
+  type: Character
+- 
+  name: s2
+  type: Character
+- 
+  name: s
+  type: Array<Character>
+- 
+  name: index
+  type: Number
+nodes: 
+- 
+  uid: d850e4cc-3dc0-457a-ae30-2887b60cb4f6
+- 
+  uid: c633b306-3755-4a21-a23d-91a310e20ac6
+  text: "$s1=CreateCharacter()"
+  code: 
+    type: FUNC
+- 
+  uid: 5a84181f-ef96-44aa-aa54-33b337941ce2
+  text: "$s2=CreateCharacter()"
+  code: 
+    type: FUNC
+- 
+  uid: e1013003-4cd1-4bc3-9fea-3047237c975c
+  text: "$s={$s1,$s2}"
+  code: 
+    type: FUNC
+- 
+  uid: 53dde06b-da05-4e46-a38b-f7f721c5e538
+  text: "$index=1"
+  code: 
+    type: FUNC
+- 
+  uid: 7147e193-7073-4e80-abd7-21248e055e1e
+  text: "Say(\"hello\")"
+  code: 
+    type: FUNC
+- 
+  uid: 161afe7f-9987-433a-a42e-71d691785b95
+  text: "$s[$index].SubchartTest_07_sub()"
+  code: 
+    type: FUNC
+- 
+  uid: b13723e7-fa69-44b0-941f-bb4de31b0ff2
+  text: "$index=1+($index+1)%2"
+  code: 
+    type: FUNC
+- 
+  uid: c0d87c34-083e-42bb-a62f-6803b1da01ad
+  text: "Say(\"end\")"
+  code: 
+    type: FUNC
+connectors: 
+- 
+  start: d850e4cc-3dc0-457a-ae30-2887b60cb4f6
+  end: c633b306-3755-4a21-a23d-91a310e20ac6
+  type: 2
+- 
+  start: c633b306-3755-4a21-a23d-91a310e20ac6
+  end: 5a84181f-ef96-44aa-aa54-33b337941ce2
+  type: 2
+- 
+  start: 5a84181f-ef96-44aa-aa54-33b337941ce2
+  end: e1013003-4cd1-4bc3-9fea-3047237c975c
+  type: 2
+- 
+  start: e1013003-4cd1-4bc3-9fea-3047237c975c
+  end: 53dde06b-da05-4e46-a38b-f7f721c5e538
+  type: 2
+- 
+  start: 53dde06b-da05-4e46-a38b-f7f721c5e538
+  end: 7147e193-7073-4e80-abd7-21248e055e1e
+  type: 2
+- 
+  start: 7147e193-7073-4e80-abd7-21248e055e1e
+  end: 161afe7f-9987-433a-a42e-71d691785b95
+  type: 2
+- 
+  start: 161afe7f-9987-433a-a42e-71d691785b95
+  end: b13723e7-fa69-44b0-941f-bb4de31b0ff2
+  type: 2
+- 
+  start: b13723e7-fa69-44b0-941f-bb4de31b0ff2
+  end: c0d87c34-083e-42bb-a62f-6803b1da01ad
+  type: 2
+- 
+  start: c0d87c34-083e-42bb-a62f-6803b1da01ad
+  end: 7147e193-7073-4e80-abd7-21248e055e1e
+  type: 2
+--- 
+path: Subchart.SubchartTest_10
+uid: 75cd08ee-d2da-4f17-801a-6da2f394a33a
+type: Character
+variables: 
+- 
+  name: s1
+  type: Character
+nodes: 
+- 
+  uid: 6fefed99-d008-4e6b-bff5-db373006c211
+- 
+  uid: e1389f5d-6a5b-4155-9a57-9782cb791f31
+  text: "$s1=CreateCharacter()"
+  code: 
+    type: FUNC
+- 
+  uid: de1254a4-91ea-42f0-aa1f-6935ab06102c
+  text: "$s1.SubchartTest_10_sub()"
+  code: 
+    type: FUNC
+- 
+  uid: 19ef73dc-d7e9-46e7-b5c2-cbc34627d280
+  text: "deregister($s1)"
+  code: 
+    type: FUNC
+- 
+  uid: a896783b-ee8d-4141-99a1-5c202d7b3736
+  text: "Say(\"end\")"
+  code: 
+    type: FUNC
+connectors: 
+- 
+  start: 6fefed99-d008-4e6b-bff5-db373006c211
+  end: e1389f5d-6a5b-4155-9a57-9782cb791f31
+  type: 2
+- 
+  start: e1389f5d-6a5b-4155-9a57-9782cb791f31
+  end: de1254a4-91ea-42f0-aa1f-6935ab06102c
+  type: 2
+- 
+  start: de1254a4-91ea-42f0-aa1f-6935ab06102c
+  end: 19ef73dc-d7e9-46e7-b5c2-cbc34627d280
+  type: 2
+- 
+  start: 19ef73dc-d7e9-46e7-b5c2-cbc34627d280
+  end: a896783b-ee8d-4141-99a1-5c202d7b3736
+  type: 2
+- 
+  start: a896783b-ee8d-4141-99a1-5c202d7b3736
+  end: e1389f5d-6a5b-4155-9a57-9782cb791f31
+  type: 2
+--- 
+path: Subchart.SubchartTest_10_sub
+uid: 6d56a06a-94f3-45a5-ad8c-9fc547aa7ea2
+type: Character
+is_subgraph: true
+return_type: Number
+nodes: 
+- 
+  uid: 563955f1-51cc-4945-a82d-e33a35992e3b
+- 
+  uid: 37fb6321-9c82-49df-91a4-7fa358bfeeae
+  text: "Say(\"joinsub\")"
+  code: 
+    type: FUNC
+- 
+  uid: bec46862-dfd4-41ff-8121-b81dcc28df46
+  text: "wait(1)"
+  code: 
+    type: FUNC
+- 
+  uid: 36f67553-b004-4196-ba24-5152c0987544
+  text: "return(1)"
+  code: 
+    type: FUNC
+connectors: 
+- 
+  start: 563955f1-51cc-4945-a82d-e33a35992e3b
+  end: 37fb6321-9c82-49df-91a4-7fa358bfeeae
+  type: 2
+- 
+  start: 37fb6321-9c82-49df-91a4-7fa358bfeeae
+  end: bec46862-dfd4-41ff-8121-b81dcc28df46
+  type: 2
+- 
+  start: bec46862-dfd4-41ff-8121-b81dcc28df46
+  end: 36f67553-b004-4196-ba24-5152c0987544
+  type: 2
+--- 
+path: Subchart.SubchartTest_11
+uid: 94864549-c776-4fa0-ae84-fae5215a2b2e
+type: Character
+variables: 
+- 
+  name: s1
+  type: Number
+nodes: 
+- 
+  uid: b5f999b6-11f6-436b-b7ad-bd1157b7564c
+- 
+  uid: 4c2b870e-43ba-4594-9431-4448ce047cfd
+  text: "$s1=0"
+  code: 
+    type: FUNC
+- 
+  uid: 8134b765-8567-4523-9df8-c754ff132868
+  text: "$s1<3"
+  code: 
+    type: FUNC
+- 
+  uid: 2ea60559-2763-4502-a845-84bbd098f83b
+  text: "Say(\"end\")"
+  code: 
+    type: FUNC
+- 
+  uid: b0909c46-d2c9-464a-9cef-61c790964e18
+  text: "SubchartTest_01_sub()"
+  code: 
+    type: FUNC
+- 
+  uid: d8e5d417-48cd-4f79-b0a8-b879baec801f
+  text: "$s1=$s1+1"
+  code: 
+    type: FUNC
+connectors: 
+- 
+  start: b5f999b6-11f6-436b-b7ad-bd1157b7564c
+  end: 4c2b870e-43ba-4594-9431-4448ce047cfd
+  type: 2
+- 
+  start: 4c2b870e-43ba-4594-9431-4448ce047cfd
+  end: 8134b765-8567-4523-9df8-c754ff132868
+  type: 2
+- 
+  start: 8134b765-8567-4523-9df8-c754ff132868
+  end: 2ea60559-2763-4502-a845-84bbd098f83b
+  type: 0
+- 
+  start: 8134b765-8567-4523-9df8-c754ff132868
+  end: b0909c46-d2c9-464a-9cef-61c790964e18
+  type: 1
+- 
+  start: b0909c46-d2c9-464a-9cef-61c790964e18
+  end: d8e5d417-48cd-4f79-b0a8-b879baec801f
+  type: 2
+- 
+  start: d8e5d417-48cd-4f79-b0a8-b879baec801f
+  end: 8134b765-8567-4523-9df8-c754ff132868
+  type: 2
+--- 
+path: Subchart.SubchartTest_12
+uid: fbb2f630-0e8d-4fb5-b902-b0eed58dff5d
+type: Character
+variables: 
+- 
+  name: s1
+  type: Number
+nodes: 
+- 
+  uid: 1f2af2f4-7501-4a54-8532-79c4acda99f6
+- 
+  uid: f91d56f7-249d-4376-9887-0d204a8c819f
+  text: "$s1=0"
+  code: 
+    type: FUNC
+- 
+  uid: 295a1f17-2ea2-4251-802f-1d8a9ace7a9d
+  text: "$s1<3"
+  code: 
+    type: FUNC
+- 
+  uid: 9c436c78-77f4-45ee-b9a4-46bb1401824c
+  text: "Say(\"end\")"
+  code: 
+    type: FUNC
+- 
+  uid: 22db2eda-d8c0-4a73-8158-9fc1c4f0050a
+  text: "SubchartTest_04_sub()"
+  code: 
+    type: FUNC
+- 
+  uid: c0bbb9a3-7a46-4ef7-8138-014769ec09b7
+  text: "$s1=$s1+1"
+  code: 
+    type: FUNC
+connectors: 
+- 
+  start: 1f2af2f4-7501-4a54-8532-79c4acda99f6
+  end: f91d56f7-249d-4376-9887-0d204a8c819f
+  type: 2
+- 
+  start: f91d56f7-249d-4376-9887-0d204a8c819f
+  end: 295a1f17-2ea2-4251-802f-1d8a9ace7a9d
+  type: 2
+- 
+  start: 295a1f17-2ea2-4251-802f-1d8a9ace7a9d
+  end: 9c436c78-77f4-45ee-b9a4-46bb1401824c
+  type: 0
+- 
+  start: 295a1f17-2ea2-4251-802f-1d8a9ace7a9d
+  end: 22db2eda-d8c0-4a73-8158-9fc1c4f0050a
+  type: 1
+- 
+  start: 22db2eda-d8c0-4a73-8158-9fc1c4f0050a
+  end: c0bbb9a3-7a46-4ef7-8138-014769ec09b7
+  type: 2
+- 
+  start: c0bbb9a3-7a46-4ef7-8138-014769ec09b7
+  end: 295a1f17-2ea2-4251-802f-1d8a9ace7a9d
+  type: 2
+--- 
+path: Subchart.SubchartTest_13
+uid: 137d682e-a04a-411e-9f3f-5544422bd6a0
+type: Character
+variables: 
+- 
+  name: s1
+  type: Number
+nodes: 
+- 
+  uid: e8106a76-b643-4b8e-a73a-af9b313f278b
+- 
+  uid: d02710f3-8300-4ded-9eed-2e1125cb75e7
+  text: "$s1=0"
+  code: 
+    type: FUNC
+- 
+  uid: 4d9b024b-013d-4e32-920b-b87454570c1e
+  text: "$s1<3"
+  code: 
+    type: FUNC
+- 
+  uid: 76b0b09f-af18-488f-b468-531138d5696d
+  text: "Say(\"end\")"
+  code: 
+    type: FUNC
+- 
+  uid: 7bbd7065-0b02-4598-aeca-6d34d5ad70c2
+  text: "SubchartTest_07_sub()"
+  code: 
+    type: FUNC
+- 
+  uid: 8151dfbb-f8e5-4164-a7ea-6cd70125a107
+  text: "$s1=$s1+1"
+  code: 
+    type: FUNC
+connectors: 
+- 
+  start: e8106a76-b643-4b8e-a73a-af9b313f278b
+  end: d02710f3-8300-4ded-9eed-2e1125cb75e7
+  type: 2
+- 
+  start: d02710f3-8300-4ded-9eed-2e1125cb75e7
+  end: 4d9b024b-013d-4e32-920b-b87454570c1e
+  type: 2
+- 
+  start: 4d9b024b-013d-4e32-920b-b87454570c1e
+  end: 76b0b09f-af18-488f-b468-531138d5696d
+  type: 0
+- 
+  start: 4d9b024b-013d-4e32-920b-b87454570c1e
+  end: 7bbd7065-0b02-4598-aeca-6d34d5ad70c2
+  type: 1
+- 
+  start: 7bbd7065-0b02-4598-aeca-6d34d5ad70c2
+  end: 8151dfbb-f8e5-4164-a7ea-6cd70125a107
+  type: 2
+- 
+  start: 8151dfbb-f8e5-4164-a7ea-6cd70125a107
+  end: 4d9b024b-013d-4e32-920b-b87454570c1e
+  type: 2
+...

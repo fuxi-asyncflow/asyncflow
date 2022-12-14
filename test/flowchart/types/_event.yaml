@@ -1,0 +1,22 @@
+--- 
+- 
+  id: 1
+  name: Start
+- 
+  id: 2
+  name: Tick
+- 
+  id: 3
+  name: Event0Arg
+- 
+  id: 4
+  name: Event1Arg
+  parameters: 
+  - {name: param, type: String}
+- 
+  id: 5
+  name: Event2Arg
+  parameters: 
+  - {name: param1, type: String}
+  - {name: param2, type: String}
+...

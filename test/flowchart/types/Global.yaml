@@ -1,0 +1,73 @@
+--- 
+name: Global
+properties: 
+- 
+  name: time
+  description: 世界的逻辑时间，单位秒
+  type: Number
+  template: asyncflow.time()
+methods: 
+- 
+  name: callback
+  description: 回调
+  type: Any
+- 
+  name: deregister
+  type: Void
+  parameters: 
+  - {name: obj, type: Character}
+- 
+  name: gotonode
+  description: 停止指定若干节点
+  type: Void
+  custom_gen: true
+  parameters: 
+  - {name: NodeId, type: Undefined}
+- 
+  name: Print
+  description: 打印
+  type: Void
+  parameters: 
+  - {name: content, type: String}
+- 
+  name: probability
+  description: 随机概率
+  type: Void
+  parameters: 
+  - {name: v, type: Number}
+- 
+  name: return
+  description: 返回
+  type: Void
+  template: asyncflow.ret
+  parameters: 
+  - {name: result, type: Any}
+- 
+  name: stopflow
+  description: 停止指定若干节点及其后继流程
+  type: Void
+  template: asyncflow.stop_flow
+  custom_gen: true
+  variadic: true
+  parameters: 
+  - {name: NodeId, type: String}
+- 
+  name: stopnode
+  description: 停止指定若干节点
+  type: Void
+  template: asyncflow.stop_node
+  custom_gen: true
+  variadic: true
+  parameters: 
+  - {name: NodeId, type: String}
+- 
+  name: wait
+  type: Void
+  template: asyncflow.wait
+  parameters: 
+  - {name: time, type: Number}
+- 
+  name: waitall
+  type: Void
+  custom_gen: true
+...
