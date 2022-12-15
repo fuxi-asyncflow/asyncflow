@@ -1,0 +1,17 @@
+{
+  "graph_roots": [
+    {
+      "name": "AI",
+      "path": "graphs",
+      "output": "generate",
+      "save_rule": "per_root_child"
+    },
+    {
+      "name": "Subchart",
+      "path": "graphs",
+      "output": "generate",
+      "save_rule": "per_root_child"
+    }
+  ],
+  "standalone_generate_file": true
+}

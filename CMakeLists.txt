@@ -174,7 +174,7 @@ if(${BUILD_LUAJIT})
 
     if(${BUILD_TEST})
         aux_source_directory("src/test" LUA_TEST_SRCS)    
-        add_executable(lua_test ${LUA_TEST_SRCS} ${LUA_SRCS})
+        add_executable(lua_test ${LUA_TEST_SRCS} ${LUA_SRCS} "thirdparty/catch.cpp")
         target_compile_features(lua_test PUBLIC cxx_std_11)
         target_include_directories(lua_test PUBLIC "src/lua")
         set_target_properties(lua_test PROPERTIES CXX_EXTENSIONS OFF)

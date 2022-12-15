@@ -1,0 +1,1140 @@
+--- 
+path: AI.test_01
+uid: 3f73e8cd-591a-4bc7-ae02-00b58135f99f
+type: Character
+nodes: 
+- 
+  uid: a7f464c4-7867-468e-921d-d5a2fad1eba5
+- 
+  uid: 9dfc8ea5-8a47-43db-9518-3f7d9bfb04ec
+  text: "Say(\"hello\")"
+  code: 
+    type: FUNC
+connectors: 
+- 
+  start: a7f464c4-7867-468e-921d-d5a2fad1eba5
+  end: 9dfc8ea5-8a47-43db-9518-3f7d9bfb04ec
+  type: 2
+--- 
+path: AI.test_02
+uid: d5525a4b-2373-44de-b6b1-5370fff8d146
+type: Character
+nodes: 
+- 
+  uid: f0412589-e1f9-44e2-aa24-69068c84878d
+- 
+  uid: cc77a904-008c-4371-9a7e-505910cdc10f
+  text: "Say(time)"
+  code: 
+    type: FUNC
+- 
+  uid: eb781388-5a22-4228-a774-7366d8618dbf
+  text: "wait(1)"
+  code: 
+    type: FUNC
+- 
+  uid: 98c9fbfe-aef0-4258-85d9-8de2c5daf952
+  text: "Say(time)"
+  code: 
+    type: FUNC
+connectors: 
+- 
+  start: f0412589-e1f9-44e2-aa24-69068c84878d
+  end: cc77a904-008c-4371-9a7e-505910cdc10f
+  type: 2
+- 
+  start: cc77a904-008c-4371-9a7e-505910cdc10f
+  end: eb781388-5a22-4228-a774-7366d8618dbf
+  type: 2
+- 
+  start: eb781388-5a22-4228-a774-7366d8618dbf
+  end: 98c9fbfe-aef0-4258-85d9-8de2c5daf952
+  type: 2
+--- 
+path: AI.test_03
+uid: 76c21fc3-4c81-42f2-ac25-6f295482769d
+type: Character
+variables: 
+- 
+  name: str
+  type: String
+nodes: 
+- 
+  uid: db33ec94-82c4-4de9-9abb-b73db892104c
+- 
+  uid: b5d9a1fa-89fb-471e-8aa1-6acc1913e9a3
+  text: "$str = \"hello\""
+  code: 
+    type: FUNC
+- 
+  uid: 4e952432-4662-485d-8149-d455b2894734
+  text: "Say($str)"
+  code: 
+    type: FUNC
+connectors: 
+- 
+  start: db33ec94-82c4-4de9-9abb-b73db892104c
+  end: b5d9a1fa-89fb-471e-8aa1-6acc1913e9a3
+  type: 2
+- 
+  start: b5d9a1fa-89fb-471e-8aa1-6acc1913e9a3
+  end: 4e952432-4662-485d-8149-d455b2894734
+  type: 2
+--- 
+path: AI.test_04
+uid: 40865e38-7f22-47d2-966c-e07fff0cfffc
+type: Character
+nodes: 
+- 
+  uid: ca181199-42e2-422a-8da5-c1e2a5fdc657
+- 
+  uid: 47ecef47-1c53-408a-a0bf-0794ce312e04
+  text: "Say(\"hello\")"
+  code: 
+    type: FUNC
+- 
+  uid: 912f034c-3c29-442a-a9d1-f70f67c727a0
+  text: "Say(\"world\")"
+  code: 
+    type: FUNC
+- 
+  uid: 5b3bb757-d172-4fc3-a795-f53db0723816
+  text: "Say(time)"
+  code: 
+    type: FUNC
+connectors: 
+- 
+  start: ca181199-42e2-422a-8da5-c1e2a5fdc657
+  end: 47ecef47-1c53-408a-a0bf-0794ce312e04
+  type: 2
+- 
+  start: 47ecef47-1c53-408a-a0bf-0794ce312e04
+  end: 912f034c-3c29-442a-a9d1-f70f67c727a0
+  type: 2
+- 
+  start: 912f034c-3c29-442a-a9d1-f70f67c727a0
+  end: 5b3bb757-d172-4fc3-a795-f53db0723816
+  type: 2
+- 
+  start: 5b3bb757-d172-4fc3-a795-f53db0723816
+  end: 47ecef47-1c53-408a-a0bf-0794ce312e04
+  type: 2
+--- 
+path: AI.test_05
+uid: 0caef504-e13f-49c7-afe8-318b4e3b30ac
+type: Character
+nodes: 
+- 
+  uid: 6a21b9b0-f56f-47d7-84a8-cce43e7df187
+- 
+  uid: f93329c7-74ce-439b-b8d4-b81bf5d151ce
+  text: "OnEvent0Arg"
+  code: 
+    type: EVENT
+- 
+  uid: 59fe1a5d-a28a-48e0-a486-27d63ba50809
+  text: "Say(\"event 0 pass\")"
+  code: 
+    type: FUNC
+- 
+  uid: 99838346-17ab-4979-acc4-a56125a2d16f
+  text: "OnEvent1Arg"
+  code: 
+    type: EVENT
+- 
+  uid: a1ac7944-f258-42df-8fed-b0f6deba7a4d
+  text: "Say(\"event 1 pass\" + Event1Arg.param)"
+  code: 
+    type: FUNC
+- 
+  uid: 6d64fde9-0497-43f3-93eb-b811b69aeb06
+  text: "OnEvent2Arg"
+  code: 
+    type: EVENT
+- 
+  uid: 92232347-f406-4253-b2c9-ad3b0e9293b1
+  text: "Say(\"event 2 pass\")"
+  code: 
+    type: FUNC
+- 
+  uid: 8a1c7ed3-160c-4d0e-b5a6-257f3ef34614
+  text: "Say(\"1st arg\" + Event2Arg.param1)"
+  code: 
+    type: FUNC
+- 
+  uid: a0e5dc66-15ea-4cb3-a3c2-c229b598049c
+  text: "Say(\"2nd arg\" + Event2Arg.param2)"
+  code: 
+    type: FUNC
+connectors: 
+- 
+  start: 6a21b9b0-f56f-47d7-84a8-cce43e7df187
+  end: f93329c7-74ce-439b-b8d4-b81bf5d151ce
+  type: 2
+- 
+  start: 6a21b9b0-f56f-47d7-84a8-cce43e7df187
+  end: 99838346-17ab-4979-acc4-a56125a2d16f
+  type: 2
+- 
+  start: 6a21b9b0-f56f-47d7-84a8-cce43e7df187
+  end: 6d64fde9-0497-43f3-93eb-b811b69aeb06
+  type: 2
+- 
+  start: f93329c7-74ce-439b-b8d4-b81bf5d151ce
+  end: 59fe1a5d-a28a-48e0-a486-27d63ba50809
+  type: 2
+- 
+  start: 99838346-17ab-4979-acc4-a56125a2d16f
+  end: a1ac7944-f258-42df-8fed-b0f6deba7a4d
+  type: 2
+- 
+  start: 6d64fde9-0497-43f3-93eb-b811b69aeb06
+  end: 92232347-f406-4253-b2c9-ad3b0e9293b1
+  type: 2
+- 
+  start: 92232347-f406-4253-b2c9-ad3b0e9293b1
+  end: 8a1c7ed3-160c-4d0e-b5a6-257f3ef34614
+  type: 2
+- 
+  start: 8a1c7ed3-160c-4d0e-b5a6-257f3ef34614
+  end: a0e5dc66-15ea-4cb3-a3c2-c229b598049c
+  type: 2
+--- 
+path: AI.test_06
+uid: b367a0fb-bd12-44d4-a113-ba2a3d91bd8f
+type: Character
+nodes: 
+- 
+  uid: ca046446-c7de-4a36-aaf3-1794cc5f0aee
+- 
+  uid: 12080d88-c85f-406b-b2c5-d63266c2228a
+  text: "test_06_sub()"
+  code: 
+    type: FUNC
+- 
+  uid: bbd7cefd-50b9-4272-8807-fc2831476e07
+  text: "Say(\"subunit pass\")"
+  code: 
+    type: FUNC
+connectors: 
+- 
+  start: ca046446-c7de-4a36-aaf3-1794cc5f0aee
+  end: 12080d88-c85f-406b-b2c5-d63266c2228a
+  type: 2
+- 
+  start: 12080d88-c85f-406b-b2c5-d63266c2228a
+  end: bbd7cefd-50b9-4272-8807-fc2831476e07
+  type: 1
+--- 
+path: AI.test_06_sub
+uid: 677cd511-bec7-44d6-885e-365dbb3c73a8
+type: Character
+is_subgraph: true
+return_type: Number
+nodes: 
+- 
+  uid: d34cf40b-f8c5-4624-a15f-286d1d6f7ad8
+- 
+  uid: 52d53ccc-09ac-4bed-a69f-9ef0a8663ef5
+  text: "return(1)"
+  code: 
+    type: FUNC
+connectors: 
+- 
+  start: d34cf40b-f8c5-4624-a15f-286d1d6f7ad8
+  end: 52d53ccc-09ac-4bed-a69f-9ef0a8663ef5
+  type: 2
+--- 
+path: AI.test_07
+uid: 704b7e29-af78-4f0e-840e-ea3e1cf26629
+type: Character
+variables: 
+- 
+  name: a
+  type: Undefined
+nodes: 
+- 
+  uid: cf14eb43-8dec-4828-9d56-f95fdb8cfa50
+- 
+  uid: 9169be5d-2223-49db-89e0-de785c0d6a74
+  text: "test_07_sub(1,2)"
+  code: 
+    type: FUNC
+- 
+  uid: edf49f0e-00e1-49dd-b9bb-4f7f2f7b38b2
+  text: "$a = test_07_sub(3, 4)"
+  code: 
+    type: FUNC
+    return_var_name: a
+- 
+  uid: ae372d08-c8a7-44e4-ae0a-b9ebfa73883a
+  text: "Say($a)"
+  code: 
+    type: FUNC
+connectors: 
+- 
+  start: cf14eb43-8dec-4828-9d56-f95fdb8cfa50
+  end: 9169be5d-2223-49db-89e0-de785c0d6a74
+  type: 2
+- 
+  start: 9169be5d-2223-49db-89e0-de785c0d6a74
+  end: edf49f0e-00e1-49dd-b9bb-4f7f2f7b38b2
+  type: 2
+- 
+  start: edf49f0e-00e1-49dd-b9bb-4f7f2f7b38b2
+  end: ae372d08-c8a7-44e4-ae0a-b9ebfa73883a
+  type: 2
+--- 
+path: AI.test_07_sub
+uid: 7e873dce-ba2b-4b03-998b-2f49a843cac6
+type: Character
+is_subgraph: true
+return_type: Number
+variables: 
+- 
+  name: x
+  type: Number
+  is_param: true
+- 
+  name: y
+  type: Number
+  is_param: true
+- 
+  name: i
+  type: Number
+nodes: 
+- 
+  uid: bc59985f-6b17-495b-a34b-23cd228a96cb
+- 
+  uid: fac314b9-0957-4f9f-b386-a9a4cbbcf897
+  text: "Say($x)"
+  code: 
+    type: FUNC
+- 
+  uid: d3ca5de7-9331-406c-b646-8bcf80796782
+  text: "Say($y)"
+  code: 
+    type: FUNC
+- 
+  uid: 50cd0849-040c-491b-a1ba-c88436c7fbfd
+  text: "$i = $x + $y"
+  code: 
+    type: FUNC
+- 
+  uid: 8612fd56-143d-4c41-9182-6f9c67a97d4b
+  text: "Say($i)"
+  code: 
+    type: FUNC
+- 
+  uid: 84fc5277-ee07-4792-b045-e255001eb5a5
+  text: "return($i)"
+  code: 
+    type: FUNC
+connectors: 
+- 
+  start: bc59985f-6b17-495b-a34b-23cd228a96cb
+  end: fac314b9-0957-4f9f-b386-a9a4cbbcf897
+  type: 2
+- 
+  start: fac314b9-0957-4f9f-b386-a9a4cbbcf897
+  end: d3ca5de7-9331-406c-b646-8bcf80796782
+  type: 2
+- 
+  start: d3ca5de7-9331-406c-b646-8bcf80796782
+  end: 50cd0849-040c-491b-a1ba-c88436c7fbfd
+  type: 2
+- 
+  start: 50cd0849-040c-491b-a1ba-c88436c7fbfd
+  end: 8612fd56-143d-4c41-9182-6f9c67a97d4b
+  type: 2
+- 
+  start: 8612fd56-143d-4c41-9182-6f9c67a97d4b
+  end: 84fc5277-ee07-4792-b045-e255001eb5a5
+  type: 2
+--- 
+path: AI.test_08
+uid: 1d4b35e5-32ac-4c6f-92bf-85721caabe0b
+type: Character
+variables: 
+- 
+  name: c
+  type: Bool
+- 
+  name: d
+  type: Bool
+nodes: 
+- 
+  uid: 7c2aa003-1fdf-4ad4-9b96-a5dca677b1de
+- 
+  uid: c87734cb-a7c0-48d6-b841-1e99677313c4
+  text: "$c = AsyncAdd(1,2)"
+  code: 
+    type: FUNC
+- 
+  uid: d0faf6e4-2a43-48a7-9d30-6a0b079ab730
+  text: "Say($c)"
+  code: 
+    type: FUNC
+- 
+  uid: a3e8ca58-60a2-43ec-a9d0-b0a783f9ecef
+  text: "$d = AsyncAdd(3, 4)"
+  code: 
+    type: FUNC
+- 
+  uid: 86be085d-3008-499e-a34e-e8430d59cca5
+  text: "Say($d)"
+  code: 
+    type: FUNC
+connectors: 
+- 
+  start: 7c2aa003-1fdf-4ad4-9b96-a5dca677b1de
+  end: c87734cb-a7c0-48d6-b841-1e99677313c4
+  type: 2
+- 
+  start: 7c2aa003-1fdf-4ad4-9b96-a5dca677b1de
+  end: a3e8ca58-60a2-43ec-a9d0-b0a783f9ecef
+  type: 2
+- 
+  start: c87734cb-a7c0-48d6-b841-1e99677313c4
+  end: d0faf6e4-2a43-48a7-9d30-6a0b079ab730
+  type: 2
+- 
+  start: a3e8ca58-60a2-43ec-a9d0-b0a783f9ecef
+  end: 86be085d-3008-499e-a34e-e8430d59cca5
+  type: 2
+--- 
+path: AI.test_09
+uid: abc9d599-1186-4640-bccc-1e83b448915c
+type: Character
+nodes: 
+- 
+  uid: 1b452945-56c8-4ed5-8d0c-fcb9966b05ac
+- 
+  uid: c8d16b1c-904c-4bf7-98a6-ec8bbf703f37
+  text: "wait(1)"
+  code: 
+    type: FUNC
+- 
+  uid: cc6fe6d7-17f7-4f61-a3b7-0652c293020a
+  text: "Say(\"node 1\")"
+  code: 
+    type: FUNC
+- 
+  uid: 6a83597d-598b-47fb-809e-fa091d553a6e
+  text: "waitall()"
+  code: 
+    type: CONTROL
+    content: 
+    - waitall
+    - cc6fe6d7-17f7-4f61-a3b7-0652c293020a
+    - 9b64a62b-1cf9-4374-a293-e329fe66d9a8
+    - d4ef42ee-0202-4c77-bd6f-2ab10081690e
+- 
+  uid: 7825f180-d385-4724-81a7-f64c1d791554
+  text: "Say(\"all node runned\")"
+  code: 
+    type: FUNC
+- 
+  uid: e8c4dbec-dd69-4ea9-8012-1f04bae16444
+  text: "wait(2)"
+  code: 
+    type: FUNC
+- 
+  uid: 9b64a62b-1cf9-4374-a293-e329fe66d9a8
+  text: "Say(\"node 2\")"
+  code: 
+    type: FUNC
+- 
+  uid: cad031eb-a4e3-4290-ba78-8e14a3b11ba3
+  text: "wait(3)"
+  code: 
+    type: FUNC
+- 
+  uid: d4ef42ee-0202-4c77-bd6f-2ab10081690e
+  text: "Say(\"node 3\")"
+  code: 
+    type: FUNC
+connectors: 
+- 
+  start: 1b452945-56c8-4ed5-8d0c-fcb9966b05ac
+  end: c8d16b1c-904c-4bf7-98a6-ec8bbf703f37
+  type: 2
+- 
+  start: 1b452945-56c8-4ed5-8d0c-fcb9966b05ac
+  end: e8c4dbec-dd69-4ea9-8012-1f04bae16444
+  type: 2
+- 
+  start: 1b452945-56c8-4ed5-8d0c-fcb9966b05ac
+  end: cad031eb-a4e3-4290-ba78-8e14a3b11ba3
+  type: 2
+- 
+  start: c8d16b1c-904c-4bf7-98a6-ec8bbf703f37
+  end: cc6fe6d7-17f7-4f61-a3b7-0652c293020a
+  type: 2
+- 
+  start: cc6fe6d7-17f7-4f61-a3b7-0652c293020a
+  end: 6a83597d-598b-47fb-809e-fa091d553a6e
+  type: 2
+- 
+  start: 6a83597d-598b-47fb-809e-fa091d553a6e
+  end: 7825f180-d385-4724-81a7-f64c1d791554
+  type: 2
+- 
+  start: e8c4dbec-dd69-4ea9-8012-1f04bae16444
+  end: 9b64a62b-1cf9-4374-a293-e329fe66d9a8
+  type: 2
+- 
+  start: 9b64a62b-1cf9-4374-a293-e329fe66d9a8
+  end: 6a83597d-598b-47fb-809e-fa091d553a6e
+  type: 2
+- 
+  start: cad031eb-a4e3-4290-ba78-8e14a3b11ba3
+  end: d4ef42ee-0202-4c77-bd6f-2ab10081690e
+  type: 2
+- 
+  start: d4ef42ee-0202-4c77-bd6f-2ab10081690e
+  end: 6a83597d-598b-47fb-809e-fa091d553a6e
+  type: 2
+--- 
+path: AI.test_10
+uid: 5cfb5285-7eeb-4e5c-8327-c6f71f7536b1
+type: Character
+variables: 
+- 
+  name: s
+  type: Character
+nodes: 
+- 
+  uid: 65e49d33-12b0-425c-ab29-36edd509dc0b
+- 
+  uid: e886cb04-4118-4aff-aeaa-17b79e10426d
+  text: "$s=CreateCharacter()"
+  code: 
+    type: FUNC
+- 
+  uid: a7c4d9fb-a6d5-4624-9ff8-efe98e31dc44
+  text: "$s.OnEvent0Arg"
+  code: 
+    type: EVENT
+- 
+  uid: 2a7e4570-f894-433e-9e25-d97a40f5785c
+  text: "Say(\"event 0 pass\")"
+  code: 
+    type: FUNC
+- 
+  uid: 0e216dd9-81de-4983-a93a-08b1acb7f9b8
+  text: "$s.OnEvent2Arg"
+  code: 
+    type: EVENT
+- 
+  uid: d278c17d-c668-4644-b403-e02b710f3b77
+  text: "Say(\"event 2 pass\")"
+  code: 
+    type: FUNC
+- 
+  uid: 42aa83bf-f2b1-48cb-93f4-0f306260de8b
+  text: "Say(\"1st arg\" +Event2Arg.param1)"
+  code: 
+    type: FUNC
+- 
+  uid: eacbd156-f3ef-4739-ad4f-7d8666e25061
+  text: "Say(\"2nd arg\" + Event2Arg.param2)"
+  code: 
+    type: FUNC
+- 
+  uid: b93968ae-c81f-4d4d-a508-c8223064ef4a
+  text: "$s.OnEvent1Arg"
+  code: 
+    type: EVENT
+- 
+  uid: 86dfd1f0-ac4e-4163-9589-da2ea0ef0016
+  text: "Say(\"event 1 pass\" + Event1Arg.param)"
+  code: 
+    type: FUNC
+connectors: 
+- 
+  start: 65e49d33-12b0-425c-ab29-36edd509dc0b
+  end: e886cb04-4118-4aff-aeaa-17b79e10426d
+  type: 2
+- 
+  start: e886cb04-4118-4aff-aeaa-17b79e10426d
+  end: a7c4d9fb-a6d5-4624-9ff8-efe98e31dc44
+  type: 2
+- 
+  start: e886cb04-4118-4aff-aeaa-17b79e10426d
+  end: 0e216dd9-81de-4983-a93a-08b1acb7f9b8
+  type: 2
+- 
+  start: e886cb04-4118-4aff-aeaa-17b79e10426d
+  end: b93968ae-c81f-4d4d-a508-c8223064ef4a
+  type: 2
+- 
+  start: a7c4d9fb-a6d5-4624-9ff8-efe98e31dc44
+  end: 2a7e4570-f894-433e-9e25-d97a40f5785c
+  type: 2
+- 
+  start: 0e216dd9-81de-4983-a93a-08b1acb7f9b8
+  end: d278c17d-c668-4644-b403-e02b710f3b77
+  type: 2
+- 
+  start: d278c17d-c668-4644-b403-e02b710f3b77
+  end: 42aa83bf-f2b1-48cb-93f4-0f306260de8b
+  type: 2
+- 
+  start: 42aa83bf-f2b1-48cb-93f4-0f306260de8b
+  end: eacbd156-f3ef-4739-ad4f-7d8666e25061
+  type: 2
+- 
+  start: b93968ae-c81f-4d4d-a508-c8223064ef4a
+  end: 86dfd1f0-ac4e-4163-9589-da2ea0ef0016
+  type: 2
+--- 
+path: AI.test_11
+uid: aae9d164-2a69-4738-8eaa-24c25b7162c2
+type: Character
+nodes: 
+- 
+  uid: 37e3f253-ce8e-499f-9300-12daa0c9f74c
+- 
+  uid: e2525217-efbf-4ebf-99f3-b86798386f34
+  text: "test_11_sub()"
+  code: 
+    type: FUNC
+- 
+  uid: 26e9d8f7-af1a-4470-a418-c3f4aee4d292
+  text: "Say(\"subunit pass\")"
+  code: 
+    type: FUNC
+- 
+  uid: e6e28313-0946-4d67-9a47-4d01bf55842b
+  text: "Say(\"red\")"
+  code: 
+    type: FUNC
+- 
+  uid: 47d891df-53ff-4297-8d4c-3f237d6f1678
+  text: "Say(\"green\")"
+  code: 
+    type: FUNC
+connectors: 
+- 
+  start: 37e3f253-ce8e-499f-9300-12daa0c9f74c
+  end: e2525217-efbf-4ebf-99f3-b86798386f34
+  type: 2
+- 
+  start: e2525217-efbf-4ebf-99f3-b86798386f34
+  end: 26e9d8f7-af1a-4470-a418-c3f4aee4d292
+  type: 2
+- 
+  start: e2525217-efbf-4ebf-99f3-b86798386f34
+  end: e6e28313-0946-4d67-9a47-4d01bf55842b
+  type: 0
+- 
+  start: e2525217-efbf-4ebf-99f3-b86798386f34
+  end: 47d891df-53ff-4297-8d4c-3f237d6f1678
+  type: 1
+--- 
+path: AI.test_11_sub
+uid: 0aac22e0-9c25-4946-b812-d04abd29ad0e
+type: Character
+is_subgraph: true
+return_type: Void
+nodes: 
+- 
+  uid: 06054a21-cd0b-401d-8c23-9af30961f60a
+- 
+  uid: d7014a21-1f04-4117-a750-04b7c0c6e259
+  text: "Say(\"hello sub\")"
+  code: 
+    type: FUNC
+connectors: 
+- 
+  start: 06054a21-cd0b-401d-8c23-9af30961f60a
+  end: d7014a21-1f04-4117-a750-04b7c0c6e259
+  type: 2
+--- 
+path: AI.test_12
+uid: 906f7601-4a3d-48b6-97b3-1bde4e8e2d5a
+type: Character
+nodes: 
+- 
+  uid: 060765eb-c73e-4fae-8624-52a1dc33e884
+- 
+  uid: dcc94bd6-84af-4256-b35b-1b6b569fd92c
+  text: "Say(\"1\")"
+  code: 
+    type: FUNC
+- 
+  uid: 9ebbe264-cc96-4a4d-9591-4440a062fa7f
+  text: "Say(\"2\")"
+  code: 
+    type: FUNC
+- 
+  uid: b741aa2d-ae5f-40f5-834b-6c2f31c2fca6
+  text: "OnEvent1Arg"
+  code: 
+    type: EVENT
+- 
+  uid: 26ad3735-d1b0-4e1e-a152-3c2184f7c103
+  text: "Say(\"event 0 pass\")"
+  code: 
+    type: FUNC
+- 
+  uid: 2a7e4730-8bd4-416c-8b4a-e849709a3e61
+  text: "wait(1)"
+  code: 
+    type: FUNC
+- 
+  uid: f8e95d4c-f35c-4c3c-a373-481f45562fed
+  text: "Say(\"hello\")"
+  code: 
+    type: FUNC
+- 
+  uid: b5a0ee2e-8ad8-41bd-b9ed-e256cfc34751
+  text: "stopflow(\"dcc94bd684af4256b35b1b6b569fd92c\")"
+  code: 
+    type: CONTROL
+    content: 
+    - stopflow
+    - dcc94bd684af4256b35b1b6b569fd92c
+- 
+  uid: 9c122076-a85b-4ad1-9243-ad35518efb85
+  text: "stopnode(\"b741aa2dae5f40f5834b6c2f31c2fca6\", \"2a7e47308bd4416c8b4ae849709a3e61\")"
+  code: 
+    type: CONTROL
+    content: 
+    - stopnode
+    - b741aa2dae5f40f5834b6c2f31c2fca6
+    - 2a7e47308bd4416c8b4ae849709a3e61
+connectors: 
+- 
+  start: 060765eb-c73e-4fae-8624-52a1dc33e884
+  end: dcc94bd6-84af-4256-b35b-1b6b569fd92c
+  type: 2
+- 
+  start: 060765eb-c73e-4fae-8624-52a1dc33e884
+  end: b741aa2d-ae5f-40f5-834b-6c2f31c2fca6
+  type: 2
+- 
+  start: 060765eb-c73e-4fae-8624-52a1dc33e884
+  end: 2a7e4730-8bd4-416c-8b4a-e849709a3e61
+  type: 2
+- 
+  start: 060765eb-c73e-4fae-8624-52a1dc33e884
+  end: b5a0ee2e-8ad8-41bd-b9ed-e256cfc34751
+  type: 2
+- 
+  start: dcc94bd6-84af-4256-b35b-1b6b569fd92c
+  end: 9ebbe264-cc96-4a4d-9591-4440a062fa7f
+  type: 2
+- 
+  start: 9ebbe264-cc96-4a4d-9591-4440a062fa7f
+  end: dcc94bd6-84af-4256-b35b-1b6b569fd92c
+  type: 2
+- 
+  start: b741aa2d-ae5f-40f5-834b-6c2f31c2fca6
+  end: 26ad3735-d1b0-4e1e-a152-3c2184f7c103
+  type: 2
+- 
+  start: 2a7e4730-8bd4-416c-8b4a-e849709a3e61
+  end: f8e95d4c-f35c-4c3c-a373-481f45562fed
+  type: 2
+- 
+  start: b5a0ee2e-8ad8-41bd-b9ed-e256cfc34751
+  end: 9c122076-a85b-4ad1-9243-ad35518efb85
+  type: 2
+--- 
+path: AI.test_13
+uid: 841dadc1-ffb1-443d-97bb-37408e9e239d
+type: Character
+nodes: 
+- 
+  uid: f1defc91-5b98-48d6-9f43-648de6d58d7f
+- 
+  uid: 77c3eff0-7e17-4b41-90cc-c1bb215d834f
+  text: "Say(\"hello\")"
+  code: 
+    type: FUNC
+- 
+  uid: 1136de93-efa1-40d2-bc91-882393c2811b
+  text: "Say(\"1\")"
+  code: 
+    type: FUNC
+- 
+  uid: 8658e0ed-635c-4166-b2f6-da54657ef2d0
+  text: "Say(\"2\")"
+  code: 
+    type: FUNC
+- 
+  uid: c67673fe-4dc9-434c-9a5b-1c39bfadf42a
+  text: "stopflow(\"1136de93efa140d2bc91882393c2811b\")"
+  code: 
+    type: CONTROL
+    content: 
+    - stopflow
+    - 1136de93efa140d2bc91882393c2811b
+connectors: 
+- 
+  start: f1defc91-5b98-48d6-9f43-648de6d58d7f
+  end: 77c3eff0-7e17-4b41-90cc-c1bb215d834f
+  type: 2
+- 
+  start: 77c3eff0-7e17-4b41-90cc-c1bb215d834f
+  end: 1136de93-efa1-40d2-bc91-882393c2811b
+  type: 2
+- 
+  start: 77c3eff0-7e17-4b41-90cc-c1bb215d834f
+  end: c67673fe-4dc9-434c-9a5b-1c39bfadf42a
+  type: 2
+- 
+  start: 1136de93-efa1-40d2-bc91-882393c2811b
+  end: 8658e0ed-635c-4166-b2f6-da54657ef2d0
+  type: 2
+--- 
+path: AI.test_14
+uid: 81582c46-4934-437f-a830-e564139c7581
+type: Character
+nodes: 
+- 
+  uid: d5aa3d0a-3334-4760-a34d-b97c6678babe
+- 
+  uid: 885dd331-2aaa-4823-aaa2-cfac700e4844
+  text: "Say(1)"
+  code: 
+    type: FUNC
+- 
+  uid: 2f7be343-27f2-4fa0-b535-097fe666cfbe
+  text: "Say(2)"
+  code: 
+    type: FUNC
+- 
+  uid: 7fc1f002-51a0-46af-905e-2ef32d9a469e
+  text: "Say(3)"
+  code: 
+    type: FUNC
+- 
+  uid: a2ff83bf-b2df-48fd-97b3-a296db445d0f
+  text: "Say(4)"
+  code: 
+    type: FUNC
+connectors: 
+- 
+  start: d5aa3d0a-3334-4760-a34d-b97c6678babe
+  end: 885dd331-2aaa-4823-aaa2-cfac700e4844
+  type: 2
+- 
+  start: 885dd331-2aaa-4823-aaa2-cfac700e4844
+  end: 2f7be343-27f2-4fa0-b535-097fe666cfbe
+  type: 2
+- 
+  start: 885dd331-2aaa-4823-aaa2-cfac700e4844
+  end: 7fc1f002-51a0-46af-905e-2ef32d9a469e
+  type: 2
+- 
+  start: 2f7be343-27f2-4fa0-b535-097fe666cfbe
+  end: 885dd331-2aaa-4823-aaa2-cfac700e4844
+  type: 2
+- 
+  start: 7fc1f002-51a0-46af-905e-2ef32d9a469e
+  end: a2ff83bf-b2df-48fd-97b3-a296db445d0f
+  type: 2
+- 
+  start: a2ff83bf-b2df-48fd-97b3-a296db445d0f
+  end: 7fc1f002-51a0-46af-905e-2ef32d9a469e
+  type: 2
+--- 
+path: AI.test_15
+uid: 52c73a19-796a-421a-87d5-891f9bb89959
+type: Character
+nodes: 
+- 
+  uid: 36d8abc8-3a6e-4c55-b9db-a7561c6c578a
+- 
+  uid: 6755d438-d5f8-44ba-ba7d-e0bb822d80be
+  text: "wait(1)"
+  code: 
+    type: FUNC
+- 
+  uid: 930cc097-8159-403a-aa57-db6d967df8a4
+  text: "Say(time)"
+  code: 
+    type: FUNC
+- 
+  uid: ffbf7102-4ce1-45ae-99a5-5e31d2b3c925
+  text: "wait(5)"
+  code: 
+    type: FUNC
+- 
+  uid: 2d49ef38-d1ca-4024-b1ee-6ad1c9a954aa
+  text: "Say(time)"
+  code: 
+    type: FUNC
+- 
+  uid: c2ef46ac-033c-49a4-926b-34b57460aea4
+  text: "wait(2)"
+  code: 
+    type: FUNC
+- 
+  uid: 21e88f49-ee08-4651-85f2-8fbf755cbf6e
+  text: "Say(time)"
+  code: 
+    type: FUNC
+connectors: 
+- 
+  start: 36d8abc8-3a6e-4c55-b9db-a7561c6c578a
+  end: 6755d438-d5f8-44ba-ba7d-e0bb822d80be
+  type: 2
+- 
+  start: 36d8abc8-3a6e-4c55-b9db-a7561c6c578a
+  end: c2ef46ac-033c-49a4-926b-34b57460aea4
+  type: 2
+- 
+  start: 6755d438-d5f8-44ba-ba7d-e0bb822d80be
+  end: 930cc097-8159-403a-aa57-db6d967df8a4
+  type: 2
+- 
+  start: 930cc097-8159-403a-aa57-db6d967df8a4
+  end: ffbf7102-4ce1-45ae-99a5-5e31d2b3c925
+  type: 2
+- 
+  start: ffbf7102-4ce1-45ae-99a5-5e31d2b3c925
+  end: 2d49ef38-d1ca-4024-b1ee-6ad1c9a954aa
+  type: 2
+- 
+  start: c2ef46ac-033c-49a4-926b-34b57460aea4
+  end: 21e88f49-ee08-4651-85f2-8fbf755cbf6e
+  type: 2
+- 
+  start: 21e88f49-ee08-4651-85f2-8fbf755cbf6e
+  end: ffbf7102-4ce1-45ae-99a5-5e31d2b3c925
+  type: 2
+--- 
+path: AI.test_16
+uid: a54eb9c1-5ca4-4c59-b91f-cf58054be659
+type: Character
+nodes: 
+- 
+  uid: 33d39d6f-d562-43e3-a5f2-1289f895ef5b
+- 
+  uid: 47bb1b89-2f08-4f3f-af2e-379b737193de
+  text: "wait(1)"
+  code: 
+    type: FUNC
+- 
+  uid: 83d7e4d0-d23e-479c-861e-45a18ecd2060
+  text: "Say(time)"
+  code: 
+    type: FUNC
+- 
+  uid: a59747ae-1ba6-4774-b7b0-1e2a1367c21b
+  text: "OnEvent0Arg"
+  code: 
+    type: EVENT
+- 
+  uid: e4f20993-6337-4023-9411-18f7e266ae92
+  text: "Say(time)"
+  code: 
+    type: FUNC
+- 
+  uid: 08af1e31-95a6-4344-9827-0071af0c8f0d
+  text: "wait(2)"
+  code: 
+    type: FUNC
+- 
+  uid: c21382fe-4be7-4b5b-90b9-8fa464955be3
+  text: "Say(time)"
+  code: 
+    type: FUNC
+connectors: 
+- 
+  start: 33d39d6f-d562-43e3-a5f2-1289f895ef5b
+  end: 47bb1b89-2f08-4f3f-af2e-379b737193de
+  type: 2
+- 
+  start: 33d39d6f-d562-43e3-a5f2-1289f895ef5b
+  end: 08af1e31-95a6-4344-9827-0071af0c8f0d
+  type: 2
+- 
+  start: 47bb1b89-2f08-4f3f-af2e-379b737193de
+  end: 83d7e4d0-d23e-479c-861e-45a18ecd2060
+  type: 2
+- 
+  start: 83d7e4d0-d23e-479c-861e-45a18ecd2060
+  end: a59747ae-1ba6-4774-b7b0-1e2a1367c21b
+  type: 2
+- 
+  start: a59747ae-1ba6-4774-b7b0-1e2a1367c21b
+  end: e4f20993-6337-4023-9411-18f7e266ae92
+  type: 2
+- 
+  start: 08af1e31-95a6-4344-9827-0071af0c8f0d
+  end: c21382fe-4be7-4b5b-90b9-8fa464955be3
+  type: 2
+- 
+  start: c21382fe-4be7-4b5b-90b9-8fa464955be3
+  end: a59747ae-1ba6-4774-b7b0-1e2a1367c21b
+  type: 2
+--- 
+path: AI.test_17
+uid: 71c23d01-19b6-4e93-9699-34705a2aaf5f
+type: Character
+nodes: 
+- 
+  uid: e265c7f9-e259-410b-96f6-78c703d0f7ca
+- 
+  uid: ade19226-9da3-4394-a7eb-87a47ea4c81e
+  text: "wait(1)"
+  code: 
+    type: FUNC
+- 
+  uid: 3bae8e82-41b5-48e9-ad7e-6d01e8707f7c
+  text: "Say(time)"
+  code: 
+    type: FUNC
+- 
+  uid: e1330480-adb5-4f65-a730-66597afd098e
+  text: "test_17_sub()"
+  code: 
+    type: FUNC
+- 
+  uid: 30f45e8c-eb1e-46fd-936f-69159226b54d
+  text: "Say(time)"
+  code: 
+    type: FUNC
+- 
+  uid: 670513fc-9845-4b4d-b291-24bdbc4bf942
+  text: "wait(2)"
+  code: 
+    type: FUNC
+- 
+  uid: 590f60f7-52f0-4a40-a511-de6bda60afdd
+  text: "Say(time)"
+  code: 
+    type: FUNC
+connectors: 
+- 
+  start: e265c7f9-e259-410b-96f6-78c703d0f7ca
+  end: ade19226-9da3-4394-a7eb-87a47ea4c81e
+  type: 2
+- 
+  start: e265c7f9-e259-410b-96f6-78c703d0f7ca
+  end: 670513fc-9845-4b4d-b291-24bdbc4bf942
+  type: 2
+- 
+  start: ade19226-9da3-4394-a7eb-87a47ea4c81e
+  end: 3bae8e82-41b5-48e9-ad7e-6d01e8707f7c
+  type: 2
+- 
+  start: 3bae8e82-41b5-48e9-ad7e-6d01e8707f7c
+  end: e1330480-adb5-4f65-a730-66597afd098e
+  type: 2
+- 
+  start: e1330480-adb5-4f65-a730-66597afd098e
+  end: 30f45e8c-eb1e-46fd-936f-69159226b54d
+  type: 2
+- 
+  start: 670513fc-9845-4b4d-b291-24bdbc4bf942
+  end: 590f60f7-52f0-4a40-a511-de6bda60afdd
+  type: 2
+- 
+  start: 590f60f7-52f0-4a40-a511-de6bda60afdd
+  end: e1330480-adb5-4f65-a730-66597afd098e
+  type: 2
+--- 
+path: AI.test_17_sub
+uid: 9a293295-1b44-46a7-9aad-42348b6b5c63
+type: Character
+is_subgraph: true
+return_type: Void
+nodes: 
+- 
+  uid: 8f78b7b7-de3b-4665-a8f0-9e40cc3f23c6
+- 
+  uid: 924beff4-9dbb-48d4-8374-7ac54782f6f0
+  text: "Say(time)"
+  code: 
+    type: FUNC
+- 
+  uid: c5b7b977-b099-4bea-8cfc-f4bf57508de0
+  text: "wait(3)"
+  code: 
+    type: FUNC
+connectors: 
+- 
+  start: 8f78b7b7-de3b-4665-a8f0-9e40cc3f23c6
+  end: 924beff4-9dbb-48d4-8374-7ac54782f6f0
+  type: 2
+- 
+  start: 924beff4-9dbb-48d4-8374-7ac54782f6f0
+  end: c5b7b977-b099-4bea-8cfc-f4bf57508de0
+  type: 2
+--- 
+path: AI.test_18
+uid: a1c8fe54-0173-47d3-bb5e-fe1873e6c07e
+type: Character
+variables: 
+- 
+  name: a
+  type: String
+nodes: 
+- 
+  uid: f064cfed-40d7-4769-a929-6ece6655f068
+- 
+  uid: 2d914be5-d753-4ade-aa52-f51585d7a54e
+  text: "$a = \"hello\""
+  code: 
+    type: FUNC
+- 
+  uid: 9517f2f3-4106-4210-9862-8fff57ae5e3e
+  text: "Say($a)"
+  code: 
+    type: FUNC
+- 
+  uid: 2ba5507f-4812-4a0e-bc1e-d621dc4930a7
+  text: "$a=\"ss111\""
+  code: 
+    type: FUNC
+- 
+  uid: 365a6ef2-dca5-47d6-bbcb-03bd7589c49b
+  text: "OnEvent0Arg"
+  code: 
+    type: EVENT
+- 
+  uid: ea087144-0caa-47b1-bae4-ec66b238e270
+  text: "Say(\"event 0 pass\")"
+  code: 
+    type: FUNC
+- 
+  uid: 6288a287-371f-4586-a4cd-7a6f274712dd
+  text: "OnEvent2Arg"
+  code: 
+    type: EVENT
+connectors: 
+- 
+  start: f064cfed-40d7-4769-a929-6ece6655f068
+  end: 2d914be5-d753-4ade-aa52-f51585d7a54e
+  type: 2
+- 
+  start: 2d914be5-d753-4ade-aa52-f51585d7a54e
+  end: 9517f2f3-4106-4210-9862-8fff57ae5e3e
+  type: 2
+- 
+  start: 9517f2f3-4106-4210-9862-8fff57ae5e3e
+  end: 2ba5507f-4812-4a0e-bc1e-d621dc4930a7
+  type: 2
+- 
+  start: 2ba5507f-4812-4a0e-bc1e-d621dc4930a7
+  end: 365a6ef2-dca5-47d6-bbcb-03bd7589c49b
+  type: 2
+- 
+  start: 365a6ef2-dca5-47d6-bbcb-03bd7589c49b
+  end: ea087144-0caa-47b1-bae4-ec66b238e270
+  type: 2
+- 
+  start: ea087144-0caa-47b1-bae4-ec66b238e270
+  end: 6288a287-371f-4586-a4cd-7a6f274712dd
+  type: 2
+- 
+  start: 6288a287-371f-4586-a4cd-7a6f274712dd
+  end: 2d914be5-d753-4ade-aa52-f51585d7a54e
+  type: 2
+...

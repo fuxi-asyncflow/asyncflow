@@ -1,9 +1,10 @@
+#define RYML_SINGLE_HDR_DEFINE_NOW
+#include "rapidyaml.hpp"
 #include "core/manager.h"
 
 #include <unordered_map>
 #include "rapidjson/document.h"
-#define RYML_SINGLE_HDR_DEFINE_NOW
-#include "rapidyaml.hpp"
+
 #include "util/log.h"
 #include "core/node.h"
 #include "util/file.h"
@@ -30,7 +31,7 @@ Manager::Manager()
 	, default_time_interval_(100)
 	, immediate_subchart_(false)
     , AUTO_REGISTER(true)
-	, rd(std::to_string(reinterpret_cast<int64_t>(this)))	
+	, rd("default")
 #ifdef FLOWCHART_DEBUG
 	, websocket_manager_(this)
 #endif
@@ -231,56 +232,42 @@ std::vector<ChartData*> Manager::ParseChartsFromYaml(const std::string& yaml_str
 {
 	
 	std::vector<ChartData*> data_list;
+	asyncflow::util::YamlErrorHandler errh;
 
 	//TODO error handle
-	ryml::Tree tree = ryml::parse_in_arena(ryml::to_csubstr(yaml_str));
+	ryml::set_callbacks(errh.callbacks());	
 
-	
-
-	const ryml::NodeRef root = tree.rootref();	
-	if(root.is_stream())
+	try
 	{
-		auto doc_count = root.num_children();
-		for(const auto& doc : root.children())
+		ryml::Tree tree = ryml::parse_in_arena(ryml::to_csubstr(yaml_str));
+		const ryml::NodeRef root = tree.rootref();
+		if (root.is_stream())
 		{
-			auto path = doc["path"].val();			
-			printf("yaml chart : %.*s\n", static_cast<int>(path.size()), path.data());
+			auto doc_count = root.num_children();
+			for (const auto& doc : root.children())
+			{
+				auto path = doc["path"].val();
+				printf("yaml chart : %.*s\n", static_cast<int>(path.size()), path.data());
 
-			auto* data = CreateChartData();
-			if (!data->FromYaml(doc))
-			{
-				ASYNCFLOW_ERR("init chart data error");
-				delete data;
+				auto* data = CreateChartData();
+				if (!data->FromYaml(doc))
+				{
+					ASYNCFLOW_ERR("init chart data error");
+					delete data;
+				}
+				else
+				{
+					data_list.push_back(data);
+				}
 			}
-			else
-			{
-				data_list.push_back(data);
-			}
+			return data_list;
 		}
-		return data_list;	    
 	}
+	catch(std::runtime_error& e)
+	{
+		ASYNCFLOW_ERR("{0}", e.what());
+	}	
 
-
-	//if (JsonUtil::ParseJson(json_str, doc))
-	//{
-	//	if (doc.IsArray())
-	//	{
-	//		for (auto& chart_obj : doc.GetArray())
-	//		{
-	//			auto* data = CreateChartData();
-	//			if (!data->FromJson(chart_obj))
-	//			{
-	//				ASYNCFLOW_ERR("init chart data error");
-	//				delete data;
-	//			}
-	//			else
-	//			{
-	//				data_list.push_back(data);
-	//			}
-	//		}
-	//		return data_list;
-	//	}
-	//}
 	ASYNCFLOW_ERR("import chars failed: not a valid yaml");
 	return data_list;
 }
@@ -578,8 +565,7 @@ std::string Manager::uuid4_str()
 	{		
 		uustr[i] = encode[dist(rd) >> 4 * bit & 0x0f];
 		bit--;
-	}
-
+	}	
 	return std::string(uustr);
 }
 

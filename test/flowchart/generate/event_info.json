@@ -1,7 +1,0 @@
-[
-    {"id": 1, "name": "Start", "arg_count": 0},
-    {"id": 2, "name": "Tick", "arg_count": 0},
-    {"id": 3, "name": "Event0Arg", "arg_count": 0},
-    {"id": 4, "name": "Event1Arg", "arg_count": 1},
-    {"id": 5, "name": "Event2Arg", "arg_count": 2}
-]

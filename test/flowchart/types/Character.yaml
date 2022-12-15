@@ -1,0 +1,38 @@
+--- 
+name: Character
+properties: 
+- 
+  name: name
+  description: 名字
+  type: String
+methods: 
+- 
+  name: AsyncAdd
+  description: 说话
+  type: Bool
+  parameters: 
+  - {name: x, type: Number}
+  - {name: y, type: Number}
+- 
+  name: CreateCharacter
+  description: 创建一个Character
+  type: Character
+- 
+  name: GetCharacter
+  type: Character
+- 
+  name: IsValid
+  type: Bool
+- 
+  name: Move
+  description: 移动
+  type: Void
+  parameters: 
+  - {name: x, type: Number}
+- 
+  name: Say
+  description: 说话
+  type: Void
+  parameters: 
+  - {name: content, type: Any}
+...

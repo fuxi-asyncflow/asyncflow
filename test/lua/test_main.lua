@@ -1,7 +1,7 @@
 package.path = package.path ..';../flowchart/generate/?.lua';
 require("asyncflow")
-require("Flowchart_AI")
-require("Flowchart_Subchart")
+require("AI")
+require("Subchart")
 lu = require('luaunit')
 Character = {}
 Character.__index = Character
@@ -41,11 +41,12 @@ testdata = {
     ,{"AI.test_10", nil, eventlist, {"event 0 pass", "event 1 pass hello", "event 2 pass", "1st arg first", "2nd arg second"}}
     ,{"AI.test_11", nil, nil, {"hello sub", "subunit pass", "green"}}
     --, {"AI.test_12", nil, nil, {"1", "2"}}
-    , {"AI.test_13", nil, nil, {"hello"}}
+    , {"AI.test_13", nil, nil, {"hello", "1", "2"}}
     , {"AI.test_14", 3, nil, {"1", "2", "3", "4", "1", "2", "3", "4","1", "2", "3", "4","1", "2", "3", "4"}}
     , {"AI.test_15", nil, nil, {"1000", "2000", "6000"}}
     , {"AI.test_16", nil, eventlist, {"1000", "2000", "2200"}}
     , {"AI.test_17", nil, nil, {"1000", "1000", "2000", "4000"}}
+    --[[
     ,{"Subchart.SubchartTest_01", 5, {},
      {"hello", "hellosub", "end", "hello", "hellosub", "end", "hello", "hellosub", "end", "hello", "hellosub", "end", "hello", "hellosub"}}
     ,{"Subchart.SubchartTest_02", 5, {},
@@ -68,6 +69,7 @@ testdata = {
     , {"Subchart.SubchartTest_11", nil, {}, {"hellosub", "hellosub", "hellosub", "end"}}
     , {"Subchart.SubchartTest_12", nil, {}, {"hellosub", "hellosub", "hellosub", "end"}}
     , {"Subchart.SubchartTest_13", nil, {}, {"hellosub", "hellosub", "hellosub", "end"}}
+    ]]
     }
 
 function RaiseEvent(obj, event_list, step)
@@ -107,9 +109,9 @@ function run_case(chart_name, run_time, event_list,result)
     asyncflow.setup()
     --asyncflow.config_log("./logconfig.toml", "root")
     
-    asyncflow.import_charts("../flowchart/generate/Flowchart_AI.json")
-    asyncflow.import_charts("../flowchart/generate/Flowchart_Subchart.json")
-    asyncflow.import_event("../flowchart/generate/event_info.json")
+    asyncflow.import_charts("../flowchart/graphs/AI.yaml")
+    asyncflow.import_charts("../flowchart/graphs/Subchart.yaml")
+    asyncflow.import_event("../flowchart/types/_event.yaml")
     asyncflow.register(Character)
     asyncflow.attach(Character,chart_name)
     asyncflow.start(Character)
@@ -145,9 +147,9 @@ function attach_chart_params(params_tbl)
     asyncflow.setup()
     --asyncflow.config_log("./logconfig.toml", "root")
     
-    asyncflow.import_charts("../flowchart/generate/Flowchart_AI.json")
-    asyncflow.import_charts("../flowchart/generate/Flowchart_Subchart.json")
-    asyncflow.import_event("../flowchart/generate/event_info.json")
+    asyncflow.import_charts("../flowchart/graphs/AI.yaml")
+    asyncflow.import_charts("../flowchart/graphs/Subchart.yaml")
+    asyncflow.import_event("../flowchart/types/_event.yaml")
     asyncflow.register(Character)
     local chart = asyncflow.attach(Character,"AI.test_07_sub",params_tbl)
     chart:set_callback(callback)

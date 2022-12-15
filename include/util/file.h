@@ -22,5 +22,12 @@ namespace asyncflow
 			static std::string base64_decode(std::string const& s, bool remove_linebreaks = false);
 			static std::string base64_encode(unsigned char const*, size_t len, bool url = false);
 		};
+
+		class UuidUtil
+		{
+		public:
+			static bool NtoD(const char* n, char* d);
+			static bool DtoN(const char* d, char* n);
+		};
 	}
 }
