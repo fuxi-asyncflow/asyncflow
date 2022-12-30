@@ -363,6 +363,10 @@ void asyncflow::debug::Serialize_ChartInfo_Json(Writer& writer, const ChartInfo&
 
 	writer.String("owner_chart_name");
 	writer.String(ci.owner_chart_name.c_str());
+
+	writer.String("graph_uid");
+	writer.String(ci.chart_uid.c_str());
+
 	writer.EndObject();
 }
 
