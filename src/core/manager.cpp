@@ -618,6 +618,7 @@ std::vector<asyncflow::debug::ChartInfo*> Manager::GetDebugChartList(const std::
 
 				ci->object_name = agent_name;
 				ci->chart_name = name_of_chart;
+				ci->chart_uid = chart->GetUid();
 				chart_list.push_back(ci);
 			}
 		}

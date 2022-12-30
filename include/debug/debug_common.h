@@ -16,6 +16,7 @@ namespace asyncflow
 			std::string object_name{ "" };
 			std::string chart_name{ "" };
 			std::string owner_chart_name{ "" };
+			std::string chart_uid{ "" };
 		};
 
 		struct DebugData
