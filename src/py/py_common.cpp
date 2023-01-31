@@ -61,7 +61,17 @@ std::string asyncflow::py::GetObjectName(PyObject* obj)
 	PyObject* name_obj = nullptr;
 	if (PyObject_HasAttrString(obj, Agent::DEBUG_NAME_METHOD.c_str()))
 	{
+#ifdef USING_PYTHON2
+		auto size = Agent::DEBUG_NAME_METHOD.size();
+		std::vector<char> func_name( size + 1);
+		auto* buffer = &func_name[0];
+		memcpy_s(buffer, size, Agent::DEBUG_NAME_METHOD.c_str(), size);
+		func_name[size] = 0;
+		name_obj = PyObject_CallMethod(obj, buffer, nullptr);
+#else
 		name_obj = PyObject_CallMethod(obj, Agent::DEBUG_NAME_METHOD.c_str(), nullptr);
+#endif
+		
 		if (CheckPythonException()) return "-";
 	}
 
@@ -94,3 +104,19 @@ std::string asyncflow::py::ToString(PyObject* obj)
 	FreeObject(obj_string);
 	return std::string(str, length);
 }
+
+#ifdef USING_PYTHON2
+//TODO  test and support utf8 string
+const char* PyUnicode_AsUTF8(PyObject* unicode)
+{
+	Py_ssize_t size;
+	return PyUnicode_AsUTF8AndSize(unicode, &size);
+}
+
+const char* PyUnicode_AsUTF8AndSize(PyObject* unicode, Py_ssize_t* size)
+{
+	char* buffer;
+	PyString_AsStringAndSize(unicode, &buffer, size);
+	return buffer;
+}
+#endif

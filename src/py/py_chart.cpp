@@ -185,7 +185,11 @@ void asyncflow::py::PyChart::SetArgsFromDict(const std::map<std::string, PyObjec
 			}
 			else if (param.type == "Number" && !PyNumber_Check(it->second))
 			{
+#ifdef USING_PYTHON2
+				value = PyFloat_FromString(it->second, nullptr);
+#else
 				value = PyFloat_FromString(it->second);
+#endif
 				SetVar(i, value);
 				Py_XDECREF(value);
 			}

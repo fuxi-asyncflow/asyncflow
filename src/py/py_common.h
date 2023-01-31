@@ -19,6 +19,11 @@ do {															\
     return nullptr;												\
 } while (false)
 
+#ifdef USING_PYTHON2
+const char* PyUnicode_AsUTF8(PyObject * unicode);
+const char* PyUnicode_AsUTF8AndSize(PyObject * unicode, Py_ssize_t * size);
+#endif
+
 namespace asyncflow
 {
 	namespace py
