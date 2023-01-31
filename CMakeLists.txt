@@ -41,8 +41,6 @@ if(${BUILD_PYTHON})
     if(NOT ${Python3_FOUND})
         message(FATAL_ERROR "cannot find python3")
     endif(NOT ${Python3_FOUND})
-
-    add_definitions(-DUSING_PYTHON)
 endif(${BUILD_PYTHON})
 
 if(${BUILD_PYTHON2})
@@ -50,9 +48,6 @@ if(${BUILD_PYTHON2})
     if(NOT ${Python2_FOUND})
         message(FATAL_ERROR "cannot find python2")
     endif(NOT ${Python2_FOUND})
-
-    add_definitions(-DUSING_PYTHON)
-    add_definitions(-DUSING_PYTHON2)
 endif(${BUILD_PYTHON2})
 
 
@@ -151,7 +146,8 @@ if(${BUILD_PYTHON})
     add_library (asyncflow-py SHARED ${PY_SRCS})
     target_compile_features(asyncflow-py PUBLIC cxx_std_11)
     set_target_properties(asyncflow-py PROPERTIES CXX_EXTENSIONS OFF)
-    target_link_libraries(asyncflow-py asyncflow Python3::Python msgpack rapidjson)
+    target_link_libraries(asyncflow-py asyncflow Python3::Python)
+    target_compile_definitions(asyncflow-py PUBLIC USING_PYTHON)
     if(MSVC)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MD")
         set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MDd")   # cmake > 3.15 => MSVC_RUNTIME_LIBRARY
@@ -164,6 +160,7 @@ if(${BUILD_PYTHON2})
     target_compile_features(asyncflow-py2 PUBLIC cxx_std_11)
     set_target_properties(asyncflow-py2 PROPERTIES CXX_EXTENSIONS OFF)
     target_link_libraries(asyncflow-py2 asyncflow Python2::Python)
+    target_compile_definitions(asyncflow-py2 PUBLIC USING_PYTHON USING_PYTHON2)
     if(MSVC)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MD")
         set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MDd")   # cmake > 3.15 => MSVC_RUNTIME_LIBRARY
