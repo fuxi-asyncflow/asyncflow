@@ -4,15 +4,11 @@ cmake_minimum_required (VERSION 3.12)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# compile for wasm 
-# emcmake cmake .. -DBUILD_WASM=ON 
-# compile for python
-# cmake .. -DBUILD_PYTHON=ON -DPYTHON_LIBRARY="C:\\python3\\libs\\Python36.lib" -DPYTHON_INCLUDE_DIR="C:\\python3\\include"
-
 project (asyncflow)
 set(PLATFORM x64)
 
 option (BUILD_PYTHON "build python version" OFF)
+option (BUILD_PYTHON2 "build python2 version" OFF)
 option (BUILD_WASM "build WASM version" OFF)
 option (BUILD_LUAJIT "build luajit version" OFF)
 option (BUILD_TEST   "build test project" OFF)
@@ -43,11 +39,22 @@ target_include_directories(rapidjson INTERFACE "thirdparty")
 if(${BUILD_PYTHON})
     find_package (Python3 COMPONENTS Development)    
     if(NOT ${Python3_FOUND})
-        message(FATAL_ERROR "cannot find python")
+        message(FATAL_ERROR "cannot find python3")
     endif(NOT ${Python3_FOUND})
 
     add_definitions(-DUSING_PYTHON)
 endif(${BUILD_PYTHON})
+
+if(${BUILD_PYTHON2})
+    find_package (Python2 COMPONENTS Development)    
+    if(NOT ${Python2_FOUND})
+        message(FATAL_ERROR "cannot find python2")
+    endif(NOT ${Python2_FOUND})
+
+    add_definitions(-DUSING_PYTHON)
+    add_definitions(-DUSING_PYTHON2)
+endif(${BUILD_PYTHON2})
+
 
 if (CMAKE_SYSTEM_NAME MATCHES "Linux")
     add_compile_options(-fPIC)
@@ -139,9 +146,7 @@ if(${BUILD_WASM})
     set_target_properties(asyncflow-js PROPERTIES LINK_FLAGS "-s WASM=1 -s EXTRA_EXPORTED_RUNTIME_METHODS='[ccall, cwrap]' -s --js-library ${CMAKE_SOURCE_DIR}/src/js/pkg.js")
 endif(${BUILD_WASM})
 
-if(${BUILD_PYTHON})    
-# todo add different libs to different config, should test if PYTHON_DEBUG_LIBRARIES exist
-# target_link_libraries(asyncflow debug ${PYTHON_DEBUG_LIBRARIES} optimized ${PYTHON_LIBRARIES})
+if(${BUILD_PYTHON})
     aux_source_directory("src/py" PY_SRCS)
     add_library (asyncflow-py SHARED ${PY_SRCS})
     target_compile_features(asyncflow-py PUBLIC cxx_std_11)
@@ -152,6 +157,18 @@ if(${BUILD_PYTHON})
         set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MDd")   # cmake > 3.15 => MSVC_RUNTIME_LIBRARY
     endif (MSVC)  
 endif(${BUILD_PYTHON})
+
+if(${BUILD_PYTHON2})
+    aux_source_directory("src/py" PY_SRCS)
+    add_library (asyncflow-py2 SHARED ${PY_SRCS})
+    target_compile_features(asyncflow-py2 PUBLIC cxx_std_11)
+    set_target_properties(asyncflow-py2 PROPERTIES CXX_EXTENSIONS OFF)
+    target_link_libraries(asyncflow-py2 asyncflow Python2::Python)
+    if(MSVC)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MD")
+        set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MDd")   # cmake > 3.15 => MSVC_RUNTIME_LIBRARY
+    endif (MSVC)  
+endif(${BUILD_PYTHON2})
 
 if(${BUILD_LUAJIT})
     if(TARGET xlua)

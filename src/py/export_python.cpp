@@ -650,7 +650,7 @@ PyObject* asyncflow::py::wait_all(PyObject* self, PyObject* args)
 	{
 		ids[i] = PyLong_AsLong(PyTuple_GetItem(args, i));
 	}
-	manager->WaitAll(span<int>(ids));
+	manager->WaitAll(ids);
 	Py_RETURN_TRUE;
 }
 
@@ -662,7 +662,7 @@ PyObject* asyncflow::py::stop_node(PyObject* self, PyObject* args)
 	{
 		ids[i] = PyLong_AsLong(PyTuple_GetItem(args, i));
 	}
-	manager->StopNode(span<int>(ids));
+	manager->StopNode(ids);
 	Py_RETURN_TRUE;
 }
 
@@ -674,7 +674,7 @@ PyObject* asyncflow::py::stop_flow(PyObject* self, PyObject* args)
 	{
 		ids[i] = PyLong_AsLong(PyTuple_GetItem(args, i));
 	}
-	manager->StopFlow(span<int>(ids));
+	manager->StopFlow(ids);
 	Py_RETURN_TRUE;
 }
 
@@ -760,6 +760,9 @@ static PyMethodDef asyncflow_python_module_methods[] =
 };
 #undef ADD_PYTHON_FUNC
 
+#ifdef USING_PYTHON2
+#define PyInit_asyncflow initasyncflow
+#else
 static struct PyModuleDef asyncflow_module = {
 	PyModuleDef_HEAD_INIT,
 	"asyncflow",
@@ -767,14 +770,20 @@ static struct PyModuleDef asyncflow_module = {
 	-1,
 	asyncflow_python_module_methods
 };
+#endif
 
 static PyObject* asyncflow_python_error;
 PyMODINIT_FUNC PyInit_asyncflow(void)
 {
 	asyncflow::util::Log::Init();
+#ifdef USING_PYTHON2
+	PyObject* m = Py_InitModule("asyncflow", asyncflow_python_module_methods);
+#else
 	PyObject* m = PyModule_Create(&asyncflow_module);
 	if (m == nullptr)
 		return nullptr;
+#endif
+
 
 	InitAsyncObject(m);
 	InitEventIdObject(m);
@@ -785,5 +794,7 @@ PyMODINIT_FUNC PyInit_asyncflow(void)
 	Py_INCREF(asyncflow_python_error);
 	PyModule_AddObject(m, "error", asyncflow_python_error);
 
+#ifndef USING_PYTHON2
 	return m;
+#endif
 }
