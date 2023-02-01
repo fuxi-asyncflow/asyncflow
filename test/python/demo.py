@@ -1,13 +1,12 @@
 import sys
 import time
-from io import StringIO
-import pytest
 
 sys.path.append("../flowchart")
 sys.path.append("../flowchart/generate")
 import asyncflow
 
 asyncflow.setup()
+
 import asyncflow_events
 import AI
 import Subchart
@@ -42,6 +41,8 @@ if __name__ == "__main__":
     asyncflow.import_charts("../flowchart/graphs/AI.yaml")
     asyncflow.import_charts("../flowchart/graphs/Subchart.yaml")
     asyncflow.import_event("../flowchart/types/_event.yaml")
+
+
 
     # start
     c = Character()
