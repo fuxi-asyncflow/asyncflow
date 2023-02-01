@@ -567,11 +567,22 @@ PyObject* asyncflow::py::set_var(PyObject* self, PyObject* args)
 		Py_RETURN_FALSE;
 
 	int varid;
+	PyObject* key;
 	PyObject* obj;
-	if (!PyArg_ParseTuple(args, "iO", &varid, &obj))
+	
+	if (!PyArg_ParseTuple(args, "OO", &key, &obj))
 	{
 		ASYNCFLOW_ERR("parse argument failed!\n");
 		Py_RETURN_FALSE;
+	}
+	if(PyLong_CheckExact(key))
+	{
+		varid = PyLong_AsLong(key);
+	}
+	else
+	{
+		auto name = PyUnicode_AsUTF8(key);
+		varid = manager->GetCurrentNode()->GetChart()->GetData()->GetVarIndex(std::string(name));
 	}
 	const auto result = manager->SetVar(varid, obj);
 	return PyBool_FromLong(result);
@@ -583,10 +594,15 @@ PyObject* asyncflow::py::get_var(PyObject* self, PyObject* args)
 		Py_RETURN_NONE;
 
 	int varid;
-	if (!PyArg_ParseTuple(args, "i", &varid))
+	auto* key = PyTuple_GetItem(args, 0);
+	if (PyLong_CheckExact(key))
 	{
-		ASYNCFLOW_ERR("parse argument failed!\n");
-		Py_RETURN_NONE;
+		varid = PyLong_AsLong(key);
+	}
+	else
+	{
+		auto name = PyUnicode_AsUTF8(key);
+		varid = manager->GetCurrentNode()->GetChart()->GetData()->GetVarIndex(std::string(name));
 	}
 	return manager->GetVar(varid);
 }
