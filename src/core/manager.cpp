@@ -224,7 +224,7 @@ std::vector<ChartData*> Manager::ParseChartsFromJson(const std::string& json_str
 			return data_list;
 		}
 	}
-	ASYNCFLOW_ERR("import chars failed: not a valid json");
+	ASYNCFLOW_ERR("import graphs failed: not a valid json");
 	return data_list;
 }
 
@@ -268,7 +268,7 @@ std::vector<ChartData*> Manager::ParseChartsFromYaml(const std::string& yaml_str
 		ASYNCFLOW_ERR("{0}", e.what());
 	}	
 
-	ASYNCFLOW_ERR("import chars failed: not a valid yaml");
+	ASYNCFLOW_ERR("import graphs failed: not a valid yaml");
 	return data_list;
 }
 
