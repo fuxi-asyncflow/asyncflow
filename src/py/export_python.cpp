@@ -502,6 +502,38 @@ PyObject* asyncflow::py::set_python_log(PyObject* self, PyObject* args)
 	Log::rotatelogger->set_pattern("[asyncflow] %v");
 	Py_RETURN_TRUE;
 }
+
+PyObject* asyncflow::py::set_node_func(PyObject* self, PyObject* args)
+{
+	PyObject* async_module = PyImport_ImportModule("asyncflow");
+	if (CheckPythonException() || async_module == nullptr)
+	{
+		ASYNCFLOW_ERR("cannot find asyncflow module when set_node_func");
+		return nullptr;
+	}
+	PyObject* func_dict = PyObject_GetAttrString(async_module, "node_funcs");
+	if (CheckPythonException() || func_dict == nullptr)
+	{
+		ASYNCFLOW_ERR("get node_funcs dict error");
+		return nullptr;
+	}
+
+	char* name;
+	PyObject* func;
+	if (!PyArg_ParseTuple(args, "sO", &name, &func))
+		PY_ARG_ERR;
+
+	int ret = PyDict_SetItemString(func_dict, name, func);
+	Py_DECREF(func_dict);
+	if (ret != 0)
+	{
+		ASYNCFLOW_ERR("set node func {0} wrong", name);
+		return nullptr;
+	}
+
+
+	Py_RETURN_TRUE;
+}
 #pragma endregion asyncflow_customer_func
 
 #pragma region asyncflow_inner_func
@@ -742,10 +774,11 @@ static PyMethodDef asyncflow_python_module_methods[] =
 	ADD_PYTHON_FUNC(event),
 	ADD_PYTHON_FUNC(config_log),
 	ADD_PYTHON_FUNC(set_python_log),
+	ADD_PYTHON_FUNC(set_node_func),
 	ADD_PYTHON_FUNC(get_charts),
 	ADD_PYTHON_FUNC(wait),
 	ADD_PYTHON_FUNC(stop_node),
-	ADD_PYTHON_FUNC(stop_flow),
+	ADD_PYTHON_FUNC(stop_flow),	
 	ADD_PYTHON_FUNC(callback),
 	ADD_PYTHON_FUNC(set_var),
 	ADD_PYTHON_FUNC(get_var),
