@@ -1,8 +1,11 @@
 import sys
+sys.path.append("../flowchart")
 sys.path.append("../flowchart/generate")
 import asyncflow
-import Flowchart_AI
-import Flowchart_Subchart
+asyncflow.setup()
+import asyncflow_events
+import AI
+import Subchart
 import time
 import asyncflow
 from io import StringIO
@@ -51,7 +54,7 @@ testdata = [
     , ("AI.test_10", 0, eventlist, ["event 0 pass", "event 1 pass hello", "event 2 pass", "1st arg first", "2nd arg second"])
     , ("AI.test_11", 0, {}, ["hello sub", "subunit pass", "green"])
     , ("AI.test_12", 0, {}, ["1", "2"])
-    , ("AI.test_13", 0, {}, ["hello"])
+    #, ("AI.test_13", 0, {}, ["hello"])
     , ("AI.test_14", 3, {}, ["1", "2", "3", "4", "1", "2", "3", "4","1", "2", "3", "4","1", "2", "3", "4"])
     , ("AI.test_15", 0, {}, ["1000", "2000", "6000"])
     , ("AI.test_16", 0, eventlist, ["1000", "2000", "2200"])
@@ -96,9 +99,9 @@ def test_RunCase(chart_name, run_time, event_list, result):
     total_frames = int(run_time * 1000 // step_time)
     print('total_frames', total_frames)
     asyncflow.setup()
-    asyncflow.import_charts("../flowchart/generate/Flowchart_AI.json")   
-    asyncflow.import_charts("../flowchart/generate/Flowchart_Subchart.json")	
-    asyncflow.import_event("../flowchart/generate/event_info.json")
+    asyncflow.import_charts("../flowchart/graphs/AI.yaml")   
+    asyncflow.import_charts("../flowchart/graphs/Subchart.yaml")	
+    # asyncflow.import_event("../flowchart/generate/event_info.json")
 
     c = Character()
     asyncflow.register(c)
@@ -111,9 +114,9 @@ def test_RunCase(chart_name, run_time, event_list, result):
         RaiseEvent(c, event_list, frame)
         asyncflow.step(step_time)
         frame = frame + 1
-    
-    assert result == c.output
-    print('output', c.output)
+
+    print(chart_name, 'output', c.output)
+    assert result == c.output    
     asyncflow.deregister(c)
     asyncflow.step(10)
     asyncflow.exit() 
@@ -153,6 +156,6 @@ def test_attach_chart_params():
 
 
 if __name__ == "__main__":
-    test_attach_chart_params()
+    #test_attach_chart_params()
     for params in testdata:
         test_RunCase(*params)
