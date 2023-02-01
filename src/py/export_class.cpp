@@ -27,6 +27,7 @@ void asyncflow::py::InitCustomPyObj(PyObject* m)
 
 PyObject* asyncflow::py::CreateCustomPyObj(const std::string& cls_name, void* data_ptr)
 {
+	Py_RETURN_NONE;
 	BasicObject* object;
 	if (type_dict.find(cls_name) == type_dict.end())
 	{
