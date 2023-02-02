@@ -140,6 +140,7 @@ namespace asyncflow
 			void GetFunc(Ref func_ref);
 
 			static int ErrorFunction(lua_State* L);
+			static Ref InitFuncRef(lua_State* L);
 
 		private:
 			bool is_init;

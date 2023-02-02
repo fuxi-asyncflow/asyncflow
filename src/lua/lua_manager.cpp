@@ -19,9 +19,8 @@ void LuaManager::Init()
 
 	LuaManager::currentManager = this;
 	lua_pushcfunction(L, LuaManager::ErrorFunction);	//  +1
-	ErrorHandler = luaL_ref(L, LUA_REGISTRYINDEX);		//  -1
-	lua_newtable(L);									//  +1
-	FunctionRef = luaL_ref(L, LUA_REGISTRYINDEX);		//  -1
+	ErrorHandler = luaL_ref(L, LUA_REGISTRYINDEX);		//  -1	
+	FunctionRef = InitFuncRef(L);		// 0
 	lua_newtable(L);
 	ObjectRef = luaL_ref(L, LUA_REGISTRYINDEX);
 	lua_newtable(L);									//  +1
@@ -162,6 +161,25 @@ int LuaManager::ErrorFunction(lua_State* L)
 	const char* err_msg = lua_tostring(L, -1);
 	ASYNCFLOW_ERR("run node error : {0}", err_msg);
 	return 0;
+}
+
+Ref LuaManager::InitFuncRef(lua_State* L)
+{
+	lua_getglobal(L, "asyncflow");				// +1
+	lua_getfield(L, -1, "func_ref");		// +1
+	if(lua_isnumber(L, -1))
+	{
+		auto ref = static_cast<Ref>(lua_tointeger(L, -1));
+		lua_pop(L, 2);
+		return ref;
+	}
+
+	lua_newtable(L);									//  +1
+	auto ref = luaL_ref(L, LUA_REGISTRYINDEX);		//  -1
+	lua_pushinteger(L, ref);							// +1
+	lua_setfield(L, -3, "func_ref");				// -1
+	lua_pop(L, 2);
+	return ref;	
 }
 
 
