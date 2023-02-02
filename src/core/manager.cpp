@@ -19,7 +19,7 @@ using namespace asyncflow::core;
 using namespace asyncflow::util;
 
 const int Manager::DEFAULT_AGENT_TICK = 1000;
-std::unordered_map<std::string, asyncflow::core::ChartData*>* DataManager::chart_data_ = nullptr;
+
 DataManager Manager::dataManager = DataManager();
 EventManager Manager::eventManager = EventManager();
 
@@ -67,8 +67,7 @@ Manager::~Manager()
 		fclose(f);
 	}
 #endif
-
-	dataManager.ClearChartDataMap(chart_data_dict_);	
+	
 }
 
 void Manager::Step(int milliseconds)
