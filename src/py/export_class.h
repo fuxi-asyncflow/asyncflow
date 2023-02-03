@@ -14,6 +14,7 @@ namespace asyncflow
 
 		void BasicObject_dealloc(PyObject* self);
 
+		void InitCustomType(const char* name, PyTypeObject* tp, PyMemberDef* member, PyMethodDef* method);
 		void InitCustomPyObj(PyObject*);
 		PyObject* CreateCustomPyObj(const std::string& cls_name, void* data_ptr);
 
@@ -23,8 +24,7 @@ namespace asyncflow
 		PyObject* mgr_step(BasicObject* self, PyObject* args);
 		PyObject* mgr_event(BasicObject* self, PyObject* args);
 		PyObject* mgr_deregister_obj(BasicObject* self, PyObject* args);
-		PyObject* mgr_get_agent(BasicObject* self, PyObject* args);
-		void InitManagerType();
+		PyObject* mgr_get_agent(BasicObject* self, PyObject* args);		
 
 		PyObject* agent_attach(BasicObject* self, PyObject* args);
 		PyObject* agent_remove(BasicObject* self, PyObject* args);
@@ -32,11 +32,9 @@ namespace asyncflow
 		PyObject* agent_start(BasicObject* self, PyObject* args);
 		PyObject* agent_stop(BasicObject* self, PyObject* args);
 		PyObject* agent_get_obj(BasicObject* self, PyObject* args);
-		PyObject* agent_get_chart(BasicObject* self, PyObject* args);
-		void InitAgentType();
+		PyObject* agent_get_chart(BasicObject* self, PyObject* args);		
 
-		PyObject* chart_set_callback(BasicObject* self, PyObject* args);
-		void InitChartType();
+		PyObject* chart_set_callback(BasicObject* self, PyObject* args);		
 	}
 }
 
