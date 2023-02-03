@@ -6,11 +6,14 @@
 #include "export_python.h"
 using namespace asyncflow::py;
 
-std::unordered_map<std::string, PyTypeObject> type_dict;
+std::unordered_map<std::string, PyTypeObject*> type_dict;
+PyTypeObject ManagerType = { PyObject_HEAD_INIT(NULL) };
+PyTypeObject AgentType = { PyObject_HEAD_INIT(NULL) };
+PyTypeObject ChartType = { PyObject_HEAD_INIT(NULL) };
 
-void asyncflow::py::BasicObject_dealloc(BasicObject* self)
+void asyncflow::py::BasicObject_dealloc(PyObject* self)
 {
-	Py_TYPE(self)->tp_free((PyObject*)self);
+	
 }
 
 PyMemberDef BasicObject_members[] = {
@@ -26,16 +29,16 @@ void asyncflow::py::InitCustomPyObj(PyObject* m)
 }
 
 PyObject* asyncflow::py::CreateCustomPyObj(const std::string& cls_name, void* data_ptr)
-{
-	Py_RETURN_NONE;
+{	
 	BasicObject* object;
 	if (type_dict.find(cls_name) == type_dict.end())
 	{
 		ASYNCFLOW_WARN("Can not create {0} object in python", cls_name);
 		Py_RETURN_NONE;
 	}
-	object = PyObject_New(BasicObject, &type_dict[cls_name]);
-	object->data_ptr = reinterpret_cast<long long>(data_ptr);
+	
+	object = PyObject_New(BasicObject, type_dict[cls_name]);
+	object->data_ptr = reinterpret_cast<long long>(data_ptr);	
 	return (PyObject*)object;
 }
 
@@ -52,16 +55,19 @@ PyMethodDef ManagerMethod[] = {
 
 void asyncflow::py::InitManagerType()
 {
-	PyTypeObject ManagerType = { PyObject_HEAD_INIT(NULL) };
 	ManagerType.tp_name = "asyncflow.Agent";
 	ManagerType.tp_basicsize = sizeof(BasicObject);
 	ManagerType.tp_members = BasicObject_members;
 	ManagerType.tp_methods = ManagerMethod;
-	type_dict["manager"] = ManagerType;
-	if (PyType_Ready(&type_dict["manager"]) < 0)
+	ManagerType.tp_dealloc = BasicObject_dealloc;
+	
+	if (PyType_Ready(&ManagerType) < 0)
 		ASYNCFLOW_ERR("Export manager type fail");
 	else
-		Py_INCREF(&type_dict["manager"]);
+	{
+		type_dict["manager"] = &ManagerType;
+		Py_INCREF(&ManagerType);
+	}
 }
 
 PyObject* asyncflow::py::mgr_register_obj(BasicObject* self, PyObject* args)
@@ -183,17 +189,16 @@ PyMethodDef AgentMethod[] = {
 };
 
 void asyncflow::py::InitAgentType()
-{
-	PyTypeObject AgentType = { PyObject_HEAD_INIT(NULL) };
+{	
 	AgentType.tp_name = "asyncflow.Agent";
 	AgentType.tp_basicsize = sizeof(BasicObject);
 	AgentType.tp_members = BasicObject_members;
 	AgentType.tp_methods = AgentMethod;
-	type_dict["agent"] = AgentType;
-	if (PyType_Ready(&type_dict["agent"]) < 0)
+	type_dict["agent"] = &AgentType;
+	if (PyType_Ready(&AgentType) < 0)
 		ASYNCFLOW_ERR("Export agent type fail");
 	else
-		Py_INCREF(&type_dict["agent"]);
+		Py_INCREF(&AgentType);
 }
 
 PyObject* asyncflow::py::agent_attach(BasicObject* self, PyObject* args)
@@ -309,17 +314,16 @@ PyMethodDef ChartMethod[] = {
 };
 
 void asyncflow::py::InitChartType()
-{
-	PyTypeObject ChartType = { PyObject_HEAD_INIT(NULL) };
+{	
 	ChartType.tp_name = "asyncflow.Chart";
 	ChartType.tp_basicsize = sizeof(BasicObject);
 	ChartType.tp_members = BasicObject_members;
 	ChartType.tp_methods = ChartMethod;
-	type_dict["chart"] = ChartType;
-	if (PyType_Ready(&type_dict["chart"]) < 0)
+	type_dict["chart"] = &ChartType;
+	if (PyType_Ready(&ChartType) < 0)
 		ASYNCFLOW_ERR("Export chart type fail");
 	else
-		Py_INCREF(&type_dict["chart"]);
+		Py_INCREF(&ChartType);
 }
 
 PyObject* asyncflow::py::chart_set_callback(BasicObject* self, PyObject* args)

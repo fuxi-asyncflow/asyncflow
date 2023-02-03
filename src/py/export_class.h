@@ -12,7 +12,7 @@ namespace asyncflow
 				long long data_ptr;
 		} BasicObject;
 
-		void BasicObject_dealloc(BasicObject* self);
+		void BasicObject_dealloc(PyObject* self);
 
 		void InitCustomPyObj(PyObject*);
 		PyObject* CreateCustomPyObj(const std::string& cls_name, void* data_ptr);
