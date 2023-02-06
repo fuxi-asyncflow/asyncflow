@@ -512,7 +512,7 @@ bool Manager::Subchart(const std::string& chart_name, Agent* agent, void* args, 
 	}
 	//A start node can only be used in the asynchronous way.
 	//Thus, if the chart does not have a return node, it also can be return.
-	agent->StartChart(chart, true);
+	agent->StartChart(chart);
 	//set args and start
 	if (arg_count != 0)
 		chart->SetArgs(args, arg_count);
