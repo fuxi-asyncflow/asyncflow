@@ -16,11 +16,17 @@ void DfsExecutor::RunFlow(Node* start_node)
 {
 	current_agent_ = start_node->GetAgent();
 	if (current_agent_->GetStatus() != Agent::Status::Running) return;
+
+	auto* chart = start_node->GetChart();
+	if (!chart->IsRunning())
+		return;
+
+	bool has_running_node = false;
 	
 	start_node->SetStatus(Node::Idle);	//in Idle status before running
 	
-	ASYNCFLOW_DBG("\n\nstart run from node {0} : [{1} {2}][{3}]", (void*)start_node, (void*)(start_node->GetChart())
-		, start_node->GetChart()->Name(), start_node->GetId());
+	ASYNCFLOW_DBG("\n\nstart run from node {0} : [{1} {2}][{3}]", (void*)start_node, (void*)(chart)
+		, chart->Name(), start_node->GetId());
 
 	node_list_.clear();
 	node_list_.push_back(start_node);
@@ -30,14 +36,17 @@ void DfsExecutor::RunFlow(Node* start_node)
 	while (!node_list_.empty())
 	{
 		auto* node = PopNode();
-		if (!node->GetChart()->IsRunning())
-			continue;
+
 		if (node->IsRunning() && !node->IsWaitAll())   //special handling WaitAll node
+		{
+			has_running_node = true;
 			continue;
+		}
 
 		if (loop_check_ && node->RunFlag() && !node->GetData()->IsEventNode())	//loop
 		{
 			current_agent_->WaitEvent(node, AsyncEventBase::TICK_EVENT);
+			has_running_node = false;
 		}
 		else
 		{
@@ -55,7 +64,9 @@ void DfsExecutor::RunFlow(Node* start_node)
 #endif
 
 			//If the node finishes executing(not in running stateus),the subsequent node is added to the list
-			if (!node->IsRunning())
+			if (node->IsRunning())
+				has_running_node = true;
+			else
 			{
 				node->SetStatus(Node::EndRun);
 				AddSubsequenceNodes(node, node->GetResult());
@@ -74,9 +85,8 @@ void DfsExecutor::RunFlow(Node* start_node)
 	}
 	history_nodes_.clear();
 
-	//check running nodes in chart
-	auto* chart = start_node->GetChart();
-	if (!chart->CheckRunning())
+	//check running nodes in chart	
+	if (!has_running_node && !chart->CheckRunning())
 	{
 		//a chart that has no return node returns true by default
 		if (chart->GetStatus() == Chart::Status::Running)
