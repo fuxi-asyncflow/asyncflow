@@ -65,7 +65,7 @@ std::string asyncflow::py::GetObjectName(PyObject* obj)
 		auto size = Agent::DEBUG_NAME_METHOD.size();
 		std::vector<char> func_name( size + 1);
 		auto* buffer = &func_name[0];
-		memcpy_s(buffer, size, Agent::DEBUG_NAME_METHOD.c_str(), size);
+		memcpy(buffer, Agent::DEBUG_NAME_METHOD.c_str(), size);
 		func_name[size] = 0;
 		name_obj = PyObject_CallMethod(obj, buffer, nullptr);
 #else
