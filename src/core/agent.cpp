@@ -110,7 +110,7 @@ bool Agent::StartChart(const std::string& chart_name)
 	return false;
 }
 
-bool Agent::StartChart(Chart* chart, bool is_async /*= true*/)
+bool Agent::StartChart(Chart* chart)
 {
 	if (chart->GetStatus() == Chart::Running)
 		return false;
@@ -119,17 +119,11 @@ bool Agent::StartChart(Chart* chart, bool is_async /*= true*/)
 	auto* start_node = chart->GetNode(0);
 	// if has start function, it will not be skipped
 	start_node->SetSkip(chart->GetData()->StartFuncName().empty());
-	if (is_async)
-	{
-		start_node->SetStatus(Node::Running);
-		WaitEvent(start_node, AsyncEventBase::START_EVENT);
-		manager_->Event(AsyncEventBase::START_EVENT, this, nullptr, 0);
-	}
-	else
-	{
-		ASYNCFLOW_ERR("cannot run flowchart in sync mode");
-		// AddSubsequenceNodes(start_node, true);
-	}
+
+	start_node->SetStatus(Node::Running);
+	WaitEvent(start_node, AsyncEventBase::START_EVENT);
+	manager_->Event(AsyncEventBase::START_EVENT, this, nullptr, 0);
+
 	return true;
 }
 
