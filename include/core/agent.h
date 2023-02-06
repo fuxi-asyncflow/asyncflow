@@ -38,7 +38,7 @@ namespace asyncflow
 			Chart*		AttachChart(ChartData* chart_data);
 			bool		AddChart(Chart* chart, Node* node = nullptr);
 			bool        StartChart(const std::string& chart_name);
-			bool		StartChart(Chart* chart, bool is_async = true);
+			bool		StartChart(Chart* chart);
 			bool		EraseChart(Chart* chart);
 			bool		RemoveChart(const std::string& chart_name);
 			bool		StopChart(const std::string& chart_name);
