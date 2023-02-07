@@ -73,7 +73,7 @@ std::pair<bool, std::vector<std::string>> PyManager::RunScript(const char* str)
 {
 	std::vector<std::string> result;
 	auto* py_global = PyEval_GetGlobals();
-	auto res = PyRun_String(str, Py_single_input, py_global, py_global);
+	auto res = PyRun_String(str, Py_file_input, py_global, py_global);
 	if (CheckPythonException() || res == nullptr)
 	{
 		result.push_back("run python script error");
