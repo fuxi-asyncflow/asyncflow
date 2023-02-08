@@ -2,7 +2,7 @@
 #include <Python.h>
 #include <object.h>
 #include <array>
-#ifdef USING_PYTHON
+#ifdef USING_PYTHON || USING_PYTHON2
 
 namespace spdlog
 {

@@ -480,7 +480,7 @@ PyObject* asyncflow::py::config_log(PyObject* self, PyObject* args)
 	Py_RETURN_TRUE;
 }
 
-PyObject* asyncflow::py::set_python_log(PyObject* self, PyObject* args)
+PyObject* asyncflow::py::set_logger(PyObject* self, PyObject* args)
 {
 	PyObject* python_log = nullptr;
 	if (!PyArg_ParseTuple(args, "O", &python_log))
@@ -789,7 +789,7 @@ static PyMethodDef asyncflow_python_module_methods[] =
 	ADD_PYTHON_FUNC(stop),
 	ADD_PYTHON_FUNC(event),
 	ADD_PYTHON_FUNC(config_log),
-	ADD_PYTHON_FUNC(set_python_log),
+	ADD_PYTHON_FUNC(set_logger),
 	ADD_PYTHON_FUNC(set_node_func),
 	ADD_PYTHON_FUNC(get_charts),
 	ADD_PYTHON_FUNC(wait),
