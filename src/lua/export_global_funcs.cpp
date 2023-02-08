@@ -1,6 +1,7 @@
 #include "export_global_funcs.h"
 #include "lua_manager.h"
 #include "lua_common.h"
+#include "lua_sink.h"
 
 #ifdef FLOWCHART_DEBUG
 #include "debug/websocket_manager.h"
@@ -8,6 +9,7 @@ using namespace asyncflow::debug;
 #endif
 
 using namespace asyncflow::lua;
+using namespace asyncflow::util;
 
 #define LUA_RETURN_NIL(L) \
 	lua_pushnil((L)); \
@@ -105,6 +107,28 @@ int asyncflow::lua::config_log(lua_State* L)
 	auto* path = lua_tostring(L, 1);
 	auto* name = lua_tostring(L, 2);
 	asyncflow::util::Log::SetLog(path, name);
+	return 0;
+}
+
+int asyncflow::lua::set_logger(lua_State* L)
+{
+	if (auto log = spdlog::get("lua_log"))
+	{
+		for (auto& sink : log->sinks())
+		{
+			auto lua_sink = std::dynamic_pointer_cast<spdlog::lua_logger_sink>(sink);
+			if (lua_sink)
+			{
+				lua_sink->set_logger(L);
+			}
+		}
+	}
+	else
+	{
+		Log::rotatelogger = spdlog::create<spdlog::lua_logger_sink>("lua_log", L);
+	}
+	Log::rotatelogger->set_level(Log::LEVEL);
+    util::Log::rotatelogger->set_pattern("[asyncflow] %v");	
 	return 0;
 }
 

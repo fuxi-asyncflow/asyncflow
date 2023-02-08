@@ -490,13 +490,18 @@ PyObject* asyncflow::py::set_logger(PyObject* self, PyObject* args)
 	}
 	if (auto log = spdlog::get("python_log"))
 	{
-		std::shared_ptr<spdlog::python_logger_sink > logger = std::dynamic_pointer_cast<spdlog::python_logger_sink>(log);
-		if (logger != nullptr)
-			logger->set(reinterpret_cast<PyObject*>(python_log));
+		for(auto& sink : log->sinks())
+		{
+			auto python_sink = std::dynamic_pointer_cast<spdlog::python_logger_sink>(sink);
+			if(python_sink)
+			{
+				python_sink->set(python_log);
+			}
+		}
 	}
 	else
 	{
-		Log::rotatelogger = spdlog::create<spdlog::python_logger_sink>("python_log", reinterpret_cast<PyObject*>(python_log));
+		Log::rotatelogger = spdlog::create<spdlog::python_logger_sink>("python_log", python_log);
 	}
 	Log::rotatelogger->set_level(Log::LEVEL);
 	Log::rotatelogger->set_pattern("[asyncflow] %v");
