@@ -7,6 +7,7 @@ namespace asyncflow
 	{
 		int setup(lua_State* L);
 		int config_log(lua_State* L);
+		int set_logger(lua_State* L);
 		int register_obj(lua_State* L);
 		int import_charts(lua_State* L);
 		int import_event(lua_State* L);
