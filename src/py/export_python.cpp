@@ -445,8 +445,8 @@ PyObject* asyncflow::py::event(PyObject* self, PyObject* args)
 		event_args[i] = PyTuple_GetItem(args, i + 2);
 	}
 
-	manager->Event(id, obj, event_args, args_count - 2);
-	Py_RETURN_TRUE;
+	auto ret = manager->Event(id, obj, event_args, args_count - 2);
+	return PyBool_FromLong(ret);	
 }
 
 PyObject* asyncflow::py::get_charts(PyObject* self, PyObject* args)
@@ -514,13 +514,13 @@ PyObject* asyncflow::py::set_node_func(PyObject* self, PyObject* args)
 	if (CheckPythonException() || async_module == nullptr)
 	{
 		ASYNCFLOW_ERR("cannot find asyncflow module when set_node_func");
-		return nullptr;
+		Py_RETURN_FALSE;
 	}
 	PyObject* func_dict = PyObject_GetAttrString(async_module, "node_funcs");
 	if (CheckPythonException() || func_dict == nullptr)
 	{
 		ASYNCFLOW_ERR("get node_funcs dict error");
-		return nullptr;
+		Py_RETURN_FALSE;
 	}
 
 	char* name;
@@ -533,10 +533,8 @@ PyObject* asyncflow::py::set_node_func(PyObject* self, PyObject* args)
 	if (ret != 0)
 	{
 		ASYNCFLOW_ERR("set node func {0} wrong", name);
-		return nullptr;
+		Py_RETURN_FALSE;
 	}
-
-
 	Py_RETURN_TRUE;
 }
 #pragma endregion asyncflow_customer_func
