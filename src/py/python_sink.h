@@ -2,7 +2,6 @@
 #include <Python.h>
 #include <object.h>
 #include <array>
-#ifdef USING_PYTHON || USING_PYTHON2
 
 namespace spdlog
 {
@@ -73,4 +72,3 @@ namespace spdlog
 		std::array<PyObject*, 7> func_names_;	
 	};
 }
-#endif
