@@ -27,7 +27,7 @@ void NodeTimer::Register(Node* node, uint64_t millisecond)
 void NodeTimer::execute()
 {
 	auto* agent = node_->GetChart()->GetAgent();	
-	node_->SetResult(true);
+	node_->SetResult(rTRUE);
 	ASYNCFLOW_DBG("node timer execute at {0}", agent->GetManager()->GetTimerManager().Now());
 	agent->RunFlow(node_);	
 }

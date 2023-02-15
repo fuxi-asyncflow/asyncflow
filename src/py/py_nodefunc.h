@@ -11,7 +11,7 @@ namespace asyncflow
 		{
 		public:
 			~PyNodeFunc();
-			bool call(core::Agent* agent) override;
+			NodeResult call(core::Agent* agent) override;
 			static PyObject* CompileFunction(const std::string& code, const std::string& name);
 			static NodeFunc* GetFuncFromString(const std::string& code, const std::string& name);
 		private:

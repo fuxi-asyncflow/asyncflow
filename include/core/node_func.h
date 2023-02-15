@@ -13,7 +13,7 @@ namespace asyncflow
 		class NodeFunc
 		{
 		public:			
-			virtual bool call(Agent* agent) = 0;
+			virtual NodeResult call(Agent* agent) = 0;
 			virtual ~NodeFunc() = default;
 		};
 
@@ -22,7 +22,7 @@ namespace asyncflow
 		class ControlNodeFunc : public NodeFunc
 		{
 		public:
-			bool call(core::Agent* agent) override;
+			NodeResult call(core::Agent* agent) override;
 			static NodeFunc* Create(ControlFunc, const std::vector<int>&);
 
 		private:
@@ -41,7 +41,7 @@ namespace asyncflow
 					delete original_nodefunc_;
 			}
             
-			bool call(core::Agent* agent) override;
+			NodeResult call(core::Agent* agent) override;
 			void SetExecute(bool flag) { continue_flag_ = flag; }
 			NodeFunc* GetOriginalFunc() { return original_nodefunc_; }
             void SetOriginalNull() { original_nodefunc_ = nullptr; }

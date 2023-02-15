@@ -1,11 +1,11 @@
-#include"core/node_func.h"
+#include "core/node_func.h"
 
 using namespace asyncflow::core;
 
-bool ControlNodeFunc::call(Agent* agent)
+NodeResult ControlNodeFunc::call(Agent* agent)
 {
 	auto* mgr = agent->GetManager();
-	return (mgr->*func)(params_);
+	return (mgr->*func)(params_) ? rTRUE : rFALSE;
 }
 
 NodeFunc* ControlNodeFunc::Create(ControlFunc func, const std::vector<int>& params)
@@ -17,7 +17,7 @@ NodeFunc* ControlNodeFunc::Create(ControlFunc func, const std::vector<int>& para
 }
 
 #ifdef FLOWCHART_DEBUG
-bool BreakpointFunc::call(Agent* agent)
+NodeResult BreakpointFunc::call(Agent* agent)
 {
 	//continue to run the original function in the node
 	if (continue_flag_)
@@ -36,6 +36,6 @@ bool BreakpointFunc::call(Agent* agent)
 		node->SetStatus(Node::Running);
 		mgr->GetAsyncManager().AddNode(node);
 	}
-	return true;
+	return rTRUE;
 }
 #endif

@@ -1,10 +1,11 @@
 #pragma once
-#include "core/node.h"
+#include <list>
 
 namespace asyncflow
 {
 	namespace core
 	{
+		class Node;
 		//The relation between nodelist and node is circular reference.
 		class NodeList
 		{
@@ -19,6 +20,13 @@ namespace asyncflow
 			void Remove(Node* node);
 			int Size();
 			~NodeList();
+		};
+
+		enum NodeResult
+		{
+			rFALSE = 0,
+			rTRUE = 1,
+			rERROR = 2
 		};
 	}
 }

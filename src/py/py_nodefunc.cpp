@@ -11,7 +11,7 @@ PyNodeFunc:: ~PyNodeFunc()
 	Py_DECREF(func_);
 }
 
-bool PyNodeFunc::call(Agent* agent)
+NodeResult PyNodeFunc::call(Agent* agent)
 {
 	PyObject* self = ((PyAgent*)agent)->GetRefObject();
 	auto py_result = PyObject_CallFunctionObjArgs((PyObject*)func_, self, nullptr);
@@ -33,12 +33,12 @@ bool PyNodeFunc::call(Agent* agent)
 			ASYNCFLOW_ERR("var_id is {0}, name is {1}, value is {2}.", var_id, current_chart->GetData()->GetVariableName(var_id), var);
 			Py_XDECREF(pyobj);
 		}
-		return false;
+		return rERROR;
 	}
 
-	bool result = true;
+	auto result = rTRUE;
 	if (PyBool_Check(py_result))
-		result = (py_result == Py_True);
+		result = (py_result == Py_True) ? rTRUE : rFALSE;
 
 	return result;
 }
