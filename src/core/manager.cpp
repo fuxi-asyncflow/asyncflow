@@ -383,7 +383,7 @@ bool Manager::WaitAll(const std::vector<int>& args)
 	else
 	{
 		node->SetStatus(Node::EndRun);
-		node->SetResult(true);
+		node->SetResult(rTRUE);
 	}
 	return result;
 }

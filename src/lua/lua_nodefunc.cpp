@@ -6,11 +6,11 @@ using namespace asyncflow::core;
 using namespace asyncflow::lua;
 
 
-bool LuaNodeFunc::call(Agent* agent)
+NodeResult LuaNodeFunc::call(Agent* agent)
 {
 	auto* const mgr = (LuaManager*)(agent->GetManager());
 	auto* const L = mgr->L;
-	bool  result = false;
+	auto  result = rFALSE;
 	CheckLuaStack(0);
 	
 	lua_rawgeti(L, -1, func_);
@@ -42,16 +42,16 @@ bool LuaNodeFunc::call(Agent* agent)
 			chart_stack++;
 
 		}
-		result = false;
+		result = rERROR;
 	}
 	else
 	{
 		if (lua_type(L, -1) == LUA_TNUMBER)
 		{
-			result = ((int)lua_tonumber(L, -1)) != 0;
+			result = ((int)lua_tonumber(L, -1)) != 0 ? rTRUE : rFALSE;
 		}
 		else
-			result = lua_toboolean(L, -1);
+			result = lua_toboolean(L, -1) ? rTRUE : rFALSE;
 	}
 	lua_pop(L, 1);
 	return result;

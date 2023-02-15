@@ -11,6 +11,9 @@ namespace asyncflow
 	namespace core
 	{
 		class Node;
+		class Chart;
+		class NodeData;
+
 		class AsyncManager
 		{
 		public:

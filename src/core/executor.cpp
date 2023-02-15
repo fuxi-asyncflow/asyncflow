@@ -110,9 +110,11 @@ void DfsExecutor::RunFlow(Node* start_node)
 	current_agent_ = nullptr;	
 }
 
-void DfsExecutor::AddSubsequenceNodes(Node* node, bool result)
+void DfsExecutor::AddSubsequenceNodes(Node* node, NodeResult result)
 {
-	const auto& ids = node->GetData()->GetSubsequenceIds(result);
+	if (result == rERROR)
+		return;
+	const auto& ids = node->GetData()->GetSubsequenceIds(result == rTRUE);
 	auto chart = node->GetChart();
 
 	//DFS push the right node into stack first

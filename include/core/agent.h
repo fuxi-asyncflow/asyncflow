@@ -1,13 +1,10 @@
 #pragma once
 #include <unordered_map>
 #include <vector>
-#include <algorithm>
-#include <stack>
-#include <list>
 #include "core/chart.h"
 #include "core/timer_manager.h"
 #include "custom_struct.h"
-#include "executor.h"
+
 
 namespace asyncflow
 {

@@ -50,7 +50,7 @@ namespace asyncflow
 			Node* current_node_;
 
 		protected:
-			void AddSubsequenceNodes(Node* node, bool result);
+			void AddSubsequenceNodes(Node* node, NodeResult result);
 		};
 	}
 }

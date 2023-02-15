@@ -13,7 +13,7 @@ Node::Node(Chart* chart, NodeData* data)
 	, data_(data)
 	, status_(Idle)
 	, run_flag_(false)
-	, result_(true)
+	, result_(rTRUE)
 	, waiting_list_(nullptr)
 	, skip_(false)
 	, pre_node_id_(-1)
@@ -33,7 +33,7 @@ Node::~Node()
 
 Agent*	Node::GetAgent() const { return chart_->GetAgent(); }
 
-bool Node::Run()
+NodeResult Node::Run()
 {
 	ASYNCFLOW_DBG("--------------------- RUN NODE {0} : [{1}], skip:{2}", id_, chart_->Name(), skip_);
 	//if the node does not execute, its runflag will not change
@@ -44,7 +44,7 @@ bool Node::Run()
 		if(func == nullptr)
 		{
 			ASYNCFLOW_ERR("node func is null");
-			return false;
+			return rFALSE;
 		}
 		result_ = func->call(GetAgent());
 		ASYNCFLOW_DBG("--------------------- RUN NODE RESULT {0}", result_);

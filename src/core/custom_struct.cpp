@@ -1,5 +1,5 @@
 #include "core/custom_struct.h"
-
+#include "core/node.h"
 using namespace asyncflow::core;
 
 void NodeList::PushBack(Node* node)

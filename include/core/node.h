@@ -1,8 +1,5 @@
 #pragma once
 #include "core/node_attacher.h"
-#include <vector>
-#include <list>
-#include <util/log.h>
 #include "core/async_event.h"
 #include "core/custom_struct.h"
 
@@ -17,7 +14,7 @@ namespace asyncflow
 
 		class Node
 		{
-		public:
+		public:			
 			enum Status
 			{
 				Idle = 0,
@@ -31,14 +28,15 @@ namespace asyncflow
 			~Node();
 			Agent*		GetAgent() const;
 			Chart*		GetChart() { return chart_; }
-			bool		Run();
+			NodeResult	Run();
 			void		Stop();
 			bool		RunFlag() { return run_flag_; }
 			void		SetRunFlag(bool flag = true) { run_flag_ = flag; }
 			Status		GetStatus() { return status_; }
 			void		SetStatus(Status status);
-			bool		GetResult() { return result_; }
-			void		SetResult(bool r) { result_ = r; }
+			NodeResult	GetResult() { return result_; }
+			void		SetResult(NodeResult r) { result_ = r; }
+			void		SetResult(bool b) { result_ = b ? rTRUE : rFALSE; }
 			void		SetSkip(bool skip) { skip_ = skip; }
 			bool		GetSkip() { return skip_; }
 			bool		IsWaitAll() { return is_wait_all; }
@@ -60,7 +58,7 @@ namespace asyncflow
 			Chart*			chart_;
 			NodeData*		data_;
 			bool			run_flag_;
-			bool			result_;
+			NodeResult		result_;
 			bool			skip_;			//not execute function in node
 			bool            is_wait_all;    //waitall node flag, special handling in RunFlow function
 			int				pre_node_id_;
