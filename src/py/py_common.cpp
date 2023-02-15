@@ -3,6 +3,8 @@
 #include <frameobject.h>
 #include "core/agent.h"
 
+#include <sstream>
+
 bool asyncflow::py::ObjIsBool(PyObject* obj)
 {
 	return PyObject_IsTrue(obj) == 1;
@@ -37,14 +39,16 @@ bool asyncflow::py::CheckPythonException()
 		}
 		if (pExcTraceback != nullptr)
 		{
+			int stack_num = 0;
+			error_message = error_message + "- exception traceback: ";
 			for (auto tb = (PyTracebackObject*)pExcTraceback; tb != nullptr; tb = tb->tb_next)
 			{
-				PyObject *line = PyUnicode_FromFormat("  File \"%U\", line %d, in %U",
-					tb->tb_frame->f_code->co_filename,
-					tb->tb_lineno,
-					tb->tb_frame->f_code->co_name);
-				error_message = error_message + "- exception traceback:" + PyUnicode_AsUTF8(line);
-				Py_XDECREF(line);
+				const auto* file_name = PyUnicode_AsUTF8(tb->tb_frame->f_code->co_filename);
+				const auto* co_name = PyUnicode_AsUTF8(tb->tb_frame->f_code->co_name);
+
+				std::stringstream ss;
+				ss << "[" << stack_num++ << "]:  File `" << file_name << "`, line " << tb->tb_lineno << ", in " << co_name << "; ";
+				error_message += ss.str();
 			}
 		}
 
