@@ -54,8 +54,7 @@ Agent::~Agent()
 
 Chart* Agent::AttachChart(ChartData* chart_data)
 {
-	Chart* chart = manager_->CreateChart();
-	chart->SetUid(manager_->uuid4_str());
+	Chart* chart = manager_->CreateChart();	
 
 	if (!chart->Init(chart_data))
 		return nullptr;

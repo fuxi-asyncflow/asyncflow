@@ -8,6 +8,7 @@ namespace asyncflow
 {
 	namespace core
 	{
+		class Manager;
 		class Chart
 		{
 		public:
@@ -16,7 +17,7 @@ namespace asyncflow
 				Idle = 0,
 				Running = 1,
 			};
-			Chart();
+			Chart(Manager* mgr);
 			virtual ~Chart();
 			bool Init(ChartData* chart_data, Node* owner_node = nullptr);
 			virtual bool InitArgs() = 0;
@@ -39,8 +40,7 @@ namespace asyncflow
 			Status	GetStatus() { return status_; }
 			void	SetStatus(Status s) { status_ = s; }
 			ChartData* GetData() { return data_; }
-			const std::string& Name() { return data_->Name(); }
-			void SetUid(std::string&& uid) { uid_ = uid; }
+			const std::string& Name() { return data_->Name(); }			
 			const std::string& GetUid() { return uid_; }
 
 #ifdef FLOWCHART_DEBUG

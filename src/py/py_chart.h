@@ -9,7 +9,7 @@ namespace asyncflow
 		class PyChart : public core::Chart
 		{
 		public:
-			PyChart();
+			PyChart(Manager* mgr);
 			~PyChart();
 			bool	SetVar(int id, PyObject* v);
 			PyObject*	GetVar(int id);

@@ -11,7 +11,7 @@ namespace asyncflow
 		class LuaChart : public core::Chart
 		{
 		public:
-			LuaChart();
+			LuaChart(Manager* mgr);
 			virtual ~LuaChart();
 			void SetVar(lua_State* L, int idx);
 			Ref	 GetVar(lua_State* L, int idx);

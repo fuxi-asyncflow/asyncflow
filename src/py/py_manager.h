@@ -34,7 +34,7 @@ namespace asyncflow
 
 			core::Chart* CreateChart() override
 			{
-				return new  PyChart();
+				return new PyChart(this);
 			}
 
 			core::ChartData* CreateChartData() override
