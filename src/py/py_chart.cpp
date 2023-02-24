@@ -3,8 +3,8 @@
 #include "py_common.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////
-asyncflow::py::PyChart::PyChart()
-	: variables_(nullptr), call_(Py_None), init_table_(nullptr)
+asyncflow::py::PyChart::PyChart(Manager* mgr)
+	:Chart(mgr), variables_(nullptr), call_(Py_None), init_table_(nullptr)
 {
 	Py_IncRef(Py_None);
 }

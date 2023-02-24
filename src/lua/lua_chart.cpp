@@ -5,8 +5,8 @@ using namespace asyncflow::core;
 using namespace asyncflow::lua;
 
 ///////////////////////////////////////////////////////////////////////////////////////////
-LuaChart::LuaChart()
-	: call_(LUA_NOREF), variables_(LUA_NOREF), init_table_(LUA_NOREF)
+LuaChart::LuaChart(Manager* mgr)
+	:Chart(mgr), call_(LUA_NOREF), variables_(LUA_NOREF), init_table_(LUA_NOREF)
 {
 }
 

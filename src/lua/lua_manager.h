@@ -52,8 +52,8 @@ namespace asyncflow
 				, agent_manager_(this) {}
 
 			core::Chart* CreateChart() override
-			{
-				return new  LuaChart();
+			{				
+				return new LuaChart(this);
 			}
 
 			core::ChartData* CreateChartData() override

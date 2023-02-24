@@ -7,13 +7,14 @@
 
 using namespace asyncflow::core;
 
-Chart::Chart()
+Chart::Chart(Manager* mgr)
 	: owner_node_(nullptr)
 	, data_(nullptr)
 	, agent_(nullptr)
 	, status_(Idle)			
 	, debug_(false)
 	, debug_data_count_(0)
+    , uid_(mgr->uuid4_str())
 {
 	
 }
