@@ -209,7 +209,8 @@ PyObject* asyncflow::py::setup(PyObject* self, PyObject* args)
 		manager->GetWebsocketManager().Init(WebsocketManager::IP, WebsocketManager::START_PORT);
 #endif
 	}
-	return CreateCustomPyObj("manager", manager);
+	
+	return ManagerObject::New(manager);
 }
 
 PyObject* asyncflow::py::exit(PyObject* self, PyObject* args)
@@ -277,7 +278,8 @@ PyObject* asyncflow::py::register_obj(PyObject* self, PyObject* args)
 		ASYNCFLOW_ERR("create agent failed in asyncflow.register");
 		Py_RETURN_NONE;
 	}
-	return CreateCustomPyObj("agent", agent);
+	
+	return AgentObject::New((PyAgent*)agent);
 }
 
 PyObject* asyncflow::py::deregister_obj(PyObject* self, PyObject* args)
@@ -297,8 +299,7 @@ PyObject* asyncflow::py::get_current_manager(PyObject* self, PyObject* args)
 {
 	if (manager == nullptr)
 		PY_MGR_ERR;
-
-	return CreateCustomPyObj("manager", manager);
+	return ManagerObject::New(manager);
 }
 
 PyObject* asyncflow::py::attach(PyObject* self, PyObject* args, PyObject* kwargs)
@@ -333,7 +334,7 @@ PyObject* asyncflow::py::attach(PyObject* self, PyObject* args, PyObject* kwargs
 		}
 		chart->SetInitTable(params);
 	}
-	return CreateCustomPyObj("chart", chart);
+	return ChartObject::New(chart);
 }
 
 PyObject* asyncflow::py::remove(PyObject* self, PyObject* args)
