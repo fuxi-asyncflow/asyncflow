@@ -10,6 +10,7 @@ using namespace asyncflow::py;
 PyTypeObject ChartObject::TypeObject = { PyObject_HEAD_INIT(NULL) };
 
 PyMethodDef ChartObject::methods_define[] = {
+	{"is_valid", (PyCFunction)is_valid, METH_NOARGS, "return inside pointer to cpp object is valid or not"},
 	{"set_callback", (PyCFunction)set_callback, METH_VARARGS, "set_callback"},
 	{nullptr}
 };
@@ -19,6 +20,11 @@ PyObject* ChartObject::New(PyChart* ptr)
 	auto* object = PyObject_New(ChartObject, &TypeObject);
 	object->ptr = ptr;
 	return (PyObject*)object;
+}
+
+PyObject* ChartObject::is_valid(TSELF* self, PyObject* args)
+{
+	return PyBool_FromLong(self->ptr != nullptr);
 }
 
 PyObject* ChartObject::set_callback(TSELF* self, PyObject* args)

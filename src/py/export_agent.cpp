@@ -10,6 +10,7 @@ using namespace asyncflow::py;
 PyTypeObject AgentObject::TypeObject = { PyObject_HEAD_INIT(NULL) };
 
 PyMethodDef AgentObject::methods_define[] = {
+	{"is_valid", (PyCFunction)is_valid, METH_NOARGS, "return inside pointer to cpp object is valid or not"},
 	{"attach", (PyCFunction)attach, METH_VARARGS, "agent_attach"},
 	{"remove", (PyCFunction)remove, METH_VARARGS, "agent_remove"},
 	{"get_charts", (PyCFunction)get_charts, METH_VARARGS, "agent_get_charts"},
@@ -25,6 +26,11 @@ PyObject* AgentObject::New(PyAgent* ptr)
 	auto* object = PyObject_New(AgentObject, &TypeObject);
 	object->ptr = ptr;
 	return (PyObject*)object;
+}
+
+PyObject* AgentObject::is_valid(TSELF* self, PyObject* args)
+{
+	return PyBool_FromLong(self->ptr != nullptr);
 }
 
 PyObject* AgentObject::attach(TSELF* self, PyObject* args)
