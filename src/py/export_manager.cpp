@@ -8,6 +8,8 @@ using namespace asyncflow::py;
 PyTypeObject ManagerObject::TypeObject = { PyObject_HEAD_INIT(NULL) };
 
 PyMethodDef ManagerObject::methods_define[] = {
+	{"exit", (PyCFunction)exit, METH_NOARGS, "exit and destroy asyncflow manager"},
+	{"is_valid", (PyCFunction)is_valid, METH_NOARGS, "return inside pointer to cpp object is valid or not"},
 	{"register", (PyCFunction)register_obj, METH_VARARGS, "agent = mgr.register(gameobject)"},
 	{"import_charts", (PyCFunction)import_charts, METH_VARARGS, "count = mgr.import_charts(chart_yaml)"},
 	{"import_event", (PyCFunction)import_event, METH_VARARGS, "count = mgr.import_event(event_yaml)"},
@@ -23,6 +25,21 @@ PyObject* ManagerObject::New(PyManager* ptr)
 	auto* object = PyObject_New(ManagerObject, &TypeObject);
 	object->ptr = ptr;
 	return (PyObject*)object;
+}
+
+PyObject* ManagerObject::is_valid(TSELF* self, PyObject* args)
+{	
+	return PyBool_FromLong(self->ptr != nullptr);
+}
+
+PyObject* ManagerObject::exit(TSELF* self, PyObject* args)
+{
+	if (self->valid())
+	{
+		delete self->ptr;
+		Py_RETURN_TRUE;
+	}
+	Py_RETURN_FALSE;
 }
 
 PyObject* ManagerObject::register_obj(TSELF* self, PyObject* args)
@@ -130,7 +147,7 @@ PyObject* ManagerObject::get_agent(TSELF* self, PyObject* args)
 	if (!PyArg_ParseTuple(args, "O", &obj))
 		PY_ARG_ERR;
 	auto mgr = self->ptr;
-	auto* agent = dynamic_cast<PyAgent*>(mgr->agent_manager_.GetAgent(obj));
+	auto* agent = mgr->GetAgent(obj);
 	if (agent == nullptr)
 	{
 		ASYNCFLOW_ERR("This obj has not registered in asyncflow");

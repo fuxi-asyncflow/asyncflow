@@ -21,8 +21,6 @@ using Log = asyncflow::util::Log;
 using namespace asyncflow::core;
 using namespace asyncflow::py;
 
-static PyManager* manager = nullptr;
-
 void asyncflow::py::AsyncObject_dealloc(AsyncObject* self)
 {
 	Py_TYPE(self)->tp_free((PyObject*)self);
@@ -55,6 +53,7 @@ static PyMemberDef AsyncObject_members[] = {
 
 PyObject* asyncflow::py::AsyncObject_call(AsyncObject* self, PyObject* args, PyObject* other)
 {
+	auto* manager = PyManager::GetCurrentManager();
 	if (manager == nullptr)
 		Py_RETURN_FALSE;
 	PyObject* obj;
@@ -111,15 +110,17 @@ void asyncflow::py::InitEventIdObject(PyObject* module)
 //TODO support several managers in python
 PyObject* asyncflow::py::setup(PyObject* self, PyObject* args)
 {
+	auto* manager = PyManager::GetCurrentManager();
 	if (manager == nullptr)
 	{
 		manager = new PyManager;
+		PyManager::SetCurrentManager(manager);
 		ASYNCFLOW_LOG("asyncflow setup");
 	}
 	else
 	{
 		ASYNCFLOW_LOG("asyncflow already setup");
-		Py_RETURN_FALSE;
+		Py_RETURN_NONE;
 	}
 	PyObject* config = Py_None;
 	if (PyArg_ParseTuple(args, "|O", &config) && PyDict_Check(config))
@@ -210,15 +211,15 @@ PyObject* asyncflow::py::setup(PyObject* self, PyObject* args)
 #endif
 	}
 	
-	return ManagerObject::New(manager);
+	return manager->GetExportObject();
 }
 
 PyObject* asyncflow::py::exit(PyObject* self, PyObject* args)
 {
+	auto* manager = PyManager::GetCurrentManager();
 	if (manager != nullptr)
 	{
 		delete manager;
-		manager = nullptr;
 	}
 	CheckPythonException();
 	Py_RETURN_TRUE;
@@ -226,6 +227,7 @@ PyObject* asyncflow::py::exit(PyObject* self, PyObject* args)
 
 PyObject* asyncflow::py::import_charts(PyObject* self, PyObject* args)
 {
+	auto* manager = PyManager::GetCurrentManager();
 	if (manager == nullptr)
 		PY_MGR_ERR;
 
@@ -238,6 +240,7 @@ PyObject* asyncflow::py::import_charts(PyObject* self, PyObject* args)
 
 PyObject* asyncflow::py::import_event(PyObject* self, PyObject* args)
 {
+	auto* manager = PyManager::GetCurrentManager();
 	if (manager == nullptr)
 		PY_MGR_ERR;
 
@@ -264,6 +267,7 @@ PyObject* asyncflow::py::import_event(PyObject* self, PyObject* args)
 
 PyObject* asyncflow::py::register_obj(PyObject* self, PyObject* args)
 {
+	auto* manager = PyManager::GetCurrentManager();
 	if (manager == nullptr)
 		PY_MGR_ERR;
 
@@ -279,11 +283,12 @@ PyObject* asyncflow::py::register_obj(PyObject* self, PyObject* args)
 		Py_RETURN_NONE;
 	}
 	
-	return AgentObject::New((PyAgent*)agent);
+	return ((PyAgent*)agent)->GetExportObject();
 }
 
 PyObject* asyncflow::py::deregister_obj(PyObject* self, PyObject* args)
 {
+	auto* manager = PyManager::GetCurrentManager();
 	if (manager == nullptr)
 		PY_MGR_ERR;
 
@@ -297,13 +302,15 @@ PyObject* asyncflow::py::deregister_obj(PyObject* self, PyObject* args)
 
 PyObject* asyncflow::py::get_current_manager(PyObject* self, PyObject* args)
 {
+	auto* manager = PyManager::GetCurrentManager();
 	if (manager == nullptr)
 		PY_MGR_ERR;
-	return ManagerObject::New(manager);
+	return manager->GetExportObject();
 }
 
 PyObject* asyncflow::py::attach(PyObject* self, PyObject* args, PyObject* kwargs)
 {
+	auto* manager = PyManager::GetCurrentManager();
 	if (manager == nullptr)
 		PY_MGR_ERR;
 
@@ -339,6 +346,7 @@ PyObject* asyncflow::py::attach(PyObject* self, PyObject* args, PyObject* kwargs
 
 PyObject* asyncflow::py::remove(PyObject* self, PyObject* args)
 {
+	auto* manager = PyManager::GetCurrentManager();
 	if (manager == nullptr)
 		PY_MGR_ERR;
 	PyObject* obj;
@@ -357,6 +365,7 @@ PyObject* asyncflow::py::remove(PyObject* self, PyObject* args)
 
 PyObject* asyncflow::py::start(PyObject* self, PyObject* args)
 {
+	auto* manager = PyManager::GetCurrentManager();
 	if (manager == nullptr)
 		PY_MGR_ERR;
 	PyObject* obj;
@@ -386,6 +395,7 @@ PyObject* asyncflow::py::start(PyObject* self, PyObject* args)
 
 PyObject* asyncflow::py::stop(PyObject* self, PyObject* args)
 {
+	auto* manager = PyManager::GetCurrentManager();
 	if (manager == nullptr)
 		PY_MGR_ERR;
 
@@ -416,6 +426,7 @@ PyObject* asyncflow::py::stop(PyObject* self, PyObject* args)
 
 PyObject* asyncflow::py::step(PyObject* self, PyObject* args)
 {
+	auto* manager = PyManager::GetCurrentManager();
 	if (manager == nullptr)
 		PY_MGR_ERR;
 
@@ -429,6 +440,7 @@ PyObject* asyncflow::py::step(PyObject* self, PyObject* args)
 
 PyObject* asyncflow::py::event(PyObject* self, PyObject* args)
 {
+	auto* manager = PyManager::GetCurrentManager();
 	if (manager == nullptr)
 		PY_MGR_ERR;
 	PyObject* obj;
@@ -452,6 +464,7 @@ PyObject* asyncflow::py::event(PyObject* self, PyObject* args)
 
 PyObject* asyncflow::py::get_charts(PyObject* self, PyObject* args)
 {
+	auto* manager = PyManager::GetCurrentManager();
 	if (manager == nullptr)
 		PY_MGR_ERR;
 	PyObject* obj;
@@ -543,6 +556,7 @@ PyObject* asyncflow::py::set_node_func(PyObject* self, PyObject* args)
 #pragma region asyncflow_inner_func
 PyObject* asyncflow::py::wait(PyObject* self, PyObject* args)
 {
+	auto* manager = PyManager::GetCurrentManager();
 	if (manager == nullptr)
 		Py_RETURN_FALSE;
 	auto arg0 = PyTuple_GetItem(args, 0);
@@ -567,6 +581,7 @@ PyObject* asyncflow::py::wait(PyObject* self, PyObject* args)
 
 PyObject* asyncflow::py::set_var(PyObject* self, PyObject* args)
 {
+	auto* manager = PyManager::GetCurrentManager();
 	if (manager == nullptr)
 		Py_RETURN_FALSE;
 
@@ -594,6 +609,7 @@ PyObject* asyncflow::py::set_var(PyObject* self, PyObject* args)
 
 PyObject* asyncflow::py::get_var(PyObject* self, PyObject* args)
 {
+	auto* manager = PyManager::GetCurrentManager();
 	if (manager == nullptr)
 		Py_RETURN_NONE;
 
@@ -613,6 +629,7 @@ PyObject* asyncflow::py::get_var(PyObject* self, PyObject* args)
 
 PyObject* asyncflow::py::get_event_param(PyObject* self, PyObject* args)
 {
+	auto* manager = PyManager::GetCurrentManager();
 	if (manager == nullptr)
 		Py_RETURN_NONE;
 
@@ -628,6 +645,7 @@ PyObject* asyncflow::py::get_event_param(PyObject* self, PyObject* args)
 
 PyObject* asyncflow::py::wait_event(PyObject* self, PyObject* args)
 {
+	auto* manager = PyManager::GetCurrentManager();
 	if (manager == nullptr)
 		Py_RETURN_NONE;
 	bool result = false;
@@ -653,6 +671,7 @@ PyObject* asyncflow::py::wait_event(PyObject* self, PyObject* args)
 
 PyObject* asyncflow::py::call_sub(PyObject* self, PyObject* args)
 {
+	auto* manager = PyManager::GetCurrentManager();
 	if (manager == nullptr)
 		Py_RETURN_NONE;
 
@@ -671,6 +690,7 @@ PyObject* asyncflow::py::call_sub(PyObject* self, PyObject* args)
 
 PyObject* asyncflow::py::ret(PyObject* self, PyObject* args)
 {
+	auto* manager = PyManager::GetCurrentManager();
 	if (manager == nullptr)
 		Py_RETURN_NONE;
 
@@ -687,6 +707,7 @@ PyObject* asyncflow::py::ret(PyObject* self, PyObject* args)
 
 PyObject* asyncflow::py::time(PyObject* self, PyObject* args)
 {
+	auto* manager = PyManager::GetCurrentManager();
 	if (manager == nullptr)
 		Py_RETURN_NONE;
 
@@ -696,6 +717,7 @@ PyObject* asyncflow::py::time(PyObject* self, PyObject* args)
 
 PyObject* asyncflow::py::wait_all(PyObject* self, PyObject* args)
 {
+	auto* manager = PyManager::GetCurrentManager();
 	const auto argc = PyTuple_Size(args);
 	std::vector<int> ids(argc);
 	for (int i = 0; i < argc; i++)
@@ -708,6 +730,7 @@ PyObject* asyncflow::py::wait_all(PyObject* self, PyObject* args)
 
 PyObject* asyncflow::py::stop_node(PyObject* self, PyObject* args)
 {
+	auto* manager = PyManager::GetCurrentManager();
 	const auto argc = PyTuple_Size(args);
 	std::vector<int> ids(argc);
 	for (int i = 0; i < argc; i++)
@@ -720,6 +743,7 @@ PyObject* asyncflow::py::stop_node(PyObject* self, PyObject* args)
 
 PyObject* asyncflow::py::stop_flow(PyObject* self, PyObject* args)
 {
+	auto* manager = PyManager::GetCurrentManager();
 	const auto argc = PyTuple_Size(args);
 	std::vector<int> ids(argc);
 	for (int i = 0; i < argc; i++)
@@ -732,6 +756,7 @@ PyObject* asyncflow::py::stop_flow(PyObject* self, PyObject* args)
 
 PyObject* asyncflow::py::callback(PyObject* self, PyObject* args)
 {
+	auto* manager = PyManager::GetCurrentManager();
 	if (manager == nullptr)
 		Py_RETURN_FALSE;
 	long long node_address = manager->CreateAsyncContext();
