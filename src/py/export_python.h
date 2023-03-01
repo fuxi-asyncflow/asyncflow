@@ -13,6 +13,7 @@ namespace asyncflow
 		PyObject* import_event(PyObject* self, PyObject* args);
 		PyObject* register_obj(PyObject* self, PyObject* args);
 		PyObject* get_current_manager(PyObject* self, PyObject* args);
+		PyObject* get_agent(PyObject* self, PyObject* args);
 		PyObject* step(PyObject* self, PyObject* args);
 		PyObject* event(PyObject* self, PyObject* args);
 		PyObject* deregister_obj(PyObject* self, PyObject* args);

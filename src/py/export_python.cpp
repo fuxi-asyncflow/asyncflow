@@ -286,6 +286,25 @@ PyObject* asyncflow::py::register_obj(PyObject* self, PyObject* args)
 	return ((PyAgent*)agent)->GetExportObject();
 }
 
+PyObject* asyncflow::py::get_agent(PyObject* self, PyObject* args)
+{
+	auto* manager = PyManager::GetCurrentManager();
+	if (manager == nullptr)
+		PY_MGR_ERR;
+
+	PyObject* obj;
+	if (!PyArg_ParseTuple(args, "O", &obj))
+		PY_ARG_ERR;
+	
+	auto* agent = manager->GetAgent(obj);
+	if (agent == nullptr)
+	{
+		ASYNCFLOW_ERR("This obj has not registered in asyncflow");
+		Py_RETURN_NONE;
+	}
+	return agent->GetExportObject();
+}
+
 PyObject* asyncflow::py::deregister_obj(PyObject* self, PyObject* args)
 {
 	auto* manager = PyManager::GetCurrentManager();
@@ -809,6 +828,7 @@ static PyMethodDef asyncflow_python_module_methods[] =
 	ADD_PYTHON_FUNC(import_charts),
 	ADD_PYTHON_FUNC(import_event),
 	{	"register",			(PyCFunction)register_obj,			METH_VARARGS,	""},
+	ADD_PYTHON_FUNC(get_agent),
 	{	"deregister",		(PyCFunction)deregister_obj,		METH_VARARGS,	""},
 	ADD_PYTHON_FUNC(get_current_manager),
 	ADD_PYTHON_FUNC(step),
