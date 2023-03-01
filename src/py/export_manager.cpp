@@ -62,7 +62,7 @@ PyObject* ManagerObject::register_obj(TSELF* self, PyObject* args)
 		Py_RETURN_NONE;
 	}
 	
-	return AgentObject::New(agent);
+	return agent->GetExportObject();
 }
 
 PyObject* ManagerObject::deregister(TSELF* self, PyObject* args)
@@ -154,5 +154,5 @@ PyObject* ManagerObject::get_agent(TSELF* self, PyObject* args)
 		Py_RETURN_NONE;
 	}
 	
-	return AgentObject::New(agent);
+	return agent->GetExportObject();
 }
