@@ -131,7 +131,7 @@ bool ChartData::FromJson(rapidjson::Value& jobj)
 	return true;
 }
 
-bool ChartData::FromYaml(ryml::ConstNodeRef& doc)
+bool ChartData::FromYaml(const ryml::ConstNodeRef& doc)
 {
 	ChartData* chartData = this;
 	//read full path of chart
