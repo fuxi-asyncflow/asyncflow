@@ -1,5 +1,6 @@
 #include "util/file.h"
 
+#include <stdexcept>
 #include <fstream>
 #include <algorithm>
 using namespace asyncflow::util;
