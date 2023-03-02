@@ -137,7 +137,7 @@ bool NodeData::InitFromJson(rapidjson::Value& jobj, const std::unordered_map<std
 	return true;
 }
 
-bool NodeData::InitFromYaml(c4::yml::NodeRef& nodeRef, std::unordered_map<std::string, int>& id_map, ChartData* chart_data)
+bool NodeData::InitFromYaml(c4::yml::ConstNodeRef& nodeRef, std::unordered_map<std::string, int>& id_map, ChartData* chart_data)
 {
 	auto tmp = nodeRef["uid"].val();
 	node_uid_ = std::string{ tmp.data(), tmp.size() };
