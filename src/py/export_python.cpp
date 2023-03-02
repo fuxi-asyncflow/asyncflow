@@ -820,7 +820,7 @@ PyObject* asyncflow::py::func(PyObject* self, PyObject* args)
 #pragma endregion asyncflow_inner_func
 
 
-#define ADD_PYTHON_FUNC(func)	{	#func,			func,				METH_VARARGS,	""}
+#define ADD_PYTHON_FUNC(func)	{	#func,			asyncflow::py::func,				METH_VARARGS,	""}
 static PyMethodDef asyncflow_python_module_methods[] =
 {
 	ADD_PYTHON_FUNC(setup),
