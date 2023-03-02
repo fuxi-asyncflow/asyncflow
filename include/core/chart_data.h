@@ -28,7 +28,7 @@ namespace asyncflow
 			const std::string& Name() { return chart_name_; }
 			const std::string& StartFuncName() { return start_func_name_; }
 			bool FromJson(rapidjson::Value& jobj);
-			bool FromYaml(c4::yml::ConstNodeRef& doc);
+			bool FromYaml(const c4::yml::ConstNodeRef& doc);
 			
 			int		GetVarCount() { return variable_count_; }
 			int		GetParamCount() { return params_count_; }

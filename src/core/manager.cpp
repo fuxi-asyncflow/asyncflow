@@ -243,7 +243,7 @@ std::vector<ChartData*> Manager::ParseChartsFromYaml(const std::string& yaml_str
 		if (root.is_stream())
 		{
 			auto doc_count = root.num_children();
-			for (auto& doc : root.children())
+			for (const auto& doc : root.children())
 			{
 				auto path = doc["path"].val();
 				printf("yaml chart : %.*s\n", static_cast<int>(path.size()), path.data());
