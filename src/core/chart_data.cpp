@@ -131,7 +131,7 @@ bool ChartData::FromJson(rapidjson::Value& jobj)
 	return true;
 }
 
-bool ChartData::FromYaml(const ryml::NodeRef& doc)
+bool ChartData::FromYaml(ryml::ConstNodeRef& doc)
 {
 	ChartData* chartData = this;
 	//read full path of chart
@@ -174,7 +174,7 @@ bool ChartData::FromYaml(const ryml::NodeRef& doc)
 	std::unordered_map<std::string, int> id_map;
 
 	
-	auto const nodesNode = doc.find_child("nodes");
+	auto nodesNode = doc.find_child("nodes");
 	if(nodesNode.valid())
 	{
 		int nodeId = 0;
