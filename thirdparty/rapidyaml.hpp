@@ -641,7 +641,7 @@ C4_FOR_EACH(PRN_STRUCT_OFFSETS, a, b, c);
 // https://github.com/biojppm/c4core/src/c4/gcc-4.8.hpp
 //#               include "c4/gcc-4.8.hpp"
 #if !defined(C4_GCC_4_8_HPP_) && !defined(_C4_GCC_4_8_HPP_)
-#error "amalgamate: file c4/gcc-4.8.hpp must have been included at this point"
+// #error "amalgamate: file c4/gcc-4.8.hpp must have been included at this point"
 #endif /* C4_GCC_4_8_HPP_ */
 
 #           else
@@ -733,7 +733,8 @@ inline void *align(size_t __align, size_t __size, void*& __ptr, size_t& __space)
         return __ptr = reinterpret_cast<void*>(__aligned);
     }
 }
-typedef long double max_align_t ;
+//#include <cstddef>
+//using std::max_align_t; //typedef long double max_align_t ;
 
 }
 #else // __cplusplus
