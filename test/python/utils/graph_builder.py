@@ -28,7 +28,7 @@ class GraphBuilder:
 
     def add_func_node(self, f):
         uid = gen_uuid()
-        func_name =f"{self.path}.{uid.hex}"
+        func_name ="{path}.{uid}".format(path = self.path, uid = uid.hex)
         asyncflow.set_node_func(func_name, f)
         self.nodes.append({"uid": uid, "type": NodeType.FUNC})
         return uid
@@ -49,26 +49,26 @@ class GraphBuilder:
     def build(self):
         lines = []
         lines.append("--- ")
-        lines.append(f"path: {self.path}")
-        lines.append(f"uid: {self.uid}")
-        lines.append(f"type: {self.type}")
+        lines.append("path: {}".format(self.path))
+        lines.append("uid: {}".format(self.uid))
+        lines.append("type: {}".format(self.type))
 
         if len(self.variables) > 0:
             lines.append("variables: ")
             for v in self.variables:
                 lines.append("- ")
-                lines.append(f"  name: {v['name']}")
-                lines.append(f"  type: {v['type']}")
+                lines.append("  name: {}".format(v['name']))
+                lines.append("  type: {}".format(v['type']))
                 if v["is_param"]:
                     lines.append("  is_param: true")
 
         lines.append("nodes: ")
         lines.append("- ")
-        lines.append(f"  uid: {self.start_node}")
+        lines.append("  uid: {}".format(self.start_node))
 
         for node in self.nodes:
             lines.append("- ")
-            lines.append(f"  uid: {node['uid']}")
+            lines.append("  uid: {}".format(node['uid']))
             if node['type'] == NodeType.FUNC:
                 lines.append("  code:")
                 lines.append("    type: FUNC")
@@ -76,9 +76,9 @@ class GraphBuilder:
         lines.append("connectors: ")
         for conn in self.connectors:
             lines.append("- ")
-            lines.append(f"  start: {conn['start']}")
-            lines.append(f"  end: {conn['end']}")
-            lines.append(f"  type: {conn['type']}")
+            lines.append("  start: {}".format(conn['start']))
+            lines.append("  end: {}".format(conn['end']))
+            lines.append("  type: {}".format(conn['type']))
 
         lines.append("...")
         return '\n'.join(lines)
@@ -99,13 +99,13 @@ class EventBuilder:
         lines.append("--- ")
         for ev in self.events:
             lines.append("- ")
-            lines.append(f"  id: {ev['id']}")
-            lines.append(f"  name: {ev['name']}")
+            lines.append("  id: {}".format(ev['id']))
+            lines.append("  name: {}".format(ev['name']))
         params = ev['parameters']
         if params and len(params):
             lines.append("  parameters: ")
             for p in params:
-                lines.append(f"  - {{name: {p['name']}, type: {p['type']}}}")
+                lines.append("  - {{name: {name}, type: {type}}}".format(name=p['name'], type=p['type']))
 
         lines.append("...")
         return '\n'.join(lines)
