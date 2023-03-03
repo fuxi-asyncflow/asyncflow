@@ -1,20 +1,20 @@
 import sys
 import time
-
+import logging
 sys.path.append("../flowchart")
 sys.path.append("../flowchart/generate")
 import asyncflow
-
-asyncflow.setup()
+asyncflow.set_logger(logging)
+asyncflow.setup({"debug_ip":u"127.0.0.1"})
 
 import asyncflow_events
 import AI
 import Subchart
 
-class EventId():
-    Event0Arg = 3
-    Event1Arg = 4
-    Event2Arg = 5
+print(asyncflow.EventId.Tick)
+
+def test():
+    return a + b
 
 class Character:
     allCharacter = []
@@ -24,6 +24,7 @@ class Character:
 
     def Say(self, s):
         print(s)
+        #test()
         #self.output.append(str(s))
 
     def CreateCharacter(self):
@@ -36,23 +37,19 @@ class Character:
 
 if __name__ == "__main__":
     chart_name = "AI.test_04"
-    
-    # setup
-    asyncflow.import_charts("../flowchart/graphs/AI.yaml")
-    asyncflow.import_charts("../flowchart/graphs/Subchart.yaml")
-    asyncflow.import_event("../flowchart/types/_event.yaml")
-
 
 
     # start
-    c = Character()
-    asyncflow.register(c)
-    asyncflow.attach(c, chart_name)
-    asyncflow.start(c)
+    for i in range(1, 9):
+        c = Character()
+        asyncflow.register(c)
+        chart_name = "AI.test_0" + str(i)
+        asyncflow.attach(c, chart_name)
+        asyncflow.start(c)
     
     # loop
-    for i in range(100):
-        time.sleep(0.1)
+    for i in range(10000):
+        #time.sleep(0.1)
         asyncflow.step(100)
 
     # destroy
@@ -60,4 +57,3 @@ if __name__ == "__main__":
     asyncflow.deregister(c)
     asyncflow.step(10)
     asyncflow.exit()
-	

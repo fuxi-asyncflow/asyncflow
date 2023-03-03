@@ -39,7 +39,7 @@ class GraphBuilder:
     def add_varialble(self, name, type, isParameter = False):
         self.variables.append({"name": name, "type": type, "is_param": isParameter})
 
-    def connect(self, start, end, type):
+    def connect(self, start, end, type = ConnType.Always):
         self.connectors.append({"start": start, "end": end, "type": type})
         
 
