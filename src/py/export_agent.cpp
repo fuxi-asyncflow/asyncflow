@@ -16,7 +16,7 @@ PyMethodDef AgentObject::methods_define[] = {
 	{"get_graphs", (PyCFunction)get_charts, METH_NOARGS, "get all graphs attach on agent, include subgraph"},
 	{"start", (PyCFunction)start, METH_NOARGS, "agent_start"	},
 	{"stop", (PyCFunction)stop, METH_NOARGS, "agent_stop"},
-	{"get_obj", (PyCFunction)get_obj, METH_NOARGS, "agent_get_obj"},
+	{"get_object", (PyCFunction)get_obj, METH_NOARGS, "agent_get_obj"},
 	{"get_graph", (PyCFunction)get_chart, METH_VARARGS, "agent_get_chart"},
 	{nullptr}
 };
@@ -39,9 +39,9 @@ PyObject* AgentObject::attach(TSELF* self, PyObject* args)
 	PyObject* params = Py_None;
 	if (!PyArg_ParseTuple(args, "s|O", &path, &params))
 		PY_ARG_ERR;
-	auto agent = self->ptr;
+	auto* agent = self->ptr;
 	auto* manager = dynamic_cast<PyManager*>(agent->GetManager());
-	auto chart = (PyChart*)(manager->Manager::AttachChart(agent, path));
+	auto* chart = (PyChart*)(manager->Manager::AttachChart(agent, path));
 	if (chart == nullptr)
 	{
 		ASYNCFLOW_WARN("attach chart failed\n");
@@ -91,7 +91,9 @@ PyObject* AgentObject::stop(TSELF* self, PyObject* args)
 PyObject* AgentObject::get_obj(TSELF* self, PyObject* args)
 {
 	auto* agent = self->ptr;
-	auto obj = agent->GetRefObject();
+	if (agent == nullptr)
+		Py_RETURN_NONE;
+	auto* obj = agent->GetRefObject();
 	Py_INCREF(obj);
 	return obj;
 }

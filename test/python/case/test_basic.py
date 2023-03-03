@@ -20,6 +20,7 @@ def test_register():
     a = Character()
     agent = asyncflow.register(a)                   # register object success will return an agent bind to it
     assert id(agent) == id(asyncflow.get_agent(a))  # get_agent can get same object
+    assert id(a) == id(agent.get_object())          # get object from agent
     assert agent and agent.is_valid() == True       # agent will be valid util object be deregistered
     assert asyncflow.register(a) == None            # register same object again will return None
 
