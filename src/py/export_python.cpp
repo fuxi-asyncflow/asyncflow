@@ -345,7 +345,7 @@ PyObject* asyncflow::py::attach(PyObject* self, PyObject* args, PyObject* kwargs
 	if (chart == nullptr)
 	{
 		ASYNCFLOW_WARN("attach chart failed\n");
-		Py_RETURN_FALSE;
+		Py_RETURN_NONE;
 	}
 
 	if (PyDict_Check(params))
@@ -360,7 +360,7 @@ PyObject* asyncflow::py::attach(PyObject* self, PyObject* args, PyObject* kwargs
 		}
 		chart->SetInitTable(params);
 	}
-	return ChartObject::New(chart);
+	return chart->GetExportObject();
 }
 
 PyObject* asyncflow::py::remove(PyObject* self, PyObject* args)

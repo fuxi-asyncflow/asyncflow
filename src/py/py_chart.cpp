@@ -1,4 +1,5 @@
 #include "py_chart.h"
+#include "export_class.h"
 #include "py_manager.h"
 #include "py_common.h"
 
@@ -7,6 +8,7 @@ asyncflow::py::PyChart::PyChart(Manager* mgr)
 	:Chart(mgr), variables_(nullptr), call_(Py_None), init_table_(nullptr)
 {
 	Py_IncRef(Py_None);
+	export_object_ = ChartObject::New(this);
 }
 
 asyncflow::py::PyChart::~PyChart()
@@ -14,6 +16,7 @@ asyncflow::py::PyChart::~PyChart()
 	ClearVariables();
 	Py_XDECREF(call_);
 	Py_XDECREF(init_table_);
+	PyObjectRefHelper::DecRef(export_object_);
 }
 
 

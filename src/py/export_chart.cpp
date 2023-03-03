@@ -12,6 +12,7 @@ PyTypeObject ChartObject::TypeObject = { PyObject_HEAD_INIT(NULL) };
 PyMethodDef ChartObject::methods_define[] = {
 	{"is_valid", (PyCFunction)is_valid, METH_NOARGS, "return inside pointer to cpp object is valid or not"},
 	{"set_callback", (PyCFunction)set_callback, METH_VARARGS, "set_callback"},
+	{"is_running", (PyCFunction)is_running, METH_NOARGS, "if any node is running return true, else return false"},
 	{nullptr}
 };
 
@@ -35,4 +36,12 @@ PyObject* ChartObject::set_callback(TSELF* self, PyObject* args)
 	auto* chart = self->ptr;
 	chart->SetCall(obj);
 	Py_RETURN_TRUE;
+}
+
+PyObject* ChartObject::is_running(TSELF* self, PyObject*)
+{
+	auto* chart = self->ptr;
+	if (chart != nullptr && chart->GetStatus() == core::Chart::Status::Running)
+		Py_RETURN_TRUE;
+	Py_RETURN_FALSE;
 }

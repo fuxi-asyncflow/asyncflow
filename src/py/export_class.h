@@ -46,12 +46,12 @@ namespace asyncflow
 			static PyTypeObject TypeObject;
 
 			static PyObject* attach(TSELF* self, PyObject* args);
-			static PyObject* remove(TSELF* self, PyObject* args);
-			static PyObject* get_charts(TSELF* self, PyObject* args);
+			static PyObject* remove(TSELF* self, PyObject* args);			
 			static PyObject* start(TSELF* self, PyObject* args);
 			static PyObject* stop(TSELF* self, PyObject* args);
 			static PyObject* get_obj(TSELF* self, PyObject* args);
-			static PyObject* get_chart(TSELF* self, PyObject* args);			
+			static PyObject* get_chart(TSELF* self, PyObject* args);
+			static PyObject* get_charts(TSELF* self, PyObject* args);
 		};
 
 		struct ChartObject : CustomObject<PyChart>
@@ -62,6 +62,7 @@ namespace asyncflow
 			static PyTypeObject TypeObject;
 
 			static PyObject* set_callback(TSELF* self, PyObject* args);
+			static PyObject* is_running(TSELF* self, PyObject*);
 		};
 
 		void BasicObject_dealloc(PyObject* self);

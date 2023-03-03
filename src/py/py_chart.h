@@ -1,6 +1,6 @@
 #pragma once
 #include "core/chart.h"
-#include <Python.h>
+#include "py_common.h"
 
 namespace asyncflow
 {
@@ -22,6 +22,7 @@ namespace asyncflow
 			void ClearVariables() override;
 			void ResetVariables() override;
 			bool InitArgs() override;
+			PyObject* GetExportObject() { PyObjectRefHelper::IncRef(export_object_); return export_object_; }
 
 #ifdef FLOWCHART_DEBUG
 			void SendEventStatus(std::string node_uid, const AsyncEventBase* event) override;
@@ -30,6 +31,7 @@ namespace asyncflow
 			PyObject**		variables_;
 			PyObject*		call_;		//	call as charts returning or no node to run
 			PyObject*		init_table_; //	record the init variables table
+			PyObject*		export_object_;
 
 		private:
 			void InvokeCallback(PyObject* obj);

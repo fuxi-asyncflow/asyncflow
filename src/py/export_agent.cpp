@@ -13,11 +13,11 @@ PyMethodDef AgentObject::methods_define[] = {
 	{"is_valid", (PyCFunction)is_valid, METH_NOARGS, "return inside pointer to cpp object is valid or not"},
 	{"attach", (PyCFunction)attach, METH_VARARGS, "agent_attach"},
 	{"remove", (PyCFunction)remove, METH_VARARGS, "agent_remove"},
-	{"get_charts", (PyCFunction)get_charts, METH_VARARGS, "agent_get_charts"},
+	{"get_graphs", (PyCFunction)get_charts, METH_NOARGS, "get all graphs attach on agent, include subgraph"},
 	{"start", (PyCFunction)start, METH_NOARGS, "agent_start"	},
 	{"stop", (PyCFunction)stop, METH_NOARGS, "agent_stop"},
 	{"get_obj", (PyCFunction)get_obj, METH_NOARGS, "agent_get_obj"},
-	{"get_chart", (PyCFunction)get_chart, METH_VARARGS, "agent_get_chart"},
+	{"get_graph", (PyCFunction)get_chart, METH_VARARGS, "agent_get_chart"},
 	{nullptr}
 };
 
@@ -45,7 +45,7 @@ PyObject* AgentObject::attach(TSELF* self, PyObject* args)
 	if (chart == nullptr)
 	{
 		ASYNCFLOW_WARN("attach chart failed\n");
-		Py_RETURN_FALSE;
+		Py_RETURN_NONE;
 	}
 
 	if (PyDict_Check(params))
@@ -60,7 +60,7 @@ PyObject* AgentObject::attach(TSELF* self, PyObject* args)
 		}
 		chart->SetInitTable(params);
 	}
-	return ChartObject::New(chart);
+	return chart->GetExportObject();
 }
 
 PyObject* AgentObject::remove(TSELF* self, PyObject* args)
@@ -72,38 +72,6 @@ PyObject* AgentObject::remove(TSELF* self, PyObject* args)
 	auto* agent = self->ptr;
 	const auto result = agent->RemoveChart(chart_name);
 	return PyBool_FromLong(result);
-}
-
-PyObject* AgentObject::get_charts(TSELF* self, PyObject* args)
-{
-	auto* agent = self->ptr;
-	int is_subchart = 0;
-	if (!PyArg_ParseTuple(args, "|p", &is_subchart))
-		PY_ARG_ERR;
-	const auto& chart_dict = agent->GetChartDict();
-	auto py_dict = PyList_New(0);
-	PyObject* chart_name = nullptr;
-	for (const auto& charts : chart_dict)
-	{
-		if (is_subchart)
-		{
-			chart_name = PyUnicode_FromString(charts.first.c_str());
-			PyList_Append(py_dict, chart_name);
-		}
-		else
-		{
-			for (auto chart : charts.second)
-			{
-				if (chart->GetOwnerNode() == nullptr)
-				{
-					chart_name = PyUnicode_FromString(charts.first.c_str());
-					PyList_Append(py_dict, chart_name);
-					break;
-				}
-			}
-		}
-	}
-	return py_dict;
 }
 
 PyObject* AgentObject::start(TSELF* self, PyObject* args)
@@ -130,12 +98,37 @@ PyObject* AgentObject::get_obj(TSELF* self, PyObject* args)
 
 PyObject* AgentObject::get_chart(TSELF* self, PyObject* args)
 {
+	auto* agent = self->ptr;
+	if (agent == nullptr)
+		Py_RETURN_NONE;
 	char* path;
 	if (!PyArg_ParseTuple(args, "s", &path))
 		PY_ARG_ERR;
-	auto* agent = self->ptr;
+	
 	auto chart = (PyChart*)agent->FindChart(path, nullptr);
 	if (chart == nullptr)
 		Py_RETURN_NONE;
-	return ChartObject::New(chart);
+	return chart->GetExportObject();
+}
+
+PyObject* AgentObject::get_charts(TSELF* self, PyObject* args)
+{	
+	auto* agent = self->ptr;
+	if (agent == nullptr)
+		Py_RETURN_NONE;
+	auto& dict = agent->GetChartDict();
+	std::vector<Chart*> v;
+
+	for (auto& charts : dict)
+	{
+		v.insert(v.begin(), charts.second.begin(), charts.second.end());		
+	}
+
+	const auto size = v.size();
+	auto* list = PyList_New(size);
+	for(auto i = 0; i < size; i++)
+	{
+		PyList_SetItem(list, i, ((PyChart*)v[i])->GetExportObject());
+	}	
+	return list;
 }
