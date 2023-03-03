@@ -63,6 +63,8 @@ namespace asyncflow
 
 			static PyObject* set_callback(TSELF* self, PyObject* args);
 			static PyObject* is_running(TSELF* self, PyObject*);
+			static PyObject* start(TSELF* self, PyObject*);
+			static PyObject* stop(TSELF* self, PyObject*);
 		};
 
 		void BasicObject_dealloc(PyObject* self);

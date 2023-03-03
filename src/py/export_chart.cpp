@@ -13,6 +13,8 @@ PyMethodDef ChartObject::methods_define[] = {
 	{"is_valid", (PyCFunction)is_valid, METH_NOARGS, "return inside pointer to cpp object is valid or not"},
 	{"set_callback", (PyCFunction)set_callback, METH_VARARGS, "set_callback"},
 	{"is_running", (PyCFunction)is_running, METH_NOARGS, "if any node is running return true, else return false"},
+	{"start", (PyCFunction)start, METH_NOARGS, "start chart, if chart is running, return false"},
+	{"stop", (PyCFunction)stop, METH_NOARGS, "stop chart, if chart is not running, return false"},
 	{nullptr}
 };
 
@@ -44,4 +46,21 @@ PyObject* ChartObject::is_running(TSELF* self, PyObject*)
 	if (chart != nullptr && chart->GetStatus() == core::Chart::Status::Running)
 		Py_RETURN_TRUE;
 	Py_RETURN_FALSE;
+}
+
+PyObject* ChartObject::start(TSELF* self, PyObject*)
+{
+	auto* chart = self->ptr;	
+	if (chart == nullptr || chart->GetStatus() == core::Chart::Status::Running)
+		Py_RETURN_FALSE;
+	return PyBool_FromLong(chart->GetAgent()->StartChart(chart));
+}
+
+PyObject* ChartObject::stop(TSELF* self, PyObject*)
+{
+	auto* chart = self->ptr;
+	if (chart == nullptr || chart->GetStatus() != core::Chart::Status::Running)
+		Py_RETURN_FALSE;
+	chart->Stop();
+	Py_RETURN_TRUE;
 }

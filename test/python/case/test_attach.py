@@ -89,7 +89,53 @@ def test_start():
     asyncflow.exit()
 
 def test_stop():
+    mgr = asyncflow.setup()
+    graph_name = "AI.test_01"
+    mgr.import_charts(prepare_chart_02(graph_name))
+    mgr.import_event(EventBuilder().build())
+
+    c = Character("npc")
+    asyncflow.register(c)
+    graph = asyncflow.attach(c, graph_name)
+    asyncflow.start(c)
+    for i in range(10):
+        asyncflow.step(1000)
+    assert graph.is_running() == True
+    asyncflow.stop(c)                           # stop will stop all graph attached on object
+    assert graph.is_running() == False
+    asyncflow.exit()
     pass
+
+def test_stop2():
+    mgr = asyncflow.setup()
+    graph_name = "AI.test_01"
+    mgr.import_charts(prepare_chart_02(graph_name))
+    graph_name2 = "AI.test_02"
+    mgr.import_charts(prepare_chart_02(graph_name2))
+    mgr.import_event(EventBuilder().build())
+
+    c = Character("npc")
+    asyncflow.register(c)
+    graph = asyncflow.attach(c, graph_name)
+    asyncflow.start(c)
+    graph2 = asyncflow.attach(c, graph_name2)
+
+    assert graph.start() == False                       # start a running graph will return False
+    assert graph2.start() == True                       # start success
+    
+    for i in range(10):
+        asyncflow.step(1000)
+
+    assert graph.is_running() == True
+    assert graph2.is_running() == True
+
+    assert graph2.stop() == True                           # stop chart
+    assert graph.is_running() == True
+    assert graph2.is_running() == False
+    assert graph2.stop() == False                          # stop again will return false
+    asyncflow.exit()
+    pass
+
 
 if __name__ == '__main__':
     test_attach()
