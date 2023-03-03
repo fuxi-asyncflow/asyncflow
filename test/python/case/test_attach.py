@@ -77,11 +77,11 @@ def test_start():
     c = Character("npc")
     asyncflow.register(c)
     graph = asyncflow.attach(c, graph_name)
-    asyncflow.start(c)
+    assert asyncflow.start(c) == 1
     graph2 = asyncflow.attach(c, graph_name2)
-    assert graph2.is_running() == False         # graph2 attach after start, it will keep idle
-    asyncflow.start(c, [graph_name2])           # start graph2 by name
-    assert graph2.is_running() == True          # now graph2 is running
+    assert graph2.is_running() == False             # graph2 attach after start, it will keep idle
+    assert asyncflow.start(c, [graph_name2]) == 1   # start graph2 by name
+    assert graph2.is_running() == True              # now graph2 is running
     asyncflow.step(1000)
     asyncflow.step(1000)
     assert graph.is_running() == False

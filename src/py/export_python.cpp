@@ -394,22 +394,22 @@ PyObject* asyncflow::py::start(PyObject* self, PyObject* args)
 	auto agent = manager->GetAgent(obj);
 	if (agent == nullptr)
 	{
-		Py_RETURN_FALSE;
+		return PyLong_FromLong(0);
 	}
 	if (list == Py_None)
 	{
-		agent->Start();
-		Py_RETURN_TRUE;
+		return PyLong_FromLong(agent->Start());
 	}
 	auto size = PyList_Size(list);
+	int count = 0;
 	for (auto i = 0; i < size; i++) {
 		auto pItem = PyList_GetItem(list, i);
-		if (PyUnicode_Check(pItem)) {
-			auto chart_name = PyUnicode_AsUTF8(pItem);
-			agent->StartChart(chart_name);
-		}
+		//TODO check pItem type, python2 is string, python3 is unicode
+		auto chart_name = PyUnicode_AsUTF8(pItem);
+		if (agent->StartChart(chart_name))
+			count++;		
 	}
-	Py_RETURN_TRUE;
+	return PyLong_FromLong(count);
 }
 
 PyObject* asyncflow::py::stop(PyObject* self, PyObject* args)

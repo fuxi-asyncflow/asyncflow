@@ -29,7 +29,7 @@ namespace asyncflow
 			Agent(Manager* manager);
 			virtual ~Agent();
 
-			void Start();
+			int Start();
 			void Stop();		
 
 			Chart*		AttachChart(ChartData* chart_data);

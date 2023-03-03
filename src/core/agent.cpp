@@ -205,18 +205,21 @@ void Agent::RunFlow(Node* start_node)
 }
 
 // Start to run all charts that are not in running status;
-void Agent::Start()
+int Agent::Start()
 {
+	int count = 0;
 	for (const auto& charts : chart_dict_)
 	{
 		for (auto* chart : charts.second)
 		{
 			if (chart->GetOwnerNode() == nullptr && chart->GetStatus() != Chart::Status::Running)
 			{
-				StartChart(chart);
+				if (StartChart(chart))
+					count++;
 			}
 		}
 	}
+	return count;
 }
 
 void Agent::SetTickInterval(int tick)
