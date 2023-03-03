@@ -22,7 +22,7 @@ asyncflow::py::PyChart::~PyChart()
 
 PyObject* asyncflow::py::PyChart::GetVar(int id)
 {
-	if (id > data_->GetVarCount())
+	if (id > data_->GetVarCount() || id < 0)
 	{
 		ASYNCFLOW_WARN("var id {0} is out of range in chart {1}", id, Name());
 		Py_IncRef(Py_None);
@@ -93,7 +93,7 @@ void asyncflow::py::PyChart::SetInitTable(PyObject* tb)
 //index starts from 1 as lua table
 bool asyncflow::py::PyChart::SetVar(int id, PyObject* v)
 {
-	if (id > data_->GetVarCount())
+	if (id > data_->GetVarCount() || id < 0)
 	{
 		ASYNCFLOW_WARN("var id {0} is out of range in chart {1}", id, Name());
 		return false;
