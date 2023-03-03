@@ -145,10 +145,14 @@ bool NodeData::InitFromYaml(c4::yml::ConstNodeRef& nodeRef, std::unordered_map<s
 	if (node_id_ == 0)
 		return true;
 
-	tmp = nodeRef["text"].val();
-	text_ = std::string{ tmp.data(), tmp.size() };
+	auto tmpNode = nodeRef.find_child("text");
+	if(tmpNode.valid())
+	{
+		tmp = tmpNode.val();
+		text_ = std::string{ tmp.data(), tmp.size() };
+	}	
 
-	auto codeRef = nodeRef["code"];
+	auto codeRef = nodeRef.find_child("code");
 
 	if(codeRef.valid())
 	{
