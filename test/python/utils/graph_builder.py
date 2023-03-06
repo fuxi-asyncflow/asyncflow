@@ -12,6 +12,7 @@ class ConnType():
 class NodeType():
     FUNC = 0
     CONTROL = 1
+    EVENT = 2
 
 class GraphBuilder:
     def __init__(self, path, type):
@@ -32,6 +33,13 @@ class GraphBuilder:
         asyncflow.set_node_func(func_name, f)
         self.nodes.append({"uid": uid, "type": NodeType.FUNC})
         return uid
+    
+    def add_event_node(self, f):
+        uid = self.add_func_node(f)
+        for node in self.nodes:
+            if node['uid'] == uid:
+                node['type'] = NodeType.EVENT
+        return uid
 
     def add_control_node(self, name, args):
         pass
@@ -41,7 +49,6 @@ class GraphBuilder:
 
     def connect(self, start, end, type = ConnType.Always):
         self.connectors.append({"start": start, "end": end, "type": type})
-        
 
     def connect_from_start(self, end):
         self.connect(self.get_start_node(), end, ConnType.Always)
@@ -72,6 +79,9 @@ class GraphBuilder:
             if node['type'] == NodeType.FUNC:
                 lines.append("  code:")
                 lines.append("    type: FUNC")
+            elif node['type'] == NodeType.EVENT:
+                lines.append("  code:")
+                lines.append("    type: EVENT")
 
         lines.append("connectors: ")
         for conn in self.connectors:

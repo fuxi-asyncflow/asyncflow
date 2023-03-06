@@ -38,3 +38,17 @@ def subchart(name, obj, *args):
         asyncflow.call_sub(name, obj, *args)
         return True
     return _subchart
+
+def wait_event(obj, ev_name):
+    def _wait_self_event(self):
+        asyncflow.wait_event(self, getattr(asyncflow.EventId, ev_name))
+        return True
+    def _wait_event(self):
+        v = asyncflow.get_var(obj)
+        asyncflow.wait_event(v, getattr(asyncflow.EventId, ev_name))
+        return True
+    if obj == "self":
+        return _wait_self_event
+    return _wait_event
+
+        
