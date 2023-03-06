@@ -47,8 +47,18 @@ def wait_event(obj, ev_name):
         v = asyncflow.get_var(obj)
         asyncflow.wait_event(v, getattr(asyncflow.EventId, ev_name))
         return True
+    def _wait_event_obj(self):        
+        asyncflow.wait_event(obj, getattr(asyncflow.EventId, ev_name))
+        return True
     if obj == "self":
         return _wait_self_event
-    return _wait_event
+    elif obj is str:        
+        return _wait_event
+    else:
+        return _wait_event_obj
 
-        
+def print_ev_param(ev_name, idx):
+    def _print_ev_param(self):
+        ev_param = asyncflow.get_event_param(getattr(asyncflow.EventId, ev_name), idx)
+        self.Say(ev_param)
+    return _print_ev_param
