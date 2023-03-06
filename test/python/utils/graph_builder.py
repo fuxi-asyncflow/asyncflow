@@ -40,6 +40,14 @@ class GraphBuilder:
             if node['uid'] == uid:
                 node['type'] = NodeType.EVENT
         return uid
+    
+    def add_ret_var_node(self, f, var_name):
+        uid = self.add_func_node(f)
+        for node in self.nodes:
+            if node['uid'] == uid:
+                node['return_var_name'] = var_name
+        return uid
+
 
     def add_control_node(self, name, args):
         pass
@@ -79,6 +87,9 @@ class GraphBuilder:
             if node['type'] == NodeType.FUNC:
                 lines.append("  code:")
                 lines.append("    type: FUNC")
+                if 'return_var_name' in node:
+                    lines.append("    return_var_name: {}".format(node['return_var_name']))
+
             elif node['type'] == NodeType.EVENT:
                 lines.append("  code:")
                 lines.append("    type: EVENT")
