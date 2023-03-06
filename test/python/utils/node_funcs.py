@@ -52,7 +52,7 @@ def wait_event(obj, ev_name):
         return True
     if obj == "self":
         return _wait_self_event
-    elif obj is str:        
+    elif obj is str:
         return _wait_event
     else:
         return _wait_event_obj
@@ -62,3 +62,8 @@ def print_ev_param(ev_name, idx):
         ev_param = asyncflow.get_event_param(getattr(asyncflow.EventId, ev_name), idx)
         self.Say(ev_param)
     return _print_ev_param
+
+def return_func(value):
+    def _return(self):
+        asyncflow.ret(value)
+    return _return
