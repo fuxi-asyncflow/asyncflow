@@ -33,7 +33,7 @@ void DfsExecutor::RunFlow(Node* start_node)
 
 	//Start with start node and depth-first traversal
 	//RunFlag is set in node run function and is set to true only for nodes that are actually running
-	while (!node_list_.empty())
+	while (!node_list_.empty() && chart->IsRunning())	// if chart is return or stopped as subChart, status will be set to Idle
 	{
 		auto* node = PopNode();
 
