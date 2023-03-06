@@ -153,7 +153,7 @@ bool ChartData::FromYaml(const ryml::ConstNodeRef& doc)
 		for(auto varNode: chartVarsNode)
 		{
 			auto const nameNode = varNode.find_child("name");
-			printf("yaml var name: %.*s\n", (int)nameNode.val().size(), nameNode.val().data());
+			// printf("yaml var name: %.*s\n", (int)nameNode.val().size(), nameNode.val().data());
 			auto const typeNode = varNode.find_child("type");
 			auto const isParamNode = varNode.find_child("is_param");			
 

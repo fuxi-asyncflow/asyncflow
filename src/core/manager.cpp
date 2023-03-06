@@ -246,7 +246,7 @@ std::vector<ChartData*> Manager::ParseChartsFromYaml(const std::string& yaml_str
 			for (const auto& doc : root.children())
 			{
 				auto path = doc["path"].val();
-				printf("yaml chart : %.*s\n", static_cast<int>(path.size()), path.data());
+				// printf("yaml chart : %.*s\n", static_cast<int>(path.size()), path.data());
 
 				auto* data = CreateChartData();
 				if (!data->FromYaml(doc))
