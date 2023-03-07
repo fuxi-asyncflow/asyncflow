@@ -109,20 +109,28 @@ bool Agent::StartChart(const std::string& chart_name)
 	return false;
 }
 
-bool Agent::StartChart(Chart* chart)
+bool Agent::StartChart(Chart* chart, bool sync, void* args, int argc)
 {
 	if (chart->GetStatus() == Chart::Running)
 		return false;
 	chart->ResetVariables();
+	if(argc > 0)
+		chart->SetArgs(args, argc);
 	chart->SetStatus(Chart::Running);
 	auto* start_node = chart->GetNode(0);
 	// if has start function, it will not be skipped
 	start_node->SetSkip(chart->GetData()->StartFuncName().empty());
 
 	start_node->SetStatus(Node::Running);
+	if(sync)
+	{
+		// if out of stack, then try async mode
+		if (manager_->GetExecutor().RunFlow(start_node))
+			return true;
+	}
+	
 	WaitEvent(start_node, AsyncEventBase::START_EVENT);
 	manager_->Event(AsyncEventBase::START_EVENT, this, nullptr, 0);
-
 	return true;
 }
 

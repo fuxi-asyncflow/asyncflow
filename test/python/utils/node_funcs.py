@@ -35,7 +35,10 @@ def get_var(name):
 
 def subchart(name, obj, *args):    
     def _subchart(self):
-        asyncflow.call_sub(name, obj, *args)
+        if obj == 'self':
+            asyncflow.call_sub(name, self, *args)
+        else:
+            asyncflow.call_sub(name, obj, *args)
         return True
     return _subchart
 

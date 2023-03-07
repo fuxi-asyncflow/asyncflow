@@ -13,6 +13,14 @@ def prepare_subchart(graph_name):
     graph.connect(n1, n2)    
     return graph.build()
 
+def prepare_subchart_sync(graph_name):    
+    graph = GraphBuilder(graph_name, "Character")    
+    n1 = graph.add_func_node(say_two)    
+    n2 = graph.add_func_node(subchart(graph_name, 'self'))
+    graph.connect_from_start(n1)
+    graph.connect(n1, n2)    
+    return graph.build()
+
 def prepare_subchart_return(graph_name):    
     graph = GraphBuilder(graph_name, "Character")    
     n1 = graph.add_func_node(say_two)
@@ -134,7 +142,46 @@ def test_subchart_return():
     
     assert expected == actual
 
+def test_subchart_sync():
+    c = Character("npc")
+    mgr = asyncflow.setup()
+    subgraph_name = "AI.subgraph_sync"
+    graph_name = "AI.test_01"
+
+    graph = GraphBuilder(graph_name, "Character")
+    graph.add_varialble("a", "String")
+    n1 = graph.add_func_node(say_one)
+    n2 = graph.add_func_node(subchart(subgraph_name, c))
+    n3 = graph.add_func_node(say_four)
+    
+    graph.connect_from_start(n1)
+    graph.connect(n1, n2)
+    graph.connect(n2, n3)    
+
+    mgr.import_charts(graph.build())
+    mgr.import_charts(prepare_subchart_sync(subgraph_name))
+    mgr.import_event(EventBuilder().build())
+    
+    actual = []    
+    Character._output = actual.append
+    asyncflow.register(c)
+    asyncflow.attach(c, subgraph_name)
+    
+    asyncflow.start(c)
+    step_count = 2
+    for i in range(step_count):
+        asyncflow.step(10)    
+    asyncflow.exit()
+
+    expected = []
+    Character._output = expected.append
+    for i in range(step_count*(16-1)):
+        say_two(c)   
+    assert expected == actual
+
+
 if __name__ == '__main__':
     test_subchart()
     test_return()
     test_subchart_return()
+    test_subchart_sync()

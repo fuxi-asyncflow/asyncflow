@@ -80,7 +80,7 @@ namespace asyncflow
 			TimerManager	timer_manager_;
 			AsyncManager	async_manager_;
 
-			DfsExecutor		executor_;
+			StackExecutor<DfsExecutor>		executor_;
 			EventQueue		event_queue_;
 			DyingAgents		dying_agents_;
 

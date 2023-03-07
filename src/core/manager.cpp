@@ -29,7 +29,7 @@ Manager::Manager()
 	: current_frame_(0)	
 	, current_event_(nullptr)
 	, default_time_interval_(100)
-	, immediate_subchart_(false)
+	, immediate_subchart_(true)
     , AUTO_REGISTER(true)
 	, rd("default")
 #ifdef FLOWCHART_DEBUG
@@ -512,11 +512,9 @@ bool Manager::Subchart(const std::string& chart_name, Agent* agent, void* args, 
 	}
 	//A start node can only be used in the asynchronous way.
 	//Thus, if the chart does not have a return node, it also can be return.
-	agent->StartChart(chart);
-	//set args and start
-	if (arg_count != 0)
-		chart->SetArgs(args, arg_count);
 	node->SetStatus(Node::Running);
+	agent->StartChart(chart, agent->GetManager()->IsImmediateSub(), args, arg_count);
+	
 	ASYNCFLOW_DBG("start subchart {0} {1}", chart_name, (void*)chart);
 	return true;
 }

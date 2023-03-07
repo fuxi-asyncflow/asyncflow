@@ -87,11 +87,20 @@ void Chart::Return(bool result)
 		owner_node->SetResult(result);
 		owner_node->SetSkip(true);
 		owner_node->SetRunFlag(false);
-		//owner_node->GetAgent()->RunFlow(owner_node);
+		
 		auto* agent = owner_node->GetAgent();
-		agent->WaitEvent(owner_node, AsyncEventBase::START_EVENT);
-		agent->GetManager()->Event(AsyncEventBase::START_EVENT, agent
-			, nullptr, 0, agent->GetManager()->IsImmediateSub());
+		auto* manager = agent->GetManager();
+		if(manager->IsImmediateSub() && manager->GetExecutor().RunFlow(owner_node)) // not stack over flow
+		{
+			
+		}
+		else
+		{
+			agent->WaitEvent(owner_node, AsyncEventBase::START_EVENT);
+			agent->GetManager()->Event(AsyncEventBase::START_EVENT, agent
+				, nullptr, 0, true);
+		}
+		
 	}
 	ASYNCFLOW_DBG("chart {0} {1} return", (void*)this, Name());
 	Stop();

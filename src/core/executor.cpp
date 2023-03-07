@@ -12,14 +12,14 @@ DfsExecutor::DfsExecutor()
 {
 }
 
-void DfsExecutor::RunFlow(Node* start_node)
+bool DfsExecutor::RunFlow(Node* start_node)
 {
 	current_agent_ = start_node->GetAgent();
-	if (current_agent_->GetStatus() != Agent::Status::Running) return;
+	if (current_agent_->GetStatus() != Agent::Status::Running) return true;
 
 	auto* chart = start_node->GetChart();
 	if (!chart->IsRunning())
-		return;
+		return true;
 
 	bool has_running_node = false;
 	
@@ -107,7 +107,9 @@ void DfsExecutor::RunFlow(Node* start_node)
 	}
 	ASYNCFLOW_DBG("end run from node {0}", (void*)start_node);
 	current_node_ = nullptr;
-	current_agent_ = nullptr;	
+	current_agent_ = nullptr;
+
+	return true;
 }
 
 void DfsExecutor::AddSubsequenceNodes(Node* node, NodeResult result)
