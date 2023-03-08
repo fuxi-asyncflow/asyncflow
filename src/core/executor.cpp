@@ -35,11 +35,12 @@ bool DfsExecutor::RunFlow(Node* start_node)
 	//RunFlag is set in node run function and is set to true only for nodes that are actually running
 	while (!node_list_.empty() && chart->IsRunning())	// if chart is return or stopped as subChart, status will be set to Idle
 	{
-		auto* node = PopNode();
+		auto* node = GetTopNode();		
 
 		if (node->IsRunning() && !node->IsWaitAll())   //special handling WaitAll node
 		{
 			has_running_node = true;
+			PopNode();
 			continue;
 		}
 
@@ -62,8 +63,9 @@ bool DfsExecutor::RunFlow(Node* start_node)
 			node->GetData()->AddRunCount();
 			node->GetData()->AddTimeCost(cost);
 #endif
+			PopNode(); // pop node after node run end, so if current node is `stopflow` and stop self, it's children would not push into queue
 
-			//If the node finishes executing(not in running stateus),the subsequent node is added to the list
+			//If the node finishes executing(not in running stateus),the subsequent node is added to the list			
 			if (node->IsRunning())
 				has_running_node = true;
 			else

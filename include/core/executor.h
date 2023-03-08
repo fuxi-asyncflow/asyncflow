@@ -27,12 +27,16 @@ namespace asyncflow
 		public:
 			DfsExecutor();
 
-			Node* PopNode()
+			Node* GetTopNode()
+			{
+				return node_list_.back();
+			}
+
+			void PopNode()
 			{
 				auto* next = node_list_.back();
 				history_nodes_.push_back(next);
 				node_list_.pop_back();
-				return next;
 			}
 
 			void Remove(Node* node) override
