@@ -29,7 +29,7 @@ namespace asyncflow
 			Manager();
 			virtual ~Manager();
 			void	Step(int milliseconds = 10);
-			bool	Event(int event_id, Agent* obj, void* args, int arg_count, bool immediate = false);
+			bool	Event(int event_id, Agent* obj, void* args, int arg_count, bool immediate = false, bool trigger = false);
 			int		ImportFile(const std::string& file_name);
 			int		ImportJson(const std::string& json_str);
             int     ImportYaml(const std::string& yaml_str);
@@ -63,6 +63,7 @@ namespace asyncflow
 			bool StopFlow(const std::vector<int>& args);
 			bool WaitEvent(Agent* agent, int event_id);
 			bool Subchart(const std::string& chart_name, Agent* agent, void* args, int arg_count);
+			bool TriggerEvent(AsyncEventBase& event);	// Handle event immediately
 			int64_t	 CreateAsyncContext();	//Save current context
 
 			virtual Chart* CreateChart() = 0;
@@ -81,6 +82,7 @@ namespace asyncflow
 			AsyncManager	async_manager_;
 
 			StackExecutor<DfsExecutor>		executor_;
+			NodeList*		waiting_nodes_;
 			EventQueue		event_queue_;
 			DyingAgents		dying_agents_;
 
@@ -89,6 +91,7 @@ namespace asyncflow
 
 			std::unordered_map<std::string, ChartData*>* chart_data_dict_;
 
+			int current_event_frame_;
 			bool in_step_;				// flag for inside or outside step function 
 
 		private:
@@ -102,6 +105,7 @@ namespace asyncflow
 
 		public:
 			const static int DEFAULT_AGENT_TICK;
+			const static int MAX_EVENT_FRAME;
 			bool AUTO_REGISTER;
 			static DataManager dataManager;
 			bool IsImmediateSub() { return immediate_subchart_; }

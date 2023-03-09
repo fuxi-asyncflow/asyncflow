@@ -459,6 +459,16 @@ PyObject* asyncflow::py::step(PyObject* self, PyObject* args)
 
 PyObject* asyncflow::py::event(PyObject* self, PyObject* args)
 {
+	return _event(self, args, false);
+}
+
+PyObject* asyncflow::py::trigger(PyObject* self, PyObject* args)
+{
+	return _event(self, args, true);
+}
+
+PyObject* asyncflow::py::_event(PyObject* self, PyObject* args, bool trigger)
+{
 	auto* manager = PyManager::GetCurrentManager();
 	if (manager == nullptr)
 		PY_MGR_ERR;
@@ -477,8 +487,8 @@ PyObject* asyncflow::py::event(PyObject* self, PyObject* args)
 		event_args[i] = PyTuple_GetItem(args, i + 2);
 	}
 
-	auto ret = manager->Event(id, obj, event_args, args_count - 2);
-	return PyBool_FromLong(ret);	
+	auto ret = manager->Event(id, obj, event_args, args_count - 2, false, trigger);
+	return PyBool_FromLong(ret);
 }
 
 PyObject* asyncflow::py::get_charts(PyObject* self, PyObject* args)
@@ -837,6 +847,7 @@ static PyMethodDef asyncflow_python_module_methods[] =
 	ADD_PYTHON_FUNC(start),
 	ADD_PYTHON_FUNC(stop),
 	ADD_PYTHON_FUNC(event),
+	ADD_PYTHON_FUNC(trigger),
 	ADD_PYTHON_FUNC(config_log),
 	ADD_PYTHON_FUNC(set_logger),
 	ADD_PYTHON_FUNC(set_node_func),

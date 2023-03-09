@@ -165,26 +165,18 @@ bool Agent::RemoveChart(const std::string& chart_name)
 
 NodeList* Agent::GetWaitNodes(int event_id)
 {
-	if (event_id >= manager_->GetEventManager().GetEventCount())
+	if (event_id < 0 || event_id >= manager_->GetEventManager().GetEventCount())
 	{
+		ASYNCFLOW_WARN("event id is out of range : {0}", event_id);
 		return nullptr;
 	}
 	return waiting_nodes_list[event_id];
 }
 
-void Agent::HandleEvent(const AsyncEventBase& event)
+void Agent::HandleEvent(const AsyncEventBase& event, NodeList* waiting_nodes)
 {
 	if (status_ == Destroying)	return;
 
-	auto* waiting_nodes = GetWaitNodes(event.Id());
-	if (waiting_nodes == nullptr)
-	{
-		assert(event.Id());
-		ASYNCFLOW_WARN("event id is out of range : {0}", event.Id());
-		return;
-	}
-	if (waiting_nodes->IsEmpty())
-		return;
 	// As the node runs, new nodes may be added to the list, so a copy is created.
 	waiting_nodes_list[event.Id()] = new NodeList();
 	ASYNCFLOW_DBG("handle event {0} for agent {1} [{2}-{4}], total {3} nodes",
@@ -200,8 +192,7 @@ void Agent::HandleEvent(const AsyncEventBase& event)
 		node->SendEventStatus(&event);
 #endif
 		agent->RunFlow(node);
-	}
-	delete waiting_nodes;
+	}	
 	// assert(waiting_nodes->empty());	
 	// Assert may be failed: As subchart called, the start node of the subchart is also waiting for the start event and is placed in the same list, which cannot be cleared
 }

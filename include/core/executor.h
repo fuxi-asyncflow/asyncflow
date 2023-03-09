@@ -52,7 +52,7 @@ namespace asyncflow
 			Node* current_node_;
 
 		protected:
-			void AddSubsequenceNodes(Node* node, NodeResult result);
+			void AddSubsequenceNodes(Node* node);
 		};
 
 		template<typename InnerExecutor>
@@ -106,8 +106,5 @@ namespace asyncflow
 
 		template<typename InnerExecutor>
 		int StackExecutor<InnerExecutor>::MAX_STACK_SIZE = 16;
-
-
-
 	}
 }

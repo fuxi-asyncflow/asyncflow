@@ -16,6 +16,8 @@ namespace asyncflow
 		PyObject* get_agent(PyObject* self, PyObject* args);
 		PyObject* step(PyObject* self, PyObject* args);
 		PyObject* event(PyObject* self, PyObject* args);
+		PyObject* trigger(PyObject* self, PyObject* args);
+		PyObject* _event(PyObject* self, PyObject* args, bool trigger);
 		PyObject* deregister_obj(PyObject* self, PyObject* args);
 		PyObject* exit(PyObject* self, PyObject* args);
 		PyObject* attach(PyObject* self, PyObject* args, PyObject* kwargs);

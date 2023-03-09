@@ -19,6 +19,7 @@ using namespace asyncflow::core;
 using namespace asyncflow::util;
 
 const int Manager::DEFAULT_AGENT_TICK = 1000;
+const int Manager::MAX_EVENT_FRAME = 16;
 
 DataManager Manager::dataManager = DataManager();
 EventManager Manager::eventManager = EventManager();
@@ -32,6 +33,7 @@ Manager::Manager()
 	, immediate_subchart_(true)
     , AUTO_REGISTER(true)
 	, rd("default")
+	, current_event_frame_(0)
 #ifdef FLOWCHART_DEBUG
 	, websocket_manager_(this)
 #endif
@@ -115,7 +117,7 @@ void Manager::Step(int milliseconds)
 	return;
 }
 
-bool Manager::Event(int event_id, Agent* agent, void* args, int arg_count, bool immediate)
+bool Manager::Event(int event_id, Agent* agent, void* args, int arg_count, bool immediate, bool trigger)
 {
 	auto const event_arg_count = eventManager.GetEventArgsCount(event_id);
 	if (event_arg_count < 0)
@@ -133,7 +135,11 @@ bool Manager::Event(int event_id, Agent* agent, void* args, int arg_count, bool 
 	AsyncEventBase* event = CreateAsyncEvent(event_id, agent, args, arg_count);
 
 	ASYNCFLOW_DBG("raise event {0} for agent {1} [{2}-{3}]", (void*)event, (void*)agent, event_id, eventManager.GetEventName(event_id));
-	event_queue_.AddEvent(event, immediate);
+	if(trigger && TriggerEvent(*event))
+	{
+	}
+	else
+	    event_queue_.AddEvent(event, immediate);
 	
 	return true;
 }
@@ -325,12 +331,42 @@ int Manager::ImportEvent(const std::string& file_name)
 	return eventManager.InitFromYaml(str);
 }
 
-void Manager::HandleEvent(AsyncEventBase& event)
+void Manager::HandleEvent(AsyncEventBase& ev)
 {
-	auto* agent = event.GetAgent();
-	current_event_ = &event;
-	agent->HandleEvent(event);
+	auto* agent = ev.GetAgent();
+	auto* waiting_nodes = agent->GetWaitNodes(ev.Id());
+	if (waiting_nodes == nullptr || waiting_nodes->IsEmpty())
+		return;
+	current_event_ = &ev;
+	waiting_nodes_ = waiting_nodes;
+	agent->HandleEvent(ev, waiting_nodes);
+	delete waiting_nodes;
+	waiting_nodes_ = nullptr;
 	current_event_ = nullptr;
+}
+
+bool Manager::TriggerEvent(AsyncEventBase& ev)
+{	
+	auto* agent = ev.GetAgent();
+	auto* waiting_nodes = agent->GetWaitNodes(ev.Id());
+	if (waiting_nodes == nullptr || waiting_nodes->IsEmpty())
+		return true;
+	
+	if(current_event_frame_ >= MAX_EVENT_FRAME)	
+		return false;
+	current_event_frame_++;
+	auto* prev_list = waiting_nodes_;
+	auto* prev_ev = current_event_;
+
+    // hanele event
+	HandleEvent(ev);
+
+	// pop
+	current_event_frame_--;
+	waiting_nodes_ = prev_list;
+	current_event_ = prev_ev;
+	return true;
+
 }
 
 void Manager::Wait(int milliseconds)

@@ -30,7 +30,7 @@ namespace asyncflow
 			Agent* RegisterGameObject(PyObject* obj, int tick_interval);
 			bool UnregisterGameObject(PyObject* obj);
 
-			bool Event(int event_id, PyObject* obj, PyObject** args, int arg_count, bool immediate = false);
+			bool Event(int event_id, PyObject* obj, PyObject** args, int arg_count, bool immediate = false, bool trigger = false);
 			bool SetVar(int var_id, PyObject* obj);
 			PyObject* GetVar(int var_id);
 			PyObject* GetEventParam(int event_id, int param_idx);

@@ -54,9 +54,9 @@ bool PyManager::UnregisterGameObject(PyObject* obj)
 	return Manager::UnregisterGameObject(agent);
 }
 
-bool PyManager::Event(int event_id, PyObject* obj, PyObject** args, int arg_count, bool immediate)
+bool PyManager::Event(int event_id, PyObject* obj, PyObject** args, int arg_count, bool immediate, bool trigger)
 {
-	return Manager::Event(event_id, agent_manager_.GetAgent(obj), (void*)args, arg_count, immediate);
+	return Manager::Event(event_id, agent_manager_.GetAgent(obj), (void*)args, arg_count, immediate, trigger);
 }
 
 bool PyManager::SetVar(int var_id, PyObject* obj)

@@ -98,7 +98,7 @@ bool DfsExecutor::RunFlow(Node* start_node)
 			else
 			{
 				node->SetStatus(Node::EndRun);
-				AddSubsequenceNodes(node, node->GetResult());
+				AddSubsequenceNodes(node);
 			}
 		}
 	}
@@ -141,8 +141,9 @@ bool DfsExecutor::RunFlow(Node* start_node)
 	return true;
 }
 
-void DfsExecutor::AddSubsequenceNodes(Node* node, NodeResult result)
+void DfsExecutor::AddSubsequenceNodes(Node* node)
 {
+	auto result = node->GetResult();
 	if (result == rSTOP)
 		return;
 	const auto& ids = node->GetData()->GetSubsequenceIds(result == rTRUE);
@@ -158,3 +159,5 @@ void DfsExecutor::AddSubsequenceNodes(Node* node, NodeResult result)
 		Push(child);
 	}
 }
+
+int EventFrameStack::MAX_STACK_SIZE = 16;
