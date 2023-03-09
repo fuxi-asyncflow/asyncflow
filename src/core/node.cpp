@@ -40,6 +40,7 @@ NodeResult Node::Run()
 	if(!skip_)
 	{
 		this->SetRunFlag(true);
+		SetResult(rFALSE);
 		auto func = data_->GetNodeFunc();
 		if(func == nullptr)
 		{
@@ -48,7 +49,7 @@ NodeResult Node::Run()
 		}
 		auto r = func->call(GetAgent());
 		if (result_ != rSTOP)
-			result_ = r;
+			SetResult(r);
 		ASYNCFLOW_DBG("--------------------- RUN NODE RESULT {0}", result_);
 	}
 	else
