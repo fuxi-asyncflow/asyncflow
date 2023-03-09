@@ -23,7 +23,7 @@ void AsyncManager::Step()
 
 void AsyncManager::AddNode(Node* node)
 {
-	waiting_nodes_.PushBack(node);
+	waiting_nodes_.Push(node);
 	nodes_set_.insert(node);
 }
 

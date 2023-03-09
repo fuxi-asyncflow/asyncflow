@@ -49,8 +49,8 @@ namespace asyncflow
 			bool		IsRunning() { return status_ == Running; }
 			int			GetPreNodeId() { return pre_node_id_; }
 			void		SetPreNodeId(int id) { pre_node_id_ = id; }
-			void		SetWaitingList(NodeList* waiting_list) { waiting_list_ = waiting_list; }
-			NodeList*   GetWaitingList() { return waiting_list_; }
+			void		SetContainer(INodeContainer* container) { container_ = container; }
+			INodeContainer*   GetContainer() { return container_; }
 			void        SendEventStatus(const AsyncEventBase* event);
 
 		private:
@@ -64,7 +64,7 @@ namespace asyncflow
 			int				pre_node_id_;
 			Status			status_;
 			INodeAttacher*	attacher_;
-			NodeList* waiting_list_;		
+			INodeContainer* container_;
 		};
 	}
 }

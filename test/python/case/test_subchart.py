@@ -33,7 +33,7 @@ def test_subchart():
     c = Character("npc")
     mgr = asyncflow.setup()
     subgraph_name = "AI.subgraph"
-    graph_name = "AI.test_01"
+    graph_name = "AI.test_subchart"
 
     graph = GraphBuilder(graph_name, "Character")
     graph.add_varialble("a", "String")
@@ -71,7 +71,7 @@ def test_subchart():
 def test_return():
     c = Character("npc")
     mgr = asyncflow.setup()
-    graph_name = "AI.test_01"
+    graph_name = "AI.test_return"
 
     graph = GraphBuilder(graph_name, "Character")
     graph.add_varialble("a", "String")
@@ -108,7 +108,7 @@ def test_subchart_return():
     c = Character("npc")
     mgr = asyncflow.setup()
     subgraph_name = "AI.subgraph_return"
-    graph_name = "AI.test_01"
+    graph_name = "AI.test_subchart_return"
 
     graph = GraphBuilder(graph_name, "Character")
     graph.add_varialble("a", "String")
@@ -146,7 +146,7 @@ def test_subchart_sync():
     c = Character("npc")
     mgr = asyncflow.setup()
     subgraph_name = "AI.subgraph_sync"
-    graph_name = "AI.test_01"
+    graph_name = "AI.test_subchart_sync"
 
     graph = GraphBuilder(graph_name, "Character")
     graph.add_varialble("a", "String")
@@ -178,6 +178,8 @@ def test_subchart_sync():
     for i in range(step_count*(16-1)):
         say_two(c)   
     assert expected == actual
+
+
 
 
 if __name__ == '__main__':

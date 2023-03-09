@@ -50,7 +50,9 @@ class GraphBuilder:
 
 
     def add_control_node(self, name, args):
-        pass
+        uid = gen_uuid()
+        self.nodes.append({"uid": uid, "type": NodeType.CONTROL, "contents":[name, *args]})
+        return uid
 
     def add_varialble(self, name, type, isParameter = False):
         self.variables.append({"name": name, "type": type, "is_param": isParameter})
@@ -93,6 +95,12 @@ class GraphBuilder:
             elif node['type'] == NodeType.EVENT:
                 lines.append("  code:")
                 lines.append("    type: EVENT")
+            elif node['type'] == NodeType.CONTROL:
+                lines.append("  code:")
+                lines.append("    type: CONTROL")
+                lines.append('    content: ')
+                for line in node['contents']:
+                    lines.append('    - {} '.format(line))
 
         lines.append("connectors: ")
         for conn in self.connectors:

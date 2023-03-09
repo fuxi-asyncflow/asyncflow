@@ -42,7 +42,7 @@ NodeResult LuaNodeFunc::call(Agent* agent)
 			chart_stack++;
 
 		}
-		result = rERROR;
+		result = rSTOP;
 	}
 	else
 	{

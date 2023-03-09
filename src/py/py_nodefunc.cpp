@@ -33,7 +33,7 @@ NodeResult PyNodeFunc::call(Agent* agent)
 			ASYNCFLOW_ERR("var_id is {0}, name is {1}, value is {2}.", var_id, current_chart->GetData()->GetVariableName(var_id), var);
 			Py_XDECREF(pyobj);
 		}
-		return rERROR;
+		return rSTOP;
 	}
 
 	auto result = rTRUE;

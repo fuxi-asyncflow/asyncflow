@@ -67,7 +67,7 @@ def test_event_other():
     other = Character("other")
     expect_c = Character("npc")
     mgr = asyncflow.setup()    
-    graph_name = "AI.test_event"
+    graph_name = "AI.test_event_other"
 
     graph = GraphBuilder(graph_name, "Character")    
     n1 = graph.add_func_node(say_one)

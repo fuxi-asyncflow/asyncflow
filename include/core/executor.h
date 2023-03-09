@@ -1,10 +1,14 @@
 #pragma once
-#include "core/node.h"
+#include <vector>
+#include "util/log.h"
+#include "core/custom_struct.h"
 
 namespace asyncflow
 {
 	namespace core
-	{
+	{		
+		class Agent;
+
 		class IExecutor
 		{
 		public:
@@ -15,34 +19,27 @@ namespace asyncflow
 			virtual bool RunFlow(Node* node) = 0;
 			virtual Agent* GetCurrentAgent() = 0;
 			virtual Node* GetCurrentNode() = 0;
-			virtual void Remove(Node* node) = 0;
+			//virtual void Remove(Node* node) = 0;
 			void SetLoopCheck(bool flag) { loop_check_ = flag; }
 
 		protected:
 			bool loop_check_;
 		};
 
-		class DfsExecutor : public IExecutor
+		class DfsExecutor : public IExecutor, INodeContainer
 		{
 		public:
 			DfsExecutor();
 
-			Node* GetTopNode()
-			{
-				return node_list_.back();
-			}
+			Node* GetTop() override	{ return node_list_.back();}
 
-			void PopNode()
-			{
-				auto* next = node_list_.back();
-				history_nodes_.push_back(next);
-				node_list_.pop_back();
-			}
+			Node* Pop() override;
 
-			void Remove(Node* node) override
-			{
-				node_list_.erase(std::remove(node_list_.begin(), node_list_.end(), node), node_list_.end());
-			}
+            void Push(Node* node) override;
+
+            void Remove(Node* node) override;
+
+            bool IsEmpty() override { return node_list_.empty(); }
 
 			bool	RunFlow(Node* node) override;
 			Agent* GetCurrentAgent() override { return current_agent_; }
@@ -99,7 +96,7 @@ namespace asyncflow
 
 			Agent* GetCurrentAgent() override { return current_->GetCurrentAgent(); }
 			Node* GetCurrentNode() override { return current_->GetCurrentNode(); }
-			void Remove(Node* node) override { current_->Remove(node); }
+			void Remove(Node* node) { current_->Remove(node); }
 
 		private:
 			std::vector<InnerExecutor*> stack_;

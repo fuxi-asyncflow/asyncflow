@@ -183,17 +183,17 @@ void Agent::HandleEvent(const AsyncEventBase& event)
 		ASYNCFLOW_WARN("event id is out of range : {0}", event.Id());
 		return;
 	}
-	if (waiting_nodes->Size() < 1)
+	if (waiting_nodes->IsEmpty())
 		return;
 	// As the node runs, new nodes may be added to the list, so a copy is created.
 	waiting_nodes_list[event.Id()] = new NodeList();
 	ASYNCFLOW_DBG("handle event {0} for agent {1} [{2}-{4}], total {3} nodes",
 		(void*)&event, (void*)this, event.Id(), waiting_nodes->Size(), manager_->GetEventManager().GetEventName(event.Id()));
 
-	while (waiting_nodes->Size() > 0)
+	while (!waiting_nodes->IsEmpty())
 	{
 		// The agent of the node may be different from the agent which the current event belongs to, eg $obj.OnSee.
-		auto* node = waiting_nodes->PopFront();
+		auto* node = waiting_nodes->Pop();
 		auto* agent = node->GetAgent();
 		node->SetStatus(Node::Idle);
 #ifdef FLOWCHART_DEBUG
@@ -252,8 +252,8 @@ void Agent::WaitEvent(Node* node, int event_id)
 	}
 	ASYNCFLOW_DBG("node {0} : {1}[{2}] wait event {3} [{4}-{5}]"
 		, (void*)node, node->GetChart()->Name(), node->GetId(), (void*)this, event_id, manager_->GetEventManager().GetEventName(event_id));
-
-	waiting_nodes->PushBack(node);
+	node->SetContainer(nullptr);
+	waiting_nodes->Push(node);
 	// The node waiting for an event must be Running status.
 	node->SetStatus(Node::Running);			
 }

@@ -14,7 +14,7 @@ Node::Node(Chart* chart, NodeData* data)
 	, status_(Idle)
 	, run_flag_(false)
 	, result_(rTRUE)
-	, waiting_list_(nullptr)
+	, container_(nullptr)
 	, skip_(false)
 	, pre_node_id_(-1)
 	, is_wait_all(false)
@@ -46,12 +46,15 @@ NodeResult Node::Run()
 			ASYNCFLOW_ERR("node func is null");
 			return rFALSE;
 		}
-		result_ = func->call(GetAgent());
+		auto r = func->call(GetAgent());
+		if (result_ != rSTOP)
+			result_ = r;
 		ASYNCFLOW_DBG("--------------------- RUN NODE RESULT {0}", result_);
 	}
 	else
 	{		
 		skip_ = false;
+		result_ = rTRUE;
 	}		
 	return result_;
 }
@@ -60,6 +63,7 @@ NodeResult Node::Run()
 void Node::Stop()
 {	
 	status_ = Idle;
+	result_ = rSTOP;
 	run_flag_ = false;
 	skip_ = false;
 
@@ -68,9 +72,9 @@ void Node::Stop()
 		attacher_->Stop();
 	}
 	
-	if (waiting_list_ != nullptr)
+	if (container_ != nullptr)
 	{
-		waiting_list_->Remove(this);
+		container_->Remove(this);
 	}
 }
 
