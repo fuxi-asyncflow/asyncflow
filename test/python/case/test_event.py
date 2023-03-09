@@ -162,6 +162,107 @@ def test_event_param():
 
     asyncflow.exit()
 
+def test_event_order():
+    '''
+    if several nodes wait for one event, the node first waited will be handled first
+    '''
+    c = Character("npc")
+    expect_c = Character("npc")
+    mgr = asyncflow.setup()    
+    graph_name = "AI.test_event_order"
+
+    graph = GraphBuilder(graph_name, "Character")
+    graph.add_varialble("a", "String")
+    n1 = graph.add_func_node(say_one)
+    n2 = graph.add_event_node(wait_event("self", event0))
+    n3 = graph.add_func_node(say_two)
+    n4 = graph.add_event_node(wait_event("self", event0))
+    n5 = graph.add_func_node(say_three)
+    n6 = graph.add_event_node(wait_event("self", event0))
+    n7 = graph.add_func_node(say_four)    
+    
+    graph.connect_from_start(n1)
+    graph.connect(n1, n2)
+    graph.connect(n2, n3)
+    graph.connect(n1, n4)
+    graph.connect(n4, n5)
+    graph.connect(n1, n6)
+    graph.connect(n6, n7)
+    
+    mgr.import_charts(graph.build()) 
+    mgr.import_event(prepare_events())
+    print("event id", getattr(asyncflow.EventId, event0))
+    
+    actual = []
+    expected = []
+    c._output = actual.append
+    expect_c._output = expected.append
+    asyncflow.register(c)    
+    asyncflow.attach(c, graph_name)    
+
+    asyncflow.start(c)    
+    asyncflow.step(10)
+    say_one(expect_c)
+    asyncflow.event(c, getattr(asyncflow.EventId, event0))   
+
+    asyncflow.step(10)
+    say_two(expect_c)
+    say_three(expect_c)
+    say_four(expect_c)
+    assert actual == expected
+    asyncflow.exit()
+
+def test_event_handle_order():
+    '''
+    if several event raise before step, the event first raise will be handled first
+    '''
+    c = Character("npc")
+    expect_c = Character("npc")
+    mgr = asyncflow.setup()    
+    graph_name = "AI.test_event_order"
+
+    graph = GraphBuilder(graph_name, "Character")
+    graph.add_varialble("a", "String")
+    n1 = graph.add_func_node(say_one)
+    n2 = graph.add_event_node(wait_event("self", event0))
+    n3 = graph.add_func_node(say_two)
+    n4 = graph.add_event_node(wait_event("self", event2))
+    n5 = graph.add_func_node(say_three)
+    n6 = graph.add_event_node(wait_event("self", event0))
+    n7 = graph.add_func_node(say_four)    
+    
+    graph.connect_from_start(n1)
+    graph.connect(n1, n2)
+    graph.connect(n2, n3)
+    graph.connect(n1, n4)
+    graph.connect(n4, n5)
+    graph.connect(n1, n6)
+    graph.connect(n6, n7)
+    
+    mgr.import_charts(graph.build()) 
+    mgr.import_event(prepare_events())
+    print("event id", getattr(asyncflow.EventId, event0))
+    
+    actual = []
+    expected = []
+    c._output = actual.append
+    expect_c._output = expected.append
+    asyncflow.register(c)    
+    asyncflow.attach(c, graph_name)    
+
+    asyncflow.start(c)    
+    asyncflow.step(10)
+    say_one(expect_c)
+    asyncflow.event(c, getattr(asyncflow.EventId, event2), 1, "abc", c)
+    asyncflow.event(c, getattr(asyncflow.EventId, event0))
+
+    asyncflow.step(10)
+    say_three(expect_c)
+    say_two(expect_c)
+    say_four(expect_c)
+    assert actual == expected
+    asyncflow.exit()
+
 if __name__ == '__main__':
     test_event()
     test_event_other()
