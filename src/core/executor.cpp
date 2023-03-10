@@ -159,5 +159,3 @@ void DfsExecutor::AddSubsequenceNodes(Node* node)
 		Push(child);
 	}
 }
-
-int EventFrameStack::MAX_STACK_SIZE = 16;

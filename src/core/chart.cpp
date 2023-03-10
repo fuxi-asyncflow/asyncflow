@@ -21,6 +21,7 @@ Chart::Chart(Manager* mgr)
 
 Chart::~Chart()
 {
+	// printf("~chart %p ownernode: %p agnet %p\n", this, owner_node_, agent_);
 	ASYNCFLOW_DBG("~Chart {0} {1}", (void*)this, Name());
 #ifdef	FLOWCHART_DEBUG
 	if (IsDebug())
@@ -41,8 +42,11 @@ Chart::~Chart()
 	//remove from agent
 	if (agent_ != nullptr)
 	{
-		agent_->EraseChart(this);
-	}	
+		if (!agent_->EraseChart(this))
+		{
+			ASYNCFLOW_ERR("remove chart {0} from agent failed in ~Chart", (void*)this);
+		}
+	}
 
 	//prevent the owner chart from repeating destructing the subchart
 	if (owner_node_ != nullptr)
@@ -55,6 +59,7 @@ Chart::~Chart()
 
 bool Chart::Init(ChartData* chart_data, Node* owner_node /* = nullptr*/)
 {
+	// printf("+chart %p owner_node %p\n", this, owner_node);
 	data_ = chart_data;	
 	assert(owner_node_ == nullptr || owner_node_ == owner_node);
 	owner_node_ = owner_node;

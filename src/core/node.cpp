@@ -19,11 +19,13 @@ Node::Node(Chart* chart, NodeData* data)
 	, pre_node_id_(-1)
 	, is_wait_all(false)
 {
+	// printf("+node %p chart: %p\n", this, chart_);
 	id_ = data_->GetId();
 }
 
 Node::~Node()
 {
+	// printf("~node %p attacher: %p\n", this, attacher_);
 	Stop();
 	if (attacher_ != nullptr)
 	{

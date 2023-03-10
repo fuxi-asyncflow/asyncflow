@@ -116,7 +116,7 @@ void asyncflow::py::PyChart::ClearVariables()
 		{
 			Py_XDECREF(variables_[i]);
 		}
-		delete variables_;
+		delete[] variables_;
 		variables_ = nullptr;
 	}
 }
