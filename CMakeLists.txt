@@ -4,7 +4,7 @@ cmake_minimum_required (VERSION 3.12)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-project (asyncflow)
+project (asyncflow CXX)
 set(PLATFORM x64)
 
 option (BUILD_PYTHON "build python version" OFF)
@@ -13,19 +13,33 @@ option (BUILD_WASM "build WASM version" OFF)
 option (BUILD_LUAJIT "build luajit version" OFF)
 option (BUILD_TEST   "build test project" OFF)
 
+option (ENABLE_GCOV "enable converage test by gcov")
+option (ENABLE_ASAN "enable address sanitizer")
+
 if(TARGET xlua)
     message(STATUS ">>> finx xlua target")
     set(BUILD_LUAJIT ON)
 endif(TARGET xlua)
 
-if(${BUILD_TEST})
-    if(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
-        # add gcov compile flags
-        message(STATUS "build with gcov flags")
-        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -fPIC -fprofile-arcs -ftest-coverage -fsanitize=address") 
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -fPIC -fprofile-arcs -ftest-coverage -fsanitize=address")
-    endif()
-endif(${BUILD_TEST})
+set(CUSTOM_FLAGS "")
+if(${ENABLE_GCOV})
+if(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
+    set(CUSTOM_FLAGS "${CUSTOM_FLAGS} -g -fprofile-arcs -ftest-coverage")
+endif(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
+endif(${ENABLE_GCOV})
+
+if(${ENABLE_ASAN})
+if(${MSVC})
+    set(CUSTOM_FLAGS "${CUSTOM_FLAGS} /fsanitize=address")
+else()
+    set(CUSTOM_FLAGS "${CUSTOM_FLAGS} -fsanitize=address")
+endif(${MSVC})
+endif(${ENABLE_ASAN})
+
+message(WARNING ">>> use custom compiler flags: ${CUSTOM_FLAGS}")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${CUSTOM_FLAGS}") 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CUSTOM_FLAGS}")
+set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${CUSTOM_FLAGS}")
 
 # msgpack
 add_library(msgpack INTERFACE)
@@ -151,7 +165,14 @@ if(${BUILD_PYTHON})
     if(MSVC)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MD")
         set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MDd")   # cmake > 3.15 => MSVC_RUNTIME_LIBRARY
-    endif (MSVC)  
+    endif (MSVC)
+
+    if(${BUILD_TEST})
+        aux_source_directory("src/test/py" PY_TEST_SRCS)
+        add_executable (asyncflow-py-test ${PY_TEST_SRCS})
+        target_link_libraries(asyncflow-py-test Python3::Python)
+        target_compile_definitions(asyncflow-py-test PUBLIC USING_PYTHON)
+    endif(${BUILD_TEST})
 endif(${BUILD_PYTHON})
 
 if(${BUILD_PYTHON2})
@@ -164,7 +185,15 @@ if(${BUILD_PYTHON2})
     if(MSVC)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MD")
         set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MDd")   # cmake > 3.15 => MSVC_RUNTIME_LIBRARY
-    endif (MSVC)  
+    endif (MSVC)
+
+    if(${BUILD_TEST})
+        aux_source_directory("src/test/py" PY2_TEST_SRCS)
+        add_executable (asyncflow-py2-test ${PY2_TEST_SRCS})
+        target_link_libraries(asyncflow-py2-test Python2::Python)
+        target_compile_definitions(asyncflow-py2-test PUBLIC USING_PYTHON USING_PYTHON2)
+    endif(${BUILD_TEST})
+    
 endif(${BUILD_PYTHON2})
 
 if(${BUILD_LUAJIT})
@@ -187,7 +216,7 @@ if(${BUILD_LUAJIT})
     target_link_libraries(asyncflow-lua asyncflow luajit)
 
     if(${BUILD_TEST})
-        aux_source_directory("src/test" LUA_TEST_SRCS)    
+        aux_source_directory("src/test/lua" LUA_TEST_SRCS)    
         add_executable(lua_test ${LUA_TEST_SRCS} ${LUA_SRCS} "thirdparty/catch.cpp")
         target_compile_features(lua_test PUBLIC cxx_std_11)
         target_include_directories(lua_test PUBLIC "src/lua")
