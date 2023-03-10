@@ -38,11 +38,15 @@ Agent::~Agent()
 	waiting_nodes_list.clear();
 
 	// destroy all charts
-	for (auto& chart_list : chart_dict_)
+	for (auto& kv : chart_dict_)
 	{
-		std::vector<Chart*> tmp(chart_list.second.begin(), chart_list.second.end());
-		for (auto* chart : tmp)
+		auto& chart_list = kv.second;
+		// be careful! if chart invoke self recursively
+		// when it's destroyed, it may remove child chart in the list
+		// so use while and empty check here, instead of for each
+		while(!chart_list.empty())
 		{
+			auto* chart = chart_list.back();
 			auto* owner_node = chart->GetOwnerNode();
 			if (owner_node != nullptr)
 				owner_node->SetAttacher(nullptr);
@@ -136,7 +140,7 @@ bool Agent::StartChart(Chart* chart, bool sync, void* args, int argc)
 
 // this function should only be used in ~Chart()
 bool Agent::EraseChart(Chart* chart)
-{
+{	
 	auto& chart_name = chart->Name();
 	auto it = chart_dict_.find(chart_name);
 	if (it == chart_dict_.end())
@@ -144,10 +148,17 @@ bool Agent::EraseChart(Chart* chart)
 		return false;
 	}
 
-	auto& chart_list = it->second;
-	chart->SetAgent(nullptr);
-	chart_list.erase(std::remove(chart_list.begin(), chart_list.end(), chart));
-	return true;
+	auto& chart_list = it->second;	
+	for (auto chart_it = chart_list.begin(); chart_it != chart_list.end(); ++chart_it)
+	{
+		if (*chart_it == chart)
+		{
+			chart->SetAgent(nullptr);
+			chart_list.erase(chart_it);
+			return true;
+		}
+	}	
+	return false;
 }
 
 bool Agent::RemoveChart(const std::string& chart_name)
