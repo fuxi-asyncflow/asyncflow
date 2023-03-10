@@ -137,6 +137,7 @@ bool Manager::Event(int event_id, Agent* agent, void* args, int arg_count, bool 
 	ASYNCFLOW_DBG("raise event {0} for agent {1} [{2}-{3}]", (void*)event, (void*)agent, event_id, eventManager.GetEventName(event_id));
 	if(trigger && TriggerEvent(*event))
 	{
+		delete event;
 	}
 	else
 	    event_queue_.AddEvent(event, immediate);
