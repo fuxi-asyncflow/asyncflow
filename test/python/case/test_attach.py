@@ -1,6 +1,8 @@
-import asyncflow
 import sys
 sys.path.append('../')
+sys.path.append('.')
+
+import asyncflow
 from utils.graph_builder import *
 from utils.game_object import Character
 from utils.node_funcs import *
@@ -141,3 +143,5 @@ if __name__ == '__main__':
     test_attach()
     test_remove()
     test_start()
+    test_stop()
+    test_stop2()

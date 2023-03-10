@@ -1,6 +1,8 @@
-import asyncflow
 import sys
 sys.path.append('../')
+sys.path.append('.')
+
+import asyncflow
 from utils.graph_builder import *
 
 class Character():

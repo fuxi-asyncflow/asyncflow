@@ -1,6 +1,8 @@
-import asyncflow
 import sys
 sys.path.append('../')
+sys.path.append('.')
+
+import asyncflow
 from utils.graph_builder import *
 from utils.game_object import Character
 from utils.node_funcs import *
@@ -345,14 +347,16 @@ def test_trigger_max():
 
     asyncflow.step(10) 
    
-    print(actual)
+    #print(actual)
     #assert actual == expected       # successor node now is excucted
 
     asyncflow.exit()
 
 if __name__ == '__main__':
-    #test_event()
-    #test_trigger()
-    #test_event_other()
-    #test_event_param()
+    test_event()
+    test_trigger()
+    test_event_other()
+    test_event_param()
+    test_event_order()
+    test_event_handle_order()
     test_trigger_max()
