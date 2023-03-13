@@ -35,11 +35,18 @@ PyObject* AgentObject::is_valid(TSELF* self, PyObject* args)
 
 PyObject* AgentObject::attach(TSELF* self, PyObject* args)
 {
+	auto* agent = self->ptr;
+	if(agent == nullptr)
+	{
+		ASYNCFLOW_WARN("attach failed: agent is invalid");
+		Py_RETURN_NONE;
+	}
+
 	char* path;
 	PyObject* params = Py_None;
 	if (!PyArg_ParseTuple(args, "s|O", &path, &params))
 		PY_ARG_ERR;
-	auto* agent = self->ptr;
+	
 	auto* manager = dynamic_cast<PyManager*>(agent->GetManager());
 	auto* chart = (PyChart*)(manager->Manager::AttachChart(agent, path));
 	if (chart == nullptr)
@@ -65,11 +72,17 @@ PyObject* AgentObject::attach(TSELF* self, PyObject* args)
 
 PyObject* AgentObject::remove(TSELF* self, PyObject* args)
 {
+	auto* agent = self->ptr;
+	if (agent == nullptr)
+	{
+		ASYNCFLOW_WARN("remove failed: agent is invalid");
+		Py_RETURN_FALSE;
+	}
+
 	char* chart_name;
 	if (!PyArg_ParseTuple(args, "s", &chart_name))
 		PY_ARG_ERR;
-
-	auto* agent = self->ptr;
+	
 	const auto result = agent->RemoveChart(chart_name);
 	return PyBool_FromLong(result);
 }
@@ -77,6 +90,12 @@ PyObject* AgentObject::remove(TSELF* self, PyObject* args)
 PyObject* AgentObject::start(TSELF* self, PyObject* args)
 {
 	auto* agent = self->ptr;
+	if (agent == nullptr)
+	{
+		ASYNCFLOW_WARN("start failed: agent is invalid");
+		Py_RETURN_FALSE;
+	}
+	
 	agent->Start();
 	Py_RETURN_TRUE;
 }
@@ -84,6 +103,12 @@ PyObject* AgentObject::start(TSELF* self, PyObject* args)
 PyObject* AgentObject::stop(TSELF* self, PyObject* args)
 {
 	auto* agent = self->ptr;
+	if (agent == nullptr)
+	{
+		ASYNCFLOW_WARN("stop failed: agent is invalid");
+		Py_RETURN_FALSE;
+	}
+	
 	agent->Stop();
 	Py_RETURN_TRUE;
 }
@@ -92,7 +117,11 @@ PyObject* AgentObject::get_obj(TSELF* self, PyObject* args)
 {
 	auto* agent = self->ptr;
 	if (agent == nullptr)
+	{
+		ASYNCFLOW_WARN("get_obj failed: agent is invalid");
 		Py_RETURN_NONE;
+	}
+
 	auto* obj = agent->GetRefObject();
 	Py_INCREF(obj);
 	return obj;
@@ -102,7 +131,11 @@ PyObject* AgentObject::get_chart(TSELF* self, PyObject* args)
 {
 	auto* agent = self->ptr;
 	if (agent == nullptr)
+	{
+		ASYNCFLOW_WARN("get_chart failed: agent is invalid");
 		Py_RETURN_NONE;
+	}
+
 	char* path;
 	if (!PyArg_ParseTuple(args, "s", &path))
 		PY_ARG_ERR;
@@ -117,7 +150,10 @@ PyObject* AgentObject::get_charts(TSELF* self, PyObject* args)
 {	
 	auto* agent = self->ptr;
 	if (agent == nullptr)
-		Py_RETURN_NONE;
+	{
+		ASYNCFLOW_WARN("get_charts failed: agent is invalid");
+		return PyList_New(0);
+	}
 	auto& dict = agent->GetChartDict();
 	std::vector<Chart*> v;
 
