@@ -28,7 +28,11 @@ const char* get_files =
 
 int main(int argc, char* argv[])
 {
+#ifdef USING_PYTHON2
+    auto* program = argv[0];
+#else
     wchar_t* program = Py_DecodeLocale(argv[0], NULL);
+#endif
     if (program == NULL) {
         fprintf(stderr, "Fatal error: cannot decode argv[0]\n");
         exit(1);
@@ -58,16 +62,22 @@ int main(int argc, char* argv[])
     std::vector<std::string> files (size);
     for(int i=0; i<size; i++)
     {
+#ifdef USING_PYTHON2
+        files[i] = std::string(test_folder) + "/" + PyString_AsString(PyList_GetItem(files_object, i));
+#else
         files[i] = std::string(test_folder) + "/" + PyUnicode_AsUTF8(PyList_GetItem(files_object, i));
+#endif
         printf("%s\n", files[i].c_str());
         run_testfile(files[i].c_str());
     }
 
-
-
+#ifdef USING_PYTHON2
+    Py_Finalize();
+#else
     if (Py_FinalizeEx() < 0) {
         exit(120);
     }
     PyMem_RawFree(program);
+#endif
     return 0;
 }
