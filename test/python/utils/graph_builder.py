@@ -51,7 +51,7 @@ class GraphBuilder:
 
     def add_control_node(self, name, args):
         uid = gen_uuid()
-        self.nodes.append({"uid": uid, "type": NodeType.CONTROL, "contents":[name, *args]})
+        self.nodes.append({"uid": uid, "type": NodeType.CONTROL, "contents":[name] + args})
         return uid
 
     def add_varialble(self, name, type, isParameter = False):
