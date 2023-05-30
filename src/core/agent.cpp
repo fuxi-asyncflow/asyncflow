@@ -129,7 +129,7 @@ bool Agent::StartChart(Chart* chart, bool sync, void* args, int argc)
 	if(sync)
 	{
 		// if out of stack, then try async mode
-		if (manager_->GetExecutor().RunFlow(start_node))
+		if (RunFlow(start_node))
 			return true;
 	}
 	
@@ -209,9 +209,9 @@ void Agent::HandleEvent(const AsyncEventBase& event, NodeList* waiting_nodes)
 }
 
 // RunFlow function is only used in two places: event occures, and timer-triggered node runs.
-void Agent::RunFlow(Node* start_node)
+bool Agent::RunFlow(Node* start_node)
 {
-	manager_->GetExecutor().RunFlow(start_node);
+	return manager_->GetExecutor().RunFlow(start_node);
 }
 
 // Start to run all charts that are not in running status;

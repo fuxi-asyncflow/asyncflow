@@ -20,8 +20,11 @@ NodeResult LuaNodeFunc::call(Agent* agent)
 	if (lua_pcall(L, 1, 1, -6))
 	{
 		auto current_chart = (LuaChart*)mgr->GetCurrentNode()->GetChart();
-		auto node_data = mgr->GetCurrentNode()->GetData();
+		auto node_data = mgr->GetCurrentNode()->GetData();		
 		ASYNCFLOW_ERR("run node[{0}] {1} error in chart {2}", node_data->GetId(), node_data->GetUid(), current_chart->Name());
+		auto* msg = lua_tostring(L, -1);
+		if(msg != nullptr)
+			ASYNCFLOW_ERR("node error: {0}", msg);
 		Chart* temp_chart = current_chart;
 		int chart_stack = 0;
 		int node_id = mgr->GetCurrentNode()->GetId();

@@ -16,6 +16,8 @@ namespace asyncflow
 				loop_check_(true) {}
 			virtual ~IExecutor() = default;
 
+			// be careful, this func should only be called inside agent's RunFlow function
+			// because LuaAgent need to prepare some data on stack 
 			virtual bool RunFlow(Node* node) = 0;
 			virtual Agent* GetCurrentAgent() = 0;
 			virtual Node* GetCurrentNode() = 0;

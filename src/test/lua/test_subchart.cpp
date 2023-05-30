@@ -53,10 +53,17 @@ TEST_CASE("subchart test")
 	agent->AttachChart(chart_data);
 	agent->Start();
 	dostring(L, "asyncflow.step(0)");
-	REQUIRE(subchart_runned == 0);
+	if(manager->IsImmediateSub())
+	{
+		REQUIRE(subchart_runned == 1);
+		REQUIRE(main_node_runned == 1);
+	}
+	else
+	    REQUIRE(subchart_runned == 0);
 	dostring(L, "asyncflow.step(1)");
 	REQUIRE(subchart_runned == 1);
-	REQUIRE(main_node_runned == 0);
+	if(!manager->IsImmediateSub())
+	    REQUIRE(main_node_runned == 0);
 	dostring(L, "asyncflow.step(1)");	
 	REQUIRE(main_node_runned == 1);
 	

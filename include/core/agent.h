@@ -40,7 +40,7 @@ namespace asyncflow
 			bool		RemoveChart(const std::string& chart_name);
 			bool		StopChart(const std::string& chart_name);
 			void		HandleEvent(const AsyncEventBase& event, NodeList* waiting_nodes);
-			virtual void		RunFlow(Node* start_node);
+			virtual bool		RunFlow(Node* start_node);
 
 			int			GetId() { return id_; }
 			void		SetId(int id) { id_ = id; }
