@@ -32,7 +32,7 @@ namespace asyncflow
 			void Remove(Node* node) override;
 			Node* GetTop() override;
 			bool IsEmpty() override { return node_list_.empty(); }
-			//int Size();
+			int Size() const { return node_list_.size(); }
 			~NodeList() override;
 		};
 
