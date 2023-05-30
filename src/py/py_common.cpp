@@ -5,6 +5,14 @@
 
 #include <sstream>
 
+#if PY_VERSION_HEX < 0x030900B1
+static inline PyCodeObject* PyFrame_GetCode(PyFrameObject* frame)
+{
+	Py_INCREF(frame->f_code);
+	return frame->f_code;
+}
+#endif
+
 bool asyncflow::py::ObjIsBool(PyObject* obj)
 {
 	return PyObject_IsTrue(obj) == 1;
@@ -43,8 +51,9 @@ bool asyncflow::py::CheckPythonException()
 			error_message = error_message + "- exception traceback: ";
 			for (auto tb = (PyTracebackObject*)pExcTraceback; tb != nullptr; tb = tb->tb_next)
 			{
-				const auto* file_name = PyUnicode_AsUTF8(tb->tb_frame->f_code->co_filename);
-				const auto* co_name = PyUnicode_AsUTF8(tb->tb_frame->f_code->co_name);
+				const auto* code = PyFrame_GetCode(tb->tb_frame);				
+				const auto* file_name = PyUnicode_AsUTF8(code->co_filename);
+				const auto* co_name = PyUnicode_AsUTF8(code->co_name);
 
 				std::stringstream ss;
 				ss << "[" << stack_num++ << "]:  File `" << file_name << "`, line " << tb->tb_lineno << ", in " << co_name << "; ";
