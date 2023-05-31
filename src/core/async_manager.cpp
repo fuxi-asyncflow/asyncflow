@@ -11,8 +11,10 @@ void AsyncManager::Step()
 	for (auto* node : activate_nodes)
 	{
 		auto const flag = node->GetSkip();
-		node->Stop();
+		auto const result = node->GetResult();
+		node->Stop();	//TODO why stop node here?
 		node->SetSkip(flag);
+		node->SetResult(result);
 		RemoveNode(node);
 		auto* agent = node->GetAgent();
 		agent->RunFlow(node);
@@ -31,7 +33,6 @@ bool AsyncManager::IsNodeWaiting(Node* node)
 {
 	return nodes_set_.find(node) != nodes_set_.end();
 }
-
 
 void AsyncManager::RemoveNode(Node* node)
 {

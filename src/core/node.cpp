@@ -57,7 +57,7 @@ NodeResult Node::Run()
 	else
 	{		
 		skip_ = false;
-		result_ = rTRUE;
+		//result_ = rTRUE;
 	}		
 	return result_;
 }
