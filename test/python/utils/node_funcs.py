@@ -14,6 +14,11 @@ def say_three(self):
 def say_four(self):
     self.Say("four")
 
+def say_msg(msg):
+    def _say(self):
+        self.Say(msg)
+    return _say
+
 def wait_1s(self):
     asyncflow.wait(1.0)
 
