@@ -1,9 +1,7 @@
 #pragma once
 
-#include <set>
 #include <vector>
-#include <algorithm>
-#include <set>
+#include <unordered_set>
 #include "core/custom_struct.h"
 
 namespace asyncflow
@@ -31,7 +29,7 @@ namespace asyncflow
 		private:
 			NodeList waiting_nodes_;				//waiting for result
 			std::vector<Node*> activate_nodes;		//the result has been returned, waiting for execution
-			std::set<Node*> nodes_set_;				//facilitate search
+			std::unordered_set<Node*> nodes_set_;	//facilitate search
 			
 		};
 	}

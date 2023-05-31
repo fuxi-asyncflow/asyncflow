@@ -134,7 +134,7 @@ namespace asyncflow
 			//agent->getRef get ref, ref + lua_topointer get void*
 			core::AgentManager<LuaAgent> agent_manager_;
 
-			bool AsyncCallback(long long context, lua_State* L);		//after asynchronous call ends
+			bool ContinueAsyncNode(long long context, lua_State* L);		//after asynchronous call ends
 
 			/////////////////////////////////////////////////////////////////////////////////////
 			void GetFunc(Ref func_ref);

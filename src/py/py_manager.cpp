@@ -89,25 +89,19 @@ bool PyManager::Return(PyObject* ret_val)
 	return ObjIsBool(ret_val);
 }
 
-bool PyManager::AsyncCallback(long long context, PyObject* v)
+bool PyManager::ContinueAsyncNode(int64_t context, PyObject* v)
 {
-	auto node = (core::Node*)context;
-	if (async_manager_.IsNodeWaiting(node))
+	auto result = Manager::ContinueAsyncNode(context);	
+	if (result)
 	{
-		ASYNCFLOW_DBG("async callback for node {0} {1}[{2}]", (void*)node, node->GetChart()->Name(), node->GetId());
-		async_manager_.ActivateNode(node);
+		auto* node = reinterpret_cast<Node*>(context);
 		auto const var_id = node->GetData()->GetVarId();
 		if (var_id >= 0)
 			((PyChart*)node->GetChart())->SetVar(var_id, v);
 		bool ret = ObjIsBool(v);
 		node->SetResult(ret);
-	}
-	else
-	{
-		//ASYNCFLOW_WARN("node {0} {1}[{2}] is not waiting async callback", (void*)node, node->GetChart()->Name(), node->GetId());
-		ASYNCFLOW_WARN("node {0} is not waiting async callback", (void*)node);
-	}
-	return true;
+	}	
+	return result;
 }
 
 std::pair<bool, std::vector<std::string>> PyManager::RunScript(const char* str)

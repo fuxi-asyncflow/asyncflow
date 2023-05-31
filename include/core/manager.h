@@ -65,6 +65,8 @@ namespace asyncflow
 			bool Subchart(const std::string& chart_name, Agent* agent, void* args, int arg_count);
 			bool TriggerEvent(AsyncEventBase& event);	// Handle event immediately
 			int64_t	 CreateAsyncContext();	//Save current context
+			bool ContinueAsyncNode(int64_t context);
+			bool CancelAsyncNode(int64_t context, bool stop);
 
 			virtual Chart* CreateChart() = 0;
 			virtual ChartData* CreateChartData() = 0;

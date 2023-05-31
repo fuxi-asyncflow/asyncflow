@@ -127,27 +127,20 @@ void LuaManager::Return(lua_State* L)
 	chart->Return(L);
 }
 
-bool LuaManager::AsyncCallback(long long context, lua_State* L)
+bool LuaManager::ContinueAsyncNode(long long context, lua_State* L)
 {
 	CheckLuaStack(0);
-	auto node = (core::Node*)context;
-	if (async_manager_.IsNodeWaiting(node))
+	const auto result = Manager::ContinueAsyncNode(context);
+	if (result)
 	{
-		ASYNCFLOW_DBG("async callback for node {0} {1}[{2}]", (void*)node, node->GetChart()->Name(), node->GetId());
-		async_manager_.RemoveNode(node);
-		async_manager_.ActivateNode(node);
+		auto* node = reinterpret_cast<Node*>(context);		
 		auto const var_id = node->GetData()->GetVarId();
 		if (var_id >= 0)
 			((LuaChart*)node->GetChart())->SetVar(L, var_id);
 		bool ret = lua_toboolean(L, -1);
 		node->SetResult(ret);
-	}
-	else
-	{
-		//ASYNCFLOW_WARN("node {0} {1}[{2}] is not waiting async callback", (void*)node, node->GetChart()->Name(), node->GetId());
-		ASYNCFLOW_WARN("node {0} is not waiting async callback", (void*)node);
-	}
-	return true;
+	}	
+	return result;
 }
 
 void LuaManager::GetFunc(Ref func_ref)		//  +2

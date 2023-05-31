@@ -648,7 +648,7 @@ int asyncflow::lua::callback_func(lua_State* L)
 	}
 
 	long long node_address = lua_tointeger(L, lua_upvalueindex(1));
-	bool result = LuaManager::currentManager->AsyncCallback(node_address, L);
+	bool result = LuaManager::currentManager->ContinueAsyncNode(node_address, L);
 	lua_pushboolean(L, result);
 	return 1;
 }

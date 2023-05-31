@@ -33,4 +33,5 @@ void asyncflow::py::InitCustomPyObj(PyObject* m)
 	InitCustomType("manager", &ManagerObject::TypeObject, nullptr, ManagerObject::methods_define);
 	InitCustomType("agent", &AgentObject::TypeObject, nullptr, AgentObject::methods_define);
 	InitCustomType("chart", &ChartObject::TypeObject, nullptr, ChartObject::methods_define);
+	AsyncObject::InitType(m);
 }

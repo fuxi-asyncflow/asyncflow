@@ -571,6 +571,40 @@ int64_t Manager::CreateAsyncContext()
 	return reinterpret_cast<int64_t>(node);
 }
 
+bool Manager::ContinueAsyncNode(int64_t context)
+{
+	auto node = (core::Node*)context;
+	if (async_manager_.IsNodeWaiting(node))
+	{
+		ASYNCFLOW_DBG("async callback for node {0} {1}[{2}]", (void*)node, node->GetChart()->Name(), node->GetId());
+		async_manager_.RemoveNode(node);
+		async_manager_.ActivateNode(node);
+		return true;		
+	}
+
+	ASYNCFLOW_WARN("node {0} is not waiting async callback", (void*)node);
+	return false;	
+}
+
+bool Manager::CancelAsyncNode(int64_t context, bool stop)
+{
+	auto node = (core::Node*)context;
+	if (async_manager_.IsNodeWaiting(node))
+	{
+		ASYNCFLOW_DBG("async callback for node {0} {1}[{2}]", (void*)node, node->GetChart()->Name(), node->GetId());
+		async_manager_.RemoveNode(node);
+		if (!stop)
+		{
+			async_manager_.ActivateNode(node);
+			node->SetResult(false);
+		}
+		return true;
+	}
+	
+    ASYNCFLOW_WARN("node {0} is not waiting async callback", (void*)node);	
+	return false;
+}
+
 bool Manager::UnregisterGameObject(Agent* agent)
 {
 	if (agent == nullptr)

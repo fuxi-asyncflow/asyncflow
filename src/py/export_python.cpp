@@ -2,7 +2,6 @@
 #include "py_agent.h"
 #include "export_python.h"
 #include "Python.h"
-#include "structmember.h"
 #include "util/log.h"
 #include "core/manager.h"
 #include <map>
@@ -21,79 +20,9 @@ using Log = asyncflow::util::Log;
 using namespace asyncflow::core;
 using namespace asyncflow::py;
 
-void asyncflow::py::AsyncObject_dealloc(AsyncObject* self)
-{
-	Py_TYPE(self)->tp_free((PyObject*)self);
-}
-
-PyObject* asyncflow::py::AsyncObject_new(PyTypeObject* type, PyObject* args, PyObject* kwds)
-{
-	auto* self = reinterpret_cast<AsyncObject*>(type->tp_alloc(type, 0));
-	if (self != nullptr) {
-		self->node_address = 0;
-	}
-	return reinterpret_cast<PyObject*>(self);
-}
-
-int asyncflow::py::AsyncObject_init(AsyncObject* self, PyObject* args, PyObject* kwds)
-{
-	static const char* kwlist[] = { "node_address", nullptr };
-
-	if (!PyArg_ParseTupleAndKeywords(args, kwds, "|L", const_cast<char**>(kwlist),
-		&self->node_address))
-		return -1;
-	return 0;
-}
-
-static PyMemberDef AsyncObject_members[] = {
-	{"node_address", T_LONGLONG, offsetof(AsyncObject, node_address), 0, "node_address"},
-	{nullptr}
-};
-
-
-PyObject* asyncflow::py::AsyncObject_call(AsyncObject* self, PyObject* args, PyObject* other)
-{
-	auto* manager = PyManager::GetCurrentManager();
-	if (manager == nullptr)
-		Py_RETURN_FALSE;
-	PyObject* obj;
-	if (!PyArg_ParseTuple(args, "O", &obj))
-	{
-		ASYNCFLOW_ERR("parse argument failed!\n");
-		Py_RETURN_FALSE;
-	}
-	//printf("cb print nodeaddress = %lld\n", self->node_address);
-	bool result = manager->AsyncCallback(self->node_address, obj);
-	if (result)
-		Py_RETURN_TRUE;
-	Py_RETURN_FALSE;
-}
-
-static PyTypeObject AsyncType = {
-	PyObject_HEAD_INIT(NULL)
-};
-
 PyTypeObject asyncflow::py::EventIdType = {
 	PyObject_HEAD_INIT(NULL)
 };
-
-void asyncflow::py::InitAsyncObject(PyObject* module)
-{
-	AsyncType.tp_name = "asyncflow.AsyncObject";
-	AsyncType.tp_basicsize = sizeof(AsyncObject);
-	AsyncType.tp_doc = "AsyncObject used for callback";
-	AsyncType.tp_new = AsyncObject_new;
-	AsyncType.tp_init = (initproc)AsyncObject_init;
-	AsyncType.tp_dealloc = (destructor)AsyncObject_dealloc;
-	AsyncType.tp_members = AsyncObject_members;
-	AsyncType.tp_call = (ternaryfunc)AsyncObject_call;
-
-	if (PyType_Ready(&AsyncType) < 0)
-		return;
-
-	Py_INCREF(&AsyncType);
-	PyModule_AddObject(module, "AsyncObject", (PyObject*)&AsyncType);
-}
 
 void asyncflow::py::InitEventIdObject(PyObject* module)
 {
@@ -783,16 +712,13 @@ PyObject* asyncflow::py::stop_flow(PyObject* self, PyObject* args)
 	Py_RETURN_TRUE;
 }
 
-PyObject* asyncflow::py::callback(PyObject* self, PyObject* args)
+PyObject* asyncflow::py::suspend_node(PyObject* self, PyObject* args)
 {
 	auto* manager = PyManager::GetCurrentManager();
 	if (manager == nullptr)
-		Py_RETURN_FALSE;
-	long long node_address = manager->CreateAsyncContext();
-	AsyncObject* async_object;
-	async_object = PyObject_New(AsyncObject, &AsyncType);
-	async_object->node_address = node_address;
-	return (PyObject*)async_object;
+		Py_RETURN_NONE;
+	auto node_address = manager->CreateAsyncContext();
+	return AsyncObject::New(node_address);	
 }
 
 PyObject* asyncflow::py::func(PyObject* self, PyObject* args)
@@ -855,7 +781,7 @@ static PyMethodDef asyncflow_python_module_methods[] =
 	ADD_PYTHON_FUNC(wait),
 	ADD_PYTHON_FUNC(stop_node),
 	ADD_PYTHON_FUNC(stop_flow),	
-	ADD_PYTHON_FUNC(callback),
+	ADD_PYTHON_FUNC(suspend_node),
 	ADD_PYTHON_FUNC(set_var),
 	ADD_PYTHON_FUNC(get_var),
 	ADD_PYTHON_FUNC(get_event_param),
@@ -894,7 +820,7 @@ PyMODINIT_FUNC PyInit_asyncflow(void)
 #endif
 
 
-	InitAsyncObject(m);
+	
 	InitEventIdObject(m);
 	InitCustomPyObj(m);
 	PyModule_AddObject(m, "node_funcs", PyDict_New());  //node_funcs table in asyncflow to store node functions

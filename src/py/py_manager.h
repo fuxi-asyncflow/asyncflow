@@ -44,7 +44,7 @@ namespace asyncflow
 			bool StartAgent(PyObject* obj);
 		    core::Chart* AttachChart(PyObject* obj, const std::string& chart_name);
 
-			bool AsyncCallback(long long context, PyObject* v);
+			bool ContinueAsyncNode(int64_t context, PyObject* v);
 			PyObject* GetExportObject() { PyObjectRefHelper::IncRef(export_object_); return export_object_; }
 
 			static PyManager* GetCurrentManager() { return current_manager_; }

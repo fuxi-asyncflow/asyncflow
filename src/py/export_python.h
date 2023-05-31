@@ -38,22 +38,10 @@ namespace asyncflow
 		PyObject* wait_event(PyObject* self, PyObject* args);
 		PyObject* call_sub(PyObject* self, PyObject* args);
 		PyObject* ret(PyObject* self, PyObject* args);
-		PyObject* callback(PyObject* self, PyObject* args);
+		PyObject* suspend_node(PyObject* self, PyObject* args);
 		PyObject* wait_all(PyObject* self, PyObject* args);
 		PyObject* time(PyObject* self, PyObject* args);
 		PyObject* func(PyObject* self, PyObject* args);
-
-
-		typedef struct {
-			PyObject_HEAD
-				long long node_address;
-		} AsyncObject;
-
-		void AsyncObject_dealloc(AsyncObject* self);
-		PyObject * AsyncObject_new(PyTypeObject *type, PyObject *args, PyObject *kwds);
-		int	AsyncObject_init(AsyncObject *self, PyObject *args, PyObject *kwds);
-		PyObject * AsyncObject_call(AsyncObject *self, PyObject *args, PyObject *other);
-		void InitAsyncObject(PyObject*);
 
 		typedef struct {
 			PyObject_HEAD

@@ -67,6 +67,22 @@ namespace asyncflow
 			static PyObject* stop(TSELF* self, PyObject*);
 		};
 
+		struct AsyncObject
+	    {
+			PyObject_HEAD
+		    int64_t node_address;
+
+			static PyMethodDef methods_define[];
+			static PyTypeObject TypeObject;
+
+			static PyObject* New(int64_t handle);
+			static PyObject* Continue(AsyncObject* self, PyObject* args);
+			static PyObject* Cancel(AsyncObject* self, PyObject* args);
+			static void _dealloc(AsyncObject* self);
+
+			static void InitType(PyObject*);
+		};
+
 		void BasicObject_dealloc(PyObject* self);
 
 		void InitCustomType(const char* name, PyTypeObject* tp, PyMemberDef* member, PyMethodDef* method);
