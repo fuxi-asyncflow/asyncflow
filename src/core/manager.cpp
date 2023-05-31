@@ -559,8 +559,15 @@ bool Manager::Subchart(const std::string& chart_name, Agent* agent, void* args, 
 int64_t Manager::CreateAsyncContext()
 {
 	auto* node = GetCurrentNode();
-	node->SetStatus(Node::Running);
-	async_manager_.AddNode(node);
+	if(node == nullptr)
+	{
+		ASYNCFLOW_ERR("create asyncflow context failed: function is not called inside node");
+	}
+	else
+	{
+		node->SetStatus(Node::Running);
+		async_manager_.AddNode(node);
+	}	
 	return reinterpret_cast<int64_t>(node);
 }
 
