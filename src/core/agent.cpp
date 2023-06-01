@@ -124,7 +124,7 @@ bool Agent::StartChart(Chart* chart, bool sync, void* args, int argc)
 	auto* start_node = chart->GetNode(0);
 	// if has start function, it will not be skipped
 	start_node->SetSkip(chart->GetData()->StartFuncName().empty());
-
+	start_node->SetResult(true);
 	start_node->SetStatus(Node::Running);
 	if(sync)
 	{

@@ -398,6 +398,7 @@ void Manager::Wait(int milliseconds)
 
 	//time is up, the node is not needed to run.
 	node->SetSkip(true);
+	node->SetResult(true);
 	node->SetStatus(Node::Running);
 }
 
@@ -492,6 +493,7 @@ bool Manager::WaitEvent(Agent* agent, int event_id)
 		return false;
 	node->SetStatus(Node::Running);
 	node->SetSkip(true);
+	node->SetResult(true);
 	agent->WaitEvent(node, event_id);	
 	return true;
 }
