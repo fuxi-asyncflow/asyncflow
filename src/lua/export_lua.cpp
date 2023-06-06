@@ -134,6 +134,7 @@ int luaopen_asyncflow(lua_State *L)
 	module.AddFunction("config_log", config_log);
 	module.AddFunction("set_logger", set_logger);
 	module.AddFunction("import_charts", import_charts);
+	module.AddFunction("patch", patch);
 	module.AddFunction("import_event", import_event);
 	module.AddFunction("set_error_handler", set_error_handler);
 	module.AddFunction("register", register_obj);

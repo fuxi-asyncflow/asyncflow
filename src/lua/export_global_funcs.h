@@ -10,6 +10,7 @@ namespace asyncflow
 		int set_logger(lua_State* L);
 		int register_obj(lua_State* L);
 		int import_charts(lua_State* L);
+		int patch(lua_State* L);
 		int import_event(lua_State* L);
 		int set_error_handler(lua_State* L);
 		int event(lua_State* L);

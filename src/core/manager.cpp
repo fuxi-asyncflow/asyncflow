@@ -14,6 +14,7 @@
 #include <set>
 #include <queue>
 #include <fstream>
+#include <functional>
 
 using namespace asyncflow::core;
 using namespace asyncflow::util;
@@ -25,6 +26,8 @@ DataManager Manager::dataManager = DataManager();
 EventManager Manager::eventManager = EventManager();
 
 int BasicAgentManager::AGENT_ID_COUNT = 0;
+
+
 
 Manager::Manager()
 	: current_frame_(0)	
@@ -206,11 +209,11 @@ int	Manager::ImportChatData(const std::vector<ChartData*>& data_list)
 	return count;
 }
 
-std::vector<ChartData*> Manager::ParseChartsFromJson(const std::string& json_str)
+std::vector<ChartData*> Manager::ParseChartsFromJson(const std::string& yaml_str)
 {	
 	rapidjson::Document doc;
 	std::vector<ChartData*> data_list;
-	if (JsonUtil::ParseJson(json_str, doc))
+	if (JsonUtil::ParseJson(yaml_str, doc))
 	{
 		if (doc.IsArray())
 		{
@@ -234,14 +237,13 @@ std::vector<ChartData*> Manager::ParseChartsFromJson(const std::string& json_str
 	return data_list;
 }
 
-std::vector<ChartData*> Manager::ParseChartsFromYaml(const std::string& yaml_str)
+std::vector<ChartData*> Manager::_ParseChartsYaml(const std::string& yaml_str, std::function<ChartData* (const c4::yml::ConstNodeRef& doc)> handler)
 {
-	
 	std::vector<ChartData*> data_list;
 	asyncflow::util::YamlErrorHandler errh;
 
 	//TODO error handle
-	ryml::set_callbacks(errh.callbacks());	
+	ryml::set_callbacks(errh.callbacks());
 
 	try
 	{
@@ -255,27 +257,105 @@ std::vector<ChartData*> Manager::ParseChartsFromYaml(const std::string& yaml_str
 				auto path = doc["path"].val();
 				// printf("yaml chart : %.*s\n", static_cast<int>(path.size()), path.data());
 
-				auto* data = CreateChartData();
-				if (!data->FromYaml(doc))
-				{
-					ASYNCFLOW_ERR("init chart data error");
-					delete data;
-				}
-				else
-				{
-					data_list.push_back(data);
-				}
+				auto* data = handler(doc);
+				if(data != nullptr)
+					data_list.push_back(data);				
 			}
 			return data_list;
 		}
 	}
-	catch(std::runtime_error& e)
+	catch (std::runtime_error& e)
 	{
 		ASYNCFLOW_ERR("{0}", e.what());
-	}	
+	}
 
 	ASYNCFLOW_ERR("import graphs failed: not a valid yaml");
 	return data_list;
+}
+
+std::vector<ChartData*> Manager::ParseChartsFromYaml(const std::string& yaml_str)
+{
+	return _ParseChartsYaml(yaml_str,
+		[this](const c4::yml::ConstNodeRef& doc)-> ChartData*
+		{
+			auto* data = CreateChartData();
+			if (!data->FromYaml(doc))
+			{
+				ASYNCFLOW_ERR("init chart data error");
+				delete data;
+				return nullptr;
+			}
+			return data;
+		});
+}
+
+int	Manager::PatchFromYaml(const std::string& yaml_str, bool in_place)
+{
+	auto data_list = _ParseChartsYaml(yaml_str,
+		[this, in_place](const c4::yml::ConstNodeRef& doc)-> ChartData*
+		{
+			auto path = doc["path"];
+			if (!path.valid())
+			{
+				ASYNCFLOW_ERR("missing chart Path");
+				return nullptr;
+			}
+			const std::string fullPath = std::string(path.val().data(), path.val().size());
+			auto* data = GetChartData(fullPath);
+			if (data == nullptr)
+			{
+				// patch new graph
+				data = CreateChartData();
+				if (data->FromYaml(doc))
+				{
+					ASYNCFLOW_LOG("patch new chart {0}", fullPath);
+					ReloadChartData(data);
+				}
+				else
+				{
+					ASYNCFLOW_ERR("init chart data error");
+					delete data;
+					return nullptr;
+				}
+			}
+			else
+			{
+				if (in_place)
+				{
+					if (data->PatchFromYaml(doc))
+					{
+						ASYNCFLOW_LOG("patch chart {0} success!", fullPath);
+						return data;
+					}
+					ASYNCFLOW_ERR("patch chart {0} failed!", fullPath);
+					return data;
+				}
+				else
+				{
+					auto* new_data = data->Clone();
+					if (new_data != nullptr && new_data->PatchFromYaml(doc))
+					{
+						ReloadChartData(new_data);
+						ASYNCFLOW_LOG("patch chart {0} success!", fullPath);
+						return new_data;
+					}
+					else
+					{
+						ASYNCFLOW_ERR("patch chart {0} failed!", fullPath);
+						return nullptr;
+					}
+				}
+			}
+			if (!data->FromYaml(doc))
+			{
+				ASYNCFLOW_ERR("init chart data error");
+				delete data;
+				return nullptr;
+			}
+			return data;
+		});
+
+	return data_list.size();
 }
 
 bool Manager::ReloadChartData(ChartData* new_data) const

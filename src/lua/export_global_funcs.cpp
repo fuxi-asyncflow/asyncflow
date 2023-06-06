@@ -201,6 +201,30 @@ int asyncflow::lua::import_charts(lua_State* L)
 	return 1;
 }
 
+int asyncflow::lua::patch(lua_State* L)
+{
+	if (LuaManager::currentManager == nullptr)
+	{
+		LUA_ERR(L, manager_null_msg);
+	}
+
+	if (!lua_isstring(L, 1))
+	{
+		LUA_ERR(L, agr_err_msg);
+	}
+
+	bool in_place = false;
+	if(lua_gettop(L) == 2)
+	{
+		in_place = lua_toboolean(L, 2);
+	}
+
+	auto* json_str = lua_tostring(L, 1);
+	int counts = LuaManager::currentManager->PatchFromYaml(json_str, in_place);
+	lua_pushinteger(L, counts);
+	return 1;
+}
+
 int asyncflow::lua::import_event(lua_State* L)
 {
 	auto manager = LuaManager::currentManager;

@@ -1,6 +1,7 @@
 #pragma once
 #ifdef USING_PYTHON
 #include "Python.h"
+#include <cstdint>
 
 namespace asyncflow
 {

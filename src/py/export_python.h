@@ -10,6 +10,7 @@ namespace asyncflow
 		
 		PyObject* setup(PyObject* self, PyObject* args);
 		PyObject* import_charts(PyObject* self, PyObject* args);
+		PyObject* patch(PyObject* self, PyObject* args);
 		PyObject* import_event(PyObject* self, PyObject* args);
 		PyObject* register_obj(PyObject* self, PyObject* args);
 		PyObject* get_current_manager(PyObject* self, PyObject* args);

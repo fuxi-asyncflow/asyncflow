@@ -46,8 +46,8 @@ namespace asyncflow
 			bool InitFromYaml(c4::yml::ConstNodeRef& nodeRef, std::unordered_map<std::string, int>& id_map, ChartData* chart_data);
 			NodeFunc* GetNodeFunc() { return node_func_; }
 			int	GetId() { return node_id_; }
-			std::string GetUid() { return node_uid_; }
-			std::string GetText() { return text_; }
+			const std::string& GetUid() { return node_uid_; }
+			const std::string& GetText() { return text_; }
 			std::vector<int>& GetSubsequenceIds(bool result) { return result ? children_[1] : children_[0]; }			
 			bool IsEventNode() { return is_event_; }
 			void SetEventNode(bool b) { is_event_ = b; }

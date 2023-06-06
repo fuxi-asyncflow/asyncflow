@@ -32,8 +32,9 @@ namespace asyncflow
 			bool	Event(int event_id, Agent* obj, void* args, int arg_count, bool immediate = false, bool trigger = false);
 			int		ImportFile(const std::string& file_name);
 			int		ImportJson(const std::string& json_str);
-            int     ImportYaml(const std::string& yaml_str);
+            int		ImportYaml(const std::string& yaml_str);
 			int		ImportChatData(const std::vector<ChartData*>& data_list);
+			int		PatchFromYaml(const std::string& yaml_str, bool in_place);
 			std::vector<ChartData*> ParseChartsFromJson(const std::string& json_str);
 			std::vector<ChartData*> ParseChartsFromYaml(const std::string& yaml_str);
 			int		ImportEvent(const std::string& file_name);
@@ -54,6 +55,9 @@ namespace asyncflow
 			int64_t Now() { return GetTimerManager().Now(); }
 			int64_t GetFrame() { return current_frame_; }
 			std::string uuid4_str();
+
+		private:
+			std::vector<ChartData*> _ParseChartsYaml(const std::string& yaml_str, std::function<ChartData* (const c4::yml::ConstNodeRef& doc)> handler);
 
 		public:
 			// inside node function
