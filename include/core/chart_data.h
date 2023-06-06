@@ -43,7 +43,6 @@ namespace asyncflow
 			NodeData*	GetNodeData(const std::string& uid);
 
 			void	Update(ChartData* new_data);
-			virtual ChartData* Clone() { return nullptr; } //TODO create new instance from this
 			
 #ifdef FLOWCHART_DEBUG
 			void SetQuickDebug(bool flag) { quick_debug_ = flag; }

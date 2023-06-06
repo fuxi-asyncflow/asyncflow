@@ -177,7 +177,9 @@ PyObject* asyncflow::py::patch(PyObject* self, PyObject* args)
 	PyObject* in_place_obj = nullptr;
 	if (!PyArg_ParseTuple(args, "s|O", &path, &in_place_obj))
 		PY_ARG_ERR;
-	bool in_place = PyBool_Check(in_place_obj) && PyObject_IsTrue(in_place_obj);
+	bool in_place = false;
+	if(in_place_obj != nullptr)
+        in_place = PyBool_Check(in_place_obj) && PyObject_IsTrue(in_place_obj);
 	const auto result = manager->PatchFromYaml(path, in_place);
 	return PyLong_FromLong(result);
 }

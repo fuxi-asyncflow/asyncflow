@@ -302,14 +302,25 @@ int	Manager::PatchFromYaml(const std::string& yaml_str, bool in_place)
 			}
 			const std::string fullPath = std::string(path.val().data(), path.val().size());
 			auto* data = GetChartData(fullPath);
-			if (data == nullptr)
+
+			if(data != nullptr && in_place)
 			{
-				// patch new graph
+				if (data->PatchFromYaml(doc))
+				{
+					ASYNCFLOW_LOG("patch chart {0} success!", fullPath);
+					return data;
+				}
+				ASYNCFLOW_ERR("patch chart {0} failed!", fullPath);
+				return data;
+			}
+			else
+			{
 				data = CreateChartData();
 				if (data->FromYaml(doc))
 				{
 					ASYNCFLOW_LOG("patch new chart {0}", fullPath);
 					ReloadChartData(data);
+					return data;
 				}
 				else
 				{
@@ -318,41 +329,6 @@ int	Manager::PatchFromYaml(const std::string& yaml_str, bool in_place)
 					return nullptr;
 				}
 			}
-			else
-			{
-				if (in_place)
-				{
-					if (data->PatchFromYaml(doc))
-					{
-						ASYNCFLOW_LOG("patch chart {0} success!", fullPath);
-						return data;
-					}
-					ASYNCFLOW_ERR("patch chart {0} failed!", fullPath);
-					return data;
-				}
-				else
-				{
-					auto* new_data = data->Clone();
-					if (new_data != nullptr && new_data->PatchFromYaml(doc))
-					{
-						ReloadChartData(new_data);
-						ASYNCFLOW_LOG("patch chart {0} success!", fullPath);
-						return new_data;
-					}
-					else
-					{
-						ASYNCFLOW_ERR("patch chart {0} failed!", fullPath);
-						return nullptr;
-					}
-				}
-			}
-			if (!data->FromYaml(doc))
-			{
-				ASYNCFLOW_ERR("init chart data error");
-				delete data;
-				return nullptr;
-			}
-			return data;
 		});
 
 	return data_list.size();
