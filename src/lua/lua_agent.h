@@ -15,7 +15,7 @@ namespace asyncflow
 			virtual ~LuaAgent();			
 			Ref		GetRefObject() { return obj_; }
 			TOBJ		GetGameObject() { return addr_; }
-			std::string GetName();
+			std::string GetName() override;
 			bool		RunFlow(Node* start_node) override;
 
 		private:
