@@ -244,7 +244,7 @@ bool ChartData::FromYaml(const ryml::ConstNodeRef& doc)
 //TODO refactor this function and FromYaml function
 bool ChartData::PatchFromYaml(const c4::yml::ConstNodeRef& doc)
 {
-	bool hasError;
+	bool hasError = false;
 	std::unordered_map<std::string, int> id_map;
 	for(auto node_data : node_list_)
 	{
@@ -323,6 +323,7 @@ bool ChartData::PatchFromYaml(const c4::yml::ConstNodeRef& doc)
 			//ASYNCFLOW_WARN("connect {0} -> {1}", start_node->GetText(), it->second);
 		}
 	}
+	return !hasError;
 }
 
 
