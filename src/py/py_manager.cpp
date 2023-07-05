@@ -26,7 +26,7 @@ PyManager::~PyManager()
 		current_manager_ = nullptr;
 }
 
-AsyncEventBase* PyManager::CreateAsyncEvent(int event_id, core::Agent* agent, void* args, int arg_count)
+AsyncEventBase* PyManager::CreateAsyncEvent(int event_id, Agent* agent, void* args, int arg_count)
 {
 	auto event = new AsyncEvent(event_id, agent);
 	event->SetArgs((PyObject**)args, arg_count);
