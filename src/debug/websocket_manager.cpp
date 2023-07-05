@@ -335,22 +335,22 @@ bool WebsocketManager::IsPortAvailable(const char* ip, int port)
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 
-void WebsocketDebugConnection::StartDebugChart(core::Chart* chart)
+void WebsocketDebugConnection::StartDebugChart(Chart* chart)
 {
 	websocketManager_->StartDebugChart(chart, hdl_);
 }
 
-void WebsocketDebugConnection::StopDebugChart(core::Chart* chart)
+void WebsocketDebugConnection::StopDebugChart(Chart* chart)
 {
 	websocketManager_->StopDebugChart(chart, hdl_);
 }
 
-void WebsocketDebugConnection::QuickDebugChart(core::ChartData* chart_data)
+void WebsocketDebugConnection::QuickDebugChart(ChartData* chart_data)
 {
 	websocketManager_->QuickDebugChart(chart_data, hdl_);
 }
 
-void WebsocketDebugConnection::ContinueDebugChart(core::Chart* chart)
+void WebsocketDebugConnection::ContinueDebugChart(Chart* chart)
 {
 	websocketManager_->ContinueDebugChart(chart);
 }
