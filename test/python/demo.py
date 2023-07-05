@@ -38,22 +38,21 @@ class Character:
 if __name__ == "__main__":
     chart_name = "AI.test_04"
 
-
     # start
-    for i in range(1, 9):
-        c = Character()
-        asyncflow.register(c)
-        chart_name = "AI.test_0" + str(i)
-        asyncflow.attach(c, chart_name)
-        asyncflow.start(c)
-    
+    c = Character()
+    asyncflow.register(c)
+    asyncflow.attach(c, chart_name)
+    asyncflow.start(c)
+
+
+
     # loop
     for i in range(10000):
-        #time.sleep(0.1)
+        time.sleep(0.1)
         asyncflow.step(100)
 
     # destroy
-    asyncflow.remove(c,"AI.test_07_sub")
+    asyncflow.remove(c, chart_name)
     asyncflow.deregister(c)
     asyncflow.step(10)
     asyncflow.exit()

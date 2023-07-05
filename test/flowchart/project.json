@@ -1,17 +1,21 @@
-{
+﻿{
   "graph_roots": [
     {
       "name": "AI",
       "path": "graphs",
       "output": "generate",
+      "type": "Character",
       "save_rule": "per_root_child"
     },
     {
       "name": "Subchart",
       "path": "graphs",
       "output": "generate",
+      "type": "Character",
       "save_rule": "per_root_child"
     }
   ],
-  "standalone_generate_file": true
+  "output": ".",
+  "standalone_generate_file": true,
+  "code_generator": "python"
 }

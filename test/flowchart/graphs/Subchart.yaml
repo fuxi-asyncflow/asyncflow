@@ -1,3 +1,7 @@
+﻿--- 
+kind: folder
+path: Subchart
+type: Global
 --- 
 path: Subchart.SubchartTest_01
 uid: f99882fc-e13f-4775-834c-fdeb7b24a3cc

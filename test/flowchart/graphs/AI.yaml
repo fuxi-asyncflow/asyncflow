@@ -1,3 +1,7 @@
+﻿--- 
+kind: folder
+path: AI
+type: Global
 --- 
 path: AI.test_01
 uid: 3f73e8cd-591a-4bc7-ae02-00b58135f99f
@@ -1137,4 +1141,12 @@ connectors:
   start: 6288a287-371f-4586-a4cd-7a6f274712dd
   end: 2d914be5-d753-4ade-aa52-f51585d7a54e
   type: 2
+--- 
+kind: folder
+path: AI.abc
+type: Character
+--- 
+kind: folder
+path: AI.new_folder
+type: Character
 ...

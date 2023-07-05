@@ -1,5 +1,6 @@
---- 
+﻿--- 
 name: Character
+abbr: 怪
 properties: 
 - 
   name: name

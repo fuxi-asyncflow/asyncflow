@@ -1,5 +1,6 @@
---- 
+﻿--- 
 name: Global
+abbr: Gl
 properties: 
 - 
   name: time
