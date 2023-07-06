@@ -273,7 +273,7 @@ PyObject* asyncflow::py::get_current_manager(PyObject* self, PyObject* args)
 	return manager->GetExportObject();
 }
 
-PyObject* asyncflow::py::attach(PyObject* self, PyObject* args, PyObject* kwargs)
+PyObject* asyncflow::py::attach(PyObject* self, PyObject* args)
 {
 	auto* manager = PyManager::GetCurrentManager();
 	if (manager == nullptr)
@@ -282,9 +282,8 @@ PyObject* asyncflow::py::attach(PyObject* self, PyObject* args, PyObject* kwargs
 	PyObject* obj;
 	char* path;
 	PyObject* params = Py_None;
-	static const char* kwlist[] = { "obj", "chart", "params" };
-	if (!PyArg_ParseTupleAndKeywords(args, kwargs, "Os|O", const_cast<char**>(kwlist),
-		&obj, &path, &params))
+	//static const char* kwlist[] = { "obj", "chart", "params" };
+	if (!PyArg_ParseTuple(args, "Os|O", &obj, &path, &params))
 		PY_ARG_ERR;
 
 	auto chart = (PyChart*)manager->AttachChart(obj, path);
@@ -786,8 +785,8 @@ static PyMethodDef asyncflow_python_module_methods[] =
 	{	"deregister",		(PyCFunction)deregister_obj,		METH_VARARGS,	""},
 	ADD_PYTHON_FUNC(get_current_manager),
 	ADD_PYTHON_FUNC(step),
-	ADD_PYTHON_FUNC(remove),
-	{	"attach",			(PyCFunction)attach,				METH_VARARGS | METH_KEYWORDS,	""},
+    ADD_PYTHON_FUNC(attach),
+	ADD_PYTHON_FUNC(remove),    
 	ADD_PYTHON_FUNC(start),
 	ADD_PYTHON_FUNC(stop),
 	ADD_PYTHON_FUNC(event),
