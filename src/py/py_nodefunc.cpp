@@ -37,8 +37,10 @@ NodeResult PyNodeFunc::call(Agent* agent)
 	}
 
 	auto result = rTRUE;
-	if (PyBool_Check(py_result))
-		result = (py_result == Py_True) ? rTRUE : rFALSE;
+    if (PyBool_Check(py_result))
+        result = (py_result == Py_True) ? rTRUE : rFALSE;
+    else
+        result = PyObject_IsTrue(py_result) ? rTRUE : rFALSE;
 
 	return result;
 }
