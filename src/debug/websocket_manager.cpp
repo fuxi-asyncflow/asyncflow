@@ -16,7 +16,7 @@ WebsocketManager::WebsocketManager(Manager* manager)
     , debugger_(new JsonDebugger())
 {
 	
-	ASYNCFLOW_LOG("[deubg] Launch debug server !");
+	ASYNCFLOW_LOG("[debug] Launch debug server !");
 }
 
 WebsocketManager::~WebsocketManager()
@@ -44,14 +44,14 @@ void WebsocketManager::Init(const std::string& ip, int port)
 			{
 				server_.listen(asio::ip::address::from_string(ip), port + i);
 				server_.start_accept();
-				ASYNCFLOW_LOG("[deubg] Init debug server success for ip {0} port {1}", ip, port + i);
+				ASYNCFLOW_LOG("[debug] Init debug server success for ip {0} port {1}", ip, port + i);
 				break;
 			}
 		}
 	}
 	catch(const std::exception& e)
 	{
-		ASYNCFLOW_LOG("[deubg] Init websocket manager error {}", e.what());
+		ASYNCFLOW_LOG("[debug] Init websocket manager error {}", e.what());
 	}
 	
 #endif
@@ -60,7 +60,7 @@ void WebsocketManager::Init(const std::string& ip, int port)
 void WebsocketManager::Step()
 {
 #ifndef BUILD_WASM
-	ASYNCFLOW_DBG("[deubg] debugging chart count {0}", chart_map_.size());
+	ASYNCFLOW_DBG("[debug] debugging chart count {0}", chart_map_.size());
 	//send data
 	std::vector<Chart *> charts_not_debugging;
 	for (auto& chart_kv : chart_map_)
@@ -72,7 +72,7 @@ void WebsocketManager::Step()
 			str = debugger_->HeartBeat();
 		else
 			str = debugger_->PrepareChartDebugData(chart);
-		ASYNCFLOW_DBG("[deubg] chart json {0}", str);
+		ASYNCFLOW_DBG("[debug] chart json {0}", str);
 		auto iter = conns.begin();
 		while (iter != conns.end())
 		{
@@ -86,7 +86,7 @@ void WebsocketManager::Step()
 				iter = conns.erase(iter);
 				if (conns.empty())
 					charts_not_debugging.push_back(chart);
-				ASYNCFLOW_WARN("[deubg] websocket send error for chart {}, the reason is {}", chart->Name(), e.what());
+				ASYNCFLOW_WARN("[debug] websocket send error for chart {}, the reason is {}", chart->Name(), e.what());
 			}
 		}
 	}
@@ -106,7 +106,7 @@ void WebsocketManager::Step()
 	}
 	catch (const std::exception& e)
 	{
-		ASYNCFLOW_WARN("[deubg] websocket step error {0}", e.what());
+		ASYNCFLOW_WARN("[debug] websocket step error {0}", e.what());
 	}
 	
 #endif
@@ -208,7 +208,7 @@ void WebsocketManager::StartQuickDebug(Chart* chart)
 				chart->StopDebug();
 				chart_map_.erase(chart_map_.find(chart));
 			}
-			ASYNCFLOW_WARN("[deubg] websocket send error for chart {} in quick debug, the reason is {}", chart->Name(), e.what());
+			ASYNCFLOW_WARN("[debug] websocket send error for chart {} in quick debug, the reason is {}", chart->Name(), e.what());
 		}
 		
 	}
@@ -258,7 +258,7 @@ void WebsocketManager::SendStopData(Chart* chart, HDL_CONTAINER &hdls)
 		}
 		catch (std::exception e)
 		{
-			ASYNCFLOW_WARN("[deubg] websocket send error in chart {0}, the reason is {1}", chart->Name(), e.what());
+			ASYNCFLOW_WARN("[debug] websocket send error in chart {0}, the reason is {1}", chart->Name(), e.what());
 		}
 
 	}
@@ -290,7 +290,7 @@ void WebsocketManager::SendReply(websocketpp::connection_hdl hdl, const std::str
 	}
 	catch (std::exception e)
 	{
-		ASYNCFLOW_WARN("[deubg] websocket send error, the reason is {}", e.what());
+		ASYNCFLOW_WARN("[debug] websocket send error, the reason is {}", e.what());
 	}
 }
 
@@ -309,7 +309,7 @@ bool WebsocketManager::IsPortAvailable(const char* ip, int port)
 	auto ConnectSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (ConnectSocket == -1)
 	{
-		ASYNCFLOW_WARN("[deubg] cannot creat socket when check port");
+		ASYNCFLOW_WARN("[debug] cannot creat socket when check port");
 		return false;
 	}
 
@@ -322,7 +322,7 @@ bool WebsocketManager::IsPortAvailable(const char* ip, int port)
 	int iResult = bind(ConnectSocket, (sockaddr *)& clientService, sizeof(clientService));
 	if (iResult == 0)
 	{
-		ASYNCFLOW_DBG("[deubg] port {0} is not in use", port);
+		ASYNCFLOW_DBG("[debug] port {0} is not in use", port);
 #ifdef _WIN32
 		closesocket(ConnectSocket);
 #else
