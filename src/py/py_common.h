@@ -33,6 +33,8 @@ namespace asyncflow
 		bool CheckPythonException();
 		std::string GetObjectName(PyObject* obj);		//get obj name in debug
 		std::string ToString(PyObject* obj);    //convert obj to string in debug
+        static PyObject* _module = nullptr;
+        PyObject* GetModule();
 
 		class PyObjectRefHelper
 		{

@@ -47,7 +47,7 @@ NodeResult PyNodeFunc::call(Agent* agent)
 
 PyObject* PyNodeFunc::CompileFunction(const std::string& code, const std::string& name)
 {
-	PyObject *async_module = PyImport_ImportModule("asyncflow");
+	PyObject *async_module = asyncflow::py::GetModule();
 	if (CheckPythonException() || async_module == nullptr)
 	{
 		ASYNCFLOW_ERR("import asyncflow error in compile function");

@@ -20,6 +20,8 @@ using Log = asyncflow::util::Log;
 using namespace asyncflow::core;
 using namespace asyncflow::py;
 
+PyObject* asyncflow::py::GetModule() { return _module; }
+
 PyTypeObject asyncflow::py::EventIdType = {
 	PyObject_HEAD_INIT(NULL)
 };
@@ -498,7 +500,8 @@ PyObject* asyncflow::py::set_logger(PyObject* self, PyObject* args)
 
 PyObject* asyncflow::py::set_node_func(PyObject* self, PyObject* args)
 {
-	PyObject* async_module = PyImport_ImportModule("asyncflow");
+	//PyObject* async_module = PyImport_ImportModule("asyncflow");
+    PyObject* async_module = self;
 	if (CheckPythonException() || async_module == nullptr)
 	{
 		ASYNCFLOW_ERR("cannot find asyncflow module when set_node_func");
@@ -753,7 +756,7 @@ PyObject* asyncflow::py::func(PyObject* self, PyObject* args)
 
 	auto func_name = PyUnicode_AsUTF8(((PyFunctionObject*)func)->func_name);
 
-	PyObject* async_module = PyImport_ImportModule("asyncflow");
+	PyObject* async_module = self;
 	if (CheckPythonException() || async_module == nullptr)
 	{
 		ASYNCFLOW_ERR("import asyncflow error in asyncflow.func");
@@ -845,6 +848,7 @@ PyMODINIT_FUNC PyInit_asyncflow(void)
 	asyncflow_python_error = PyErr_NewException("asyncflow.error", nullptr, nullptr);
 	Py_INCREF(asyncflow_python_error);
 	PyModule_AddObject(m, "error", asyncflow_python_error);
+    _module = m;
 
 #ifndef USING_PYTHON2
 	return m;
