@@ -78,7 +78,8 @@ void WebsocketManager::Step()
 		{
 			try
 			{
-				server_.send(*iter, str, websocketpp::frame::opcode::TEXT);
+                websocketpp::lib::error_code ec;
+				server_.send(*iter, str, websocketpp::frame::opcode::TEXT, ec);
 				++iter;
 			}
 			catch (const std::exception& e)
