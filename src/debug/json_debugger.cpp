@@ -706,20 +706,20 @@ void JsonDebugger::HotFixHandler(rapidjson::Document& doc, Manager* manager_, De
 		connection->Reply(ErrorReply(-15, "run charts_func error", msg_id));
 		return;
 	}
-	auto* charts_data_str = params["charts_data"].GetString();
-	auto yaml_str = asyncflow::util::Base64::base64_decode(charts_data_str);
-	auto chart_data_list = manager_->ParseChartsFromYaml(yaml_str);
-	manager_->ImportChatData(chart_data_list);
-	for (auto* data : chart_data_list)
-	{
-		manager_->RestartChart(data->Name());
-	}
+	//auto* charts_data_str = params["charts_data"].GetString();
+	//auto yaml_str = asyncflow::util::Base64::base64_decode(charts_data_str);
+	//auto chart_data_list = manager_->ParseChartsFromYaml(yaml_str);
+	//manager_->ImportChatData(chart_data_list);
+	//for (auto* data : chart_data_list)
+	//{
+	//	manager_->RestartChart(data->Name());
+	//}
 
-	if (chart_data_list.empty())
-	{
-		connection->Reply(ErrorReply(-15, "import charts_data error", msg_id));
-		return;
-	}
+	//if (chart_data_list.empty())
+	//{
+	//	connection->Reply(ErrorReply(-15, "import charts_data error", msg_id));
+	//	return;
+	//}
 	connection->Reply(SimpleReply("hotfix", std::vector<std::string>(), msg_id));
 }
 
