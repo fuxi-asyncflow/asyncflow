@@ -1,0 +1,22 @@
+image: asyncflow:python3.11-debian10
+
+cmake:
+  stage: build
+  script:
+    - cmake . -Bbuild/python3.11-debian10 -DBUILD_PYTHON=ON -DFLOWCHART_DEBUG=ON -DCMAKE_BUILD_TYPE=RelWithDebInfo
+
+build:
+  stage: build
+  script:
+    - cmake --build build/python3.11-debian10
+
+rename:
+  stage: build
+  script:
+    - mv build/python3.11-debian10/libasyncflow-py.so test/python/case
+
+# run tests using the binary built before
+test:
+  stage: test
+  script:
+    - cd test/python/case && pytest
