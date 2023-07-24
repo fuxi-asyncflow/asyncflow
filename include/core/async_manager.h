@@ -28,7 +28,7 @@ namespace asyncflow
 #endif
 		private:
 			NodeList waiting_nodes_;				//waiting for result
-			std::vector<Node*> activate_nodes;		//the result has been returned, waiting for execution
+			NodeList activate_nodes_;		//the result has been returned, waiting for execution
 			std::unordered_set<Node*> nodes_set_;	//facilitate search
 			
 		};

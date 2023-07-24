@@ -8,8 +8,9 @@ using namespace asyncflow::core;
 
 void AsyncManager::Step()
 {
-	for (auto* node : activate_nodes)
+	while(activate_nodes_.Size() > 0)
 	{
+		auto* node = activate_nodes_.Pop();
 		auto const flag = node->GetSkip();
 		auto const result = node->GetResult();
 		node->Stop();	//TODO why stop node here?
@@ -19,7 +20,6 @@ void AsyncManager::Step()
 		auto* agent = node->GetAgent();
 		agent->RunFlow(node);
 	}
-	activate_nodes.clear();
 }
 
 
@@ -42,9 +42,9 @@ void AsyncManager::RemoveNode(Node* node)
 
 void AsyncManager::ActivateNode(Node* node, bool skip_flag /*= true*/)
 {
-	if (std::find(activate_nodes.begin(), activate_nodes.end(), node) != activate_nodes.end())
+	if (activate_nodes_.Contains(node))
 		return;
-	activate_nodes.push_back(node);
+	activate_nodes_.Push(node);
 	node->SetSkip(skip_flag);
 }
 

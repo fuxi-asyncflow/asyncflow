@@ -19,7 +19,8 @@ namespace asyncflow
 		};
 
 		//The relation between nodelist and node is circular reference.
-		class NodeList : INodeContainer
+		//TODO implement NodeList as intrusive linked list
+		class NodeList : public INodeContainer
 		{
 		private:
 			std::list<Node*> node_list_;
@@ -33,6 +34,7 @@ namespace asyncflow
 			Node* GetTop() override;
 			bool IsEmpty() override { return node_list_.empty(); }
 			int Size() const { return static_cast<int>(node_list_.size()); }
+			bool Contains(Node* node) const { return std::find(node_list_.begin(), node_list_.end(), node) != node_list_.end(); }
 			~NodeList() override;
 		};
 
