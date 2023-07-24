@@ -34,7 +34,7 @@ namespace asyncflow
 			Node* GetTop() override;
 			bool IsEmpty() override { return node_list_.empty(); }
 			int Size() const { return static_cast<int>(node_list_.size()); }
-			bool Contains(Node* node) const { return std::find(node_list_.begin(), node_list_.end(), node) != node_list_.end(); }
+			bool Contains(Node* node) const;
 			~NodeList() override;
 		};
 

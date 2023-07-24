@@ -32,6 +32,11 @@ void NodeList::Remove(Node* node)
 	node->SetContainer(nullptr);
 }
 
+bool NodeList::Contains(Node* node) const
+{
+	return node->GetContainer() == this;
+}
+
 //int NodeList::Size()
 //{
 //	return static_cast<int>(node_list_.size());
