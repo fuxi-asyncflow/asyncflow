@@ -2,6 +2,7 @@
 #include "export_class.h"
 #include "py_manager.h"
 #include "py_common.h"
+#include "weakrefobject.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 asyncflow::py::PyChart::PyChart(Manager* mgr)
@@ -20,7 +21,7 @@ asyncflow::py::PyChart::~PyChart()
 }
 
 
-PyObject* asyncflow::py::PyChart::GetVar(int id)
+PyObject* asyncflow::py::PyChart::GetVar(int id, bool weak)
 {
 	if (id > data_->GetVarCount() || id < 0)
 	{
@@ -29,8 +30,12 @@ PyObject* asyncflow::py::PyChart::GetVar(int id)
 		return Py_None;
 	}
 
-	Py_XINCREF(variables_[id]);
-	return variables_[id];
+	auto* var_obj = variables_[id];
+	if (weak && PyWeakref_Check(var_obj))
+		var_obj = PyWeakref_GetObject(var_obj);
+
+	Py_XINCREF(var_obj);
+	return var_obj;
 }
 
 void asyncflow::py::PyChart::InvokeCallback(PyObject* obj)
@@ -47,7 +52,6 @@ void asyncflow::py::PyChart::InvokeCallback(PyObject* obj)
 		}
 		Py_DecRef(temp_call);
 	}
-
 }
 
 void asyncflow::py::PyChart::Return(PyObject* obj)
@@ -91,7 +95,7 @@ void asyncflow::py::PyChart::SetInitTable(PyObject* tb)
 }
 
 //index starts from 1 as lua table
-bool asyncflow::py::PyChart::SetVar(int id, PyObject* v)
+bool asyncflow::py::PyChart::SetVar(int id, PyObject* v, bool weak)
 {
 	if (id > data_->GetVarCount() || id < 0)
 	{
@@ -102,6 +106,11 @@ bool asyncflow::py::PyChart::SetVar(int id, PyObject* v)
 	SendVariableStatus(data_->GetVariableName(id), variables_[id], v);
 #endif
 	Py_XDECREF(variables_[id]);
+	if(weak)
+	{
+		v = PyWeakref_NewRef(v, nullptr);
+	}
+
 	variables_[id] = v;
 	Py_XINCREF(v);
 	return true;

@@ -11,8 +11,8 @@ namespace asyncflow
 		public:
 			PyChart(Manager* mgr);
 			~PyChart();
-			bool	SetVar(int id, PyObject* v);
-			PyObject*	GetVar(int id);
+			bool	SetVar(int id, PyObject* v, bool weak = false);
+			PyObject*	GetVar(int id, bool weak = false);
 			void	SetCall(PyObject* call);
 			void	SetInitTable(PyObject* tb);
 			void SetArgs(void* args, int argc) override;

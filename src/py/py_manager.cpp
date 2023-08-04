@@ -59,16 +59,16 @@ bool PyManager::Event(int event_id, PyObject* obj, PyObject** args, int arg_coun
 	return Manager::Event(event_id, agent_manager_.GetAgent(obj), (void*)args, arg_count, immediate, trigger);
 }
 
-bool PyManager::SetVar(int var_id, PyObject* obj)
+bool PyManager::SetVar(int var_id, PyObject* obj, bool weak)
 {
 	auto node = GetCurrentNode();
-	return ((PyChart*)node->GetChart())->SetVar(var_id, obj);
+	return ((PyChart*)node->GetChart())->SetVar(var_id, obj, weak);
 }
 
-PyObject* PyManager::GetVar(int var_id)
+PyObject* PyManager::GetVar(int var_id, bool weak)
 {
 	auto node = GetCurrentNode();
-	return ((PyChart*)node->GetChart())->GetVar(var_id);
+	return ((PyChart*)node->GetChart())->GetVar(var_id, weak);
 }
 
 PyObject* PyManager::GetEventParam(int event_id, int param_idx)

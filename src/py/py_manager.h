@@ -31,8 +31,8 @@ namespace asyncflow
 			bool UnregisterGameObject(PyObject* obj);
 
 			bool Event(int event_id, PyObject* obj, PyObject** args, int arg_count, bool immediate = false, bool trigger = false);
-			bool SetVar(int var_id, PyObject* obj);
-			PyObject* GetVar(int var_id);
+			bool SetVar(int var_id, PyObject* obj, bool weak);
+			PyObject* GetVar(int var_id, bool weak);
 			PyObject* GetEventParam(int event_id, int param_idx);
 			bool Return(PyObject*);
 			PyObject* Invoke(const std::string& name, PyObject** args, int arg_count);

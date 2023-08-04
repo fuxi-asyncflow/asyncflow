@@ -2,6 +2,7 @@
 #include "py_agent.h"
 #include "py_manager.h"
 #include "py_common.h"
+#include "weakrefobject.h"
 
 using namespace asyncflow::core;
 using namespace asyncflow::py;
@@ -29,6 +30,8 @@ NodeResult PyNodeFunc::call(Agent* agent)
 		for (int var_id = 0; var_id < current_chart->GetData()->GetVarCount(); var_id++)
 		{
 			auto pyobj = current_chart->GetVar(var_id);
+			if (PyWeakref_CheckRef(pyobj))
+				pyobj = PyWeakref_GetObject(pyobj);
 			std::string var = ToString(pyobj);
 			ASYNCFLOW_ERR("var_id is {0}, name is {1}, value is {2}.", var_id, current_chart->GetData()->GetVariableName(var_id), var);
 			Py_XDECREF(pyobj);

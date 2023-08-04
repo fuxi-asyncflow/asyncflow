@@ -563,14 +563,23 @@ PyObject* asyncflow::py::set_var(PyObject* self, PyObject* args)
 		Py_RETURN_FALSE;
 
 	int varid;
-	PyObject* key;
-	PyObject* obj;
-	
-	if (!PyArg_ParseTuple(args, "OO", &key, &obj))
+
+	bool weak = false;
+	int arg_size = PyTuple_Size(args);
+	if(arg_size < 2)
 	{
-		ASYNCFLOW_ERR("parse argument failed!\n");
+		ASYNCFLOW_ERR("set var need at least 2 arguments!\n");
 		Py_RETURN_FALSE;
 	}
+
+	PyObject* key = PyTuple_GetItem(args, 0);
+	PyObject* obj = PyTuple_GetItem(args, 1);
+
+	if(arg_size == 3)
+	{
+		weak = PyTuple_GetItem(args, 2) == Py_True;
+	}	
+
 	if(PyLong_CheckExact(key))
 	{
 		varid = PyLong_AsLong(key);
@@ -580,7 +589,7 @@ PyObject* asyncflow::py::set_var(PyObject* self, PyObject* args)
 		auto name = PyUnicode_AsUTF8(key);
 		varid = manager->GetCurrentNode()->GetChart()->GetData()->GetVarIndex(std::string(name));
 	}
-	const auto result = manager->SetVar(varid, obj);
+	const auto result = manager->SetVar(varid, obj, weak);
 	return PyBool_FromLong(result);
 }
 
@@ -591,7 +600,13 @@ PyObject* asyncflow::py::get_var(PyObject* self, PyObject* args)
 		Py_RETURN_NONE;
 
 	int varid;
+	bool weak = false;
 	auto* key = PyTuple_GetItem(args, 0);
+	if(PyTuple_Size(args) > 0)
+	{
+		auto* py_weak = PyTuple_GetItem(args, 1);
+		weak = py_weak == Py_True;
+	}
 	if (PyLong_CheckExact(key))
 	{
 		varid = PyLong_AsLong(key);
@@ -601,7 +616,7 @@ PyObject* asyncflow::py::get_var(PyObject* self, PyObject* args)
 		auto name = PyUnicode_AsUTF8(key);
 		varid = manager->GetCurrentNode()->GetChart()->GetData()->GetVarIndex(std::string(name));
 	}
-	return manager->GetVar(varid);
+	return manager->GetVar(varid, weak);
 }
 
 PyObject* asyncflow::py::get_event_param(PyObject* self, PyObject* args)
