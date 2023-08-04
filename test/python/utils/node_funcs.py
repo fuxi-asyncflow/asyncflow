@@ -27,14 +27,14 @@ def wait_func(second):
         asyncflow.wait(second)
     return _wait
 
-def set_var(name, value):
+def set_var(name, value, weak = False):
     def _set_var(self):
-        asyncflow.set_var(name, value)
+        asyncflow.set_var(name, value, weak)
     return _set_var
 
-def get_var(name):
+def get_var(name, weak = False):
     def _get_var(self):
-        v = asyncflow.get_var(name)
+        v = asyncflow.get_var(name, weak)
         self.Say(v)
     return _get_var
 
