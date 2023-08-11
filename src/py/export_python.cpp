@@ -602,7 +602,7 @@ PyObject* asyncflow::py::get_var(PyObject* self, PyObject* args)
 	int varid;
 	bool weak = false;
 	auto* key = PyTuple_GetItem(args, 0);
-	if(PyTuple_Size(args) > 0)
+	if(PyTuple_Size(args) > 1)
 	{
 		auto* py_weak = PyTuple_GetItem(args, 1);
 		weak = py_weak == Py_True;
