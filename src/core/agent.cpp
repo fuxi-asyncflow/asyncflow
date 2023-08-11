@@ -68,13 +68,7 @@ Chart* Agent::AttachChart(ChartData* chart_data)
 		delete chart;
 		return nullptr;
 	}
-#ifdef FLOWCHART_DEBUG
-	if (chart_data->IsQuickDebug())
-	{
-		manager_->GetWebsocketManager().StartQuickDebug(chart);
-		chart_data->SetQuickDebug(false);
-	}
-#endif
+
 	return chart;
 }
 
@@ -126,6 +120,16 @@ bool Agent::StartChart(Chart* chart, bool sync, void* args, int argc)
 	start_node->SetSkip(chart->GetData()->StartFuncName().empty());
 	start_node->SetResult(true);
 	start_node->SetStatus(Node::Running);
+
+#ifdef FLOWCHART_DEBUG
+    auto* chart_data = chart->GetData();
+    if (chart_data->IsQuickDebug())
+    {
+        manager_->GetWebsocketManager().StartQuickDebug(chart);
+        chart_data->SetQuickDebug(false);
+    }
+#endif
+
 	if(sync)
 	{
 		// if out of stack, then try async mode
