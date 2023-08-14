@@ -45,24 +45,32 @@ namespace asyncflow
 			NodeData*	GetData() { return data_; }
 			INodeAttacher* GetAttacher() { return attacher_; }
 			void		SetAttacher(INodeAttacher* attacher) { if (attacher_ != nullptr) delete attacher_; attacher_ = attacher; }
-			void        SetAttacherNull() { attacher_ = nullptr; }
+			void		SetAttacherNull() { attacher_ = nullptr; }
 			bool		IsRunning() { return status_ == Running; }
 			int			GetPreNodeId() { return pre_node_id_; }
 			void		SetPreNodeId(int id) { pre_node_id_ = id; }
 			void		SetContainer(INodeContainer* container) { container_ = container; }
-			INodeContainer*   GetContainer() { return container_; }
-			void        SendEventStatus(const AsyncEventBase* event);
+			INodeContainer*	GetContainer() { return container_; }
+			void		SendEventStatus(const AsyncEventBase* event);
+
+			void		IncTrueCount()  { true_count_++; }
+			void		IncFalseCount() { false_count_++; }
+			int			GetTrueCount() const { return true_count_; }
+			int			GetFalseCount() const { return false_count_; }
 
 		private:
 			int				id_;
+			int				pre_node_id_;
+			int				true_count_;
+			int				false_count_;
 			Chart*			chart_;
 			NodeData*		data_;
-			bool			run_flag_;
 			NodeResult		result_;
-			bool			skip_;			//not execute function in node
-			bool            is_wait_all;    //waitall node flag, special handling in RunFlow function
-			int				pre_node_id_;
 			Status			status_;
+			bool			run_flag_;
+			bool			skip_;			//not execute function in node
+			bool			is_wait_all;    //waitall node flag, special handling in RunFlow function
+			
 			INodeAttacher*	attacher_;
 			INodeContainer* container_;
 		};

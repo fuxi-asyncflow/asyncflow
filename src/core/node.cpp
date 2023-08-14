@@ -8,16 +8,18 @@
 using namespace asyncflow::core;
 
 Node::Node(Chart* chart, NodeData* data)
-	: attacher_(nullptr)
+	: pre_node_id_(-1)
+	, true_count_(0)
+	, false_count_(0)
 	, chart_(chart)
 	, data_(data)
+	, result_(rTRUE)
 	, status_(Idle)
 	, run_flag_(false)
-	, result_(rTRUE)
-	, container_(nullptr)
 	, skip_(false)
-	, pre_node_id_(-1)
 	, is_wait_all(false)
+	, attacher_(nullptr)
+	, container_(nullptr)
 {
 	// printf("+node %p chart: %p\n", this, chart_);
 	id_ = data_->GetId();

@@ -143,17 +143,21 @@ bool DfsExecutor::RunFlow(Node* start_node)
 
 void DfsExecutor::AddSubsequenceNodes(Node* node)
 {
-	auto result = node->GetResult();
+	const auto result = node->GetResult();
 	if (result == rSTOP)
 		return;
+	if (result == rTRUE)
+		node->IncTrueCount();
+	else
+		node->IncFalseCount();
 	const auto& ids = node->GetData()->GetSubsequenceIds(result == rTRUE);
-	auto chart = node->GetChart();
+	auto* chart = node->GetChart();
 
 	//DFS push the right node into stack first
 	auto count = ids.size();
 	while (count > 0)
 	{
-		auto child = chart->GetNode(ids[--count]);
+		auto* child = chart->GetNode(ids[--count]);
 		child->SetPreNodeId(node->GetId());
 		ASYNCFLOW_DBG("{0} -> {1}", node->GetId(), child->GetId());
 		Push(child);
