@@ -264,23 +264,6 @@ void Agent::WaitEvent(Node* node, int event_id)
 	node->SetStatus(Node::Running);			
 }
 
-std::vector<std::string> Agent::GetRunningChartNames()
-{
-	std::vector<std::string> v;
-	for (auto& charts : chart_dict_)
-	{
-		for (auto& chart : charts.second)
-		{
-			if (chart->GetStatus() == Chart::Running && chart->GetOwnerNode() == nullptr)
-			{
-				v.push_back(chart->Name());
-			}
-		}
-	}
-	return v;
-}
-
-
 Chart* Agent::FindChart(const std::string& chart_name, Node* owner_node)
 {
 	auto it = chart_dict_.find(chart_name);

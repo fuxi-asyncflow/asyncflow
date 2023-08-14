@@ -51,7 +51,6 @@ namespace asyncflow
 			void		SetTickInterval(int tick);
 			void		WaitEvent(Node* node, int event_id);			
 			Chart*		FindChart(const std::string& chart_name, Node* owner_node);
-			std::vector<std::string> GetRunningChartNames();
 			const std::unordered_map<std::string, std::vector<Chart*>>& GetChartDict() { return chart_dict_; }
 			Status		GetStatus() { return status_; }
 			void		SetStatus(Status s) { status_ = s; }

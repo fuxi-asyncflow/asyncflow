@@ -438,24 +438,6 @@ PyObject* asyncflow::py::_event(PyObject* self, PyObject* args, bool trigger)
 	return PyBool_FromLong(ret);
 }
 
-PyObject* asyncflow::py::get_charts(PyObject* self, PyObject* args)
-{
-	auto* manager = PyManager::GetCurrentManager();
-	if (manager == nullptr)
-		PY_MGR_ERR;
-	PyObject* obj;
-	if (!PyArg_ParseTuple(args, "O", &obj))
-		PY_ARG_ERR;
-	auto agent = manager->GetAgent(obj);
-	auto chart_name_list = agent->GetRunningChartNames();
-	auto pylist = PyList_New(chart_name_list.size());
-	for (int i = 0; i < chart_name_list.size(); i++)
-	{
-		PyList_SetItem(pylist, i, PyUnicode_FromStringAndSize(chart_name_list[i].c_str(), chart_name_list[i].size()));
-	}
-	return pylist;
-}
-
 PyObject* asyncflow::py::config_log(PyObject* self, PyObject* args)
 {
 	char* path;
@@ -812,7 +794,6 @@ static PyMethodDef asyncflow_python_module_methods[] =
 	ADD_PYTHON_FUNC(config_log),
 	ADD_PYTHON_FUNC(set_logger),
 	ADD_PYTHON_FUNC(set_node_func),
-	ADD_PYTHON_FUNC(get_charts),
 	ADD_PYTHON_FUNC(wait),
 	ADD_PYTHON_FUNC(stop_node),
 	ADD_PYTHON_FUNC(stop_flow),	

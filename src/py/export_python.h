@@ -25,7 +25,6 @@ namespace asyncflow
 		PyObject* remove(PyObject* self, PyObject* args);
 		PyObject* start(PyObject* self, PyObject* args);
 		PyObject* stop(PyObject* self, PyObject* args);
-		PyObject* get_charts(PyObject* self, PyObject* args);
 		PyObject* config_log(PyObject* self, PyObject* args);
 		PyObject* set_logger(PyObject* self, PyObject* args);
 		PyObject* set_node_func(PyObject* self, PyObject* args);
