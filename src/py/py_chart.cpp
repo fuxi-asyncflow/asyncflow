@@ -18,6 +18,16 @@ asyncflow::py::PyChart::~PyChart()
 	Py_XDECREF(call_);
 	Py_XDECREF(init_table_);
 	PyObjectRefHelper::DecRef(export_object_);
+	if(variables_ != nullptr)
+	{
+		const int var_count = data_->GetVarCount();
+		for (int i = 0; i < var_count; i++)
+		{
+			Py_XDECREF(variables_[i]);
+		}
+		delete[] variables_;
+		variables_ = nullptr;
+	}
 }
 
 
@@ -124,9 +134,8 @@ void asyncflow::py::PyChart::ClearVariables()
 		for (int i = 0; i < var_count; i++)
 		{
 			Py_XDECREF(variables_[i]);
+            variables_[i] = Py_NewRef(Py_None);
 		}
-		delete[] variables_;
-		variables_ = nullptr;
 	}
 }
 
@@ -162,11 +171,25 @@ void asyncflow::py::PyChart::SetArgs(void* args, int argc)
 bool asyncflow::py::PyChart::InitArgs()
 {
 	auto var_count = data_->GetVarCount();
-	variables_ = new PyObject * [var_count];
-	for (int i = 0; i < var_count; i++)
+	if (variables_ == nullptr)
 	{
-		variables_[i] = Py_None;
-		Py_XINCREF(Py_None);
+		variables_ = new PyObject *[var_count];
+		for (int i = 0; i < var_count; i++)
+		{
+			variables_[i] = Py_NewRef(Py_None);			
+		}
+	}
+	else
+	{
+		for (int i = 0; i < var_count; i++)
+		{
+			auto* v = variables_[i];
+			if (v != Py_None)
+			{
+				Py_XDECREF(v);
+				variables_[i] = Py_NewRef(Py_None);
+			}
+		}
 	}
 	return true;
 }
