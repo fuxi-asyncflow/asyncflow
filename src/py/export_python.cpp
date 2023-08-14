@@ -769,6 +769,107 @@ PyObject* asyncflow::py::func(PyObject* self, PyObject* args)
 	PyDict_SetItemString(func_dict, func_name, func);
 	Py_RETURN_NONE;
 }
+
+PyObject* asyncflow::py::dump(PyObject* self, PyObject* args)
+{
+	auto* manager = PyManager::GetCurrentManager();
+	if (manager == nullptr)
+		PY_MGR_ERR;
+
+	PyObject* obj = nullptr;
+	if (PyTuple_Size(args) < 1)
+	{
+		ASYNCFLOW_ERR("dump function need at least 1 argument");
+		Py_RETURN_NONE;
+	}
+	obj = PyTuple_GetItem(args, 0);
+
+	PyObject* result = PyList_New(0);
+	if (result == nullptr)
+		Py_RETURN_NONE;
+
+	auto* agent = manager->GetAgent(obj);
+	if(agent == nullptr)
+		Py_RETURN_NONE;
+
+	auto& dict = agent->GetChartDict();
+	std::vector<Chart*> v;
+
+	for (auto& charts : dict)
+	{
+		v.insert(v.begin(), charts.second.begin(), charts.second.end());
+	}
+
+	for(auto* chart : v)
+	{
+		auto data = PyDict_New();
+		const auto* chart_data = chart->GetData();
+		const auto& path = chart_data->Name();
+		PyDict_SetItemString(data, "path", PyUnicode_FromStringAndSize(path.c_str(), path.size()));
+
+		// node_list
+		const auto nodes_count = chart->GetNodesCount();
+		auto* nodes_list = PyList_New(nodes_count);
+		for(int i=0; i<nodes_count; i++)
+		{
+			const auto* node = chart->GetNode(i);
+			if(node == nullptr)
+			{
+				PyList_SetItem(nodes_list, i, PyList_New(0));
+				continue;
+			}
+
+			auto* node_info = PyList_New(5);
+			auto* node_data = node->GetData();
+			const auto& uid = node_data->GetUid();
+			PyList_SetItem(node_info, 0, PyUnicode_FromStringAndSize(uid.c_str(), uid.size()));		// uid
+			PyList_SetItem(node_info, 1, PyLong_FromLong(node_data->GetId()));			// id
+			PyList_SetItem(node_info, 2, PyLong_FromLong(node->GetTrueCount()));		// true_count
+			PyList_SetItem(node_info, 3, PyLong_FromLong(node->GetFalseCount()));		// false_count
+			PyList_SetItem(node_info, 4, PyLong_FromLong(node->IsRunning()));			// is_running
+
+			PyList_SetItem(nodes_list, i, node_info);
+		}
+		PyDict_SetItemString(data, "nodes", nodes_list);
+
+		// variables
+		const auto var_count = chart->GetData()->GetVarCount();
+		auto* var_dict = PyDict_New();
+		for(int i=0; i<var_count; i++)
+		{
+			const auto& var_name = chart_data->GetVariableName(i);
+			auto* var_obj = ((PyChart*)chart)->GetVar(i, true);
+			auto var_str = ToString(var_obj);
+			PyDict_SetItemString(var_dict, var_name.c_str(), PyUnicode_FromStringAndSize(var_str.c_str(), var_str.size()));			
+		}
+		PyDict_SetItemString(data, "variables", var_dict);
+
+		//stack
+		auto* cur_node = chart->GetOwnerNode();
+		int cur_stack = 1;
+		const int MAX_STACK = 32;
+		auto* stack_list = PyList_New(0);
+		while(cur_stack < MAX_STACK && cur_node != nullptr)
+		{
+			auto cur_chart_path = cur_node->GetChart()->GetData()->Name();
+			const auto& uid = cur_node->GetData()->GetUid();
+			auto* stack_info = PyList_New(3);
+			PyList_SetItem(stack_info, 0, PyUnicode_FromStringAndSize(cur_chart_path.c_str(), cur_chart_path.size()));
+			PyList_SetItem(stack_info, 1, PyUnicode_FromStringAndSize(uid.c_str(), uid.size()));
+			PyList_SetItem(stack_info, 2, PyLong_FromLong(cur_node->GetId()));
+			PyList_Append(stack_list, stack_info);
+
+            cur_stack++;
+            cur_node = cur_node->GetChart()->GetOwnerNode();
+		}
+
+		PyDict_SetItemString(data, "stack", stack_list);
+
+		PyList_Append(result, data);
+	}
+	return result;
+}
+
 #pragma endregion asyncflow_inner_func
 
 
@@ -807,6 +908,7 @@ static PyMethodDef asyncflow_python_module_methods[] =
 	ADD_PYTHON_FUNC(call_sub),
 	ADD_PYTHON_FUNC(func),
 	ADD_PYTHON_FUNC(time),
+    ADD_PYTHON_FUNC(dump),
 	{	nullptr,			nullptr,			0,				nullptr }
 };
 #undef ADD_PYTHON_FUNC

@@ -25,7 +25,7 @@ namespace asyncflow
 			virtual ~ChartData();
 			virtual NodeFunc* CreateNodeFunc(const std::string& code, const std::string& name) = 0;
 
-			const std::string& Name() { return chart_name_; }
+			const std::string& Name() const { return chart_name_; }
 			const std::string& StartFuncName() { return start_func_name_; }
 			bool FromJson(rapidjson::Value& jobj);
 			bool FromYaml(const c4::yml::ConstNodeRef& doc);

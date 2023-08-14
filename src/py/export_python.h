@@ -42,6 +42,7 @@ namespace asyncflow
 		PyObject* wait_all(PyObject* self, PyObject* args);
 		PyObject* time(PyObject* self, PyObject* args);
 		PyObject* func(PyObject* self, PyObject* args);
+		PyObject* dump(PyObject* self, PyObject* args);
 
 		typedef struct {
 			PyObject_HEAD

@@ -32,7 +32,7 @@ namespace asyncflow
 			void		Stop();
 			bool		RunFlag() { return run_flag_; }
 			void		SetRunFlag(bool flag = true) { run_flag_ = flag; }
-			Status		GetStatus() { return status_; }
+			Status		GetStatus() const { return status_; }
 			void		SetStatus(Status status);
 			NodeResult	GetResult() { return result_; }
 			void		SetResult(NodeResult r) { result_ = r; }
@@ -42,11 +42,11 @@ namespace asyncflow
 			bool		IsWaitAll() { return is_wait_all; }
 			void		SetWaitAllFlag(bool flag = true) { is_wait_all = flag; }
 			int			GetId() { return id_; }
-			NodeData*	GetData() { return data_; }
+			NodeData*	GetData() const { return data_; }
 			INodeAttacher* GetAttacher() { return attacher_; }
 			void		SetAttacher(INodeAttacher* attacher) { if (attacher_ != nullptr) delete attacher_; attacher_ = attacher; }
 			void		SetAttacherNull() { attacher_ = nullptr; }
-			bool		IsRunning() { return status_ == Running; }
+			bool		IsRunning() const { return status_ == Running; }
 			int			GetPreNodeId() { return pre_node_id_; }
 			void		SetPreNodeId(int id) { pre_node_id_ = id; }
 			void		SetContainer(INodeContainer* container) { container_ = container; }
