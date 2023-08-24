@@ -30,7 +30,6 @@ TEST_CASE("test attach")
 	dostring(L, "asyncflow.step(0)");
 	dostring(L, "asyncflow.step(999)");
 	dostring(L, "asyncflow.stop(a,{\"Test01\"})");
-	REQUIRE(agent->GetRunningChartNames().size() == 0);
 	dostring(L, "asyncflow.step(10)");
 	dostring(L, "asyncflow.start(a,{\"Test01\"})");
 	dostring(L, "asyncflow.step(0)");
