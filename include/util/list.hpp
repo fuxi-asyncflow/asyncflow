@@ -1,6 +1,5 @@
 #pragma once
 
-template<typename T>
 class LinkedNode
 {
 public:
@@ -8,23 +7,22 @@ public:
 	{
 
 	}
-	LinkedNode<T>* prev;
-	LinkedNode<T>* next;
+	LinkedNode* prev;
+	LinkedNode* next;
 };
 
-template<typename T>
 class LinkedList
 {
-	using TNode = LinkedNode<T>;
+	using TNode = LinkedNode;
 public:
 	LinkedList()
 	{
-		list_ = new LinkedNode<T>;
+		list_ = new LinkedNode;
 		list_->next = list_;
 		list_->prev = list_;
 	}
-private:
-	LinkedNode<T>* list_;
+protected:
+	LinkedNode* list_;
 
 public:
 	void push_front(TNode* node)
