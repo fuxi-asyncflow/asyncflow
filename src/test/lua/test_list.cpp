@@ -1,6 +1,5 @@
 #include "core/node.h"
 #include "catch.hpp"
-#include "util/list.hpp"
 #include "core/custom_struct.h"
 #include "core/node_data.h"
 
