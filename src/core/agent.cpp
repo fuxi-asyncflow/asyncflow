@@ -178,7 +178,7 @@ bool Agent::RemoveChart(const std::string& chart_name)
 }
 
 
-NodeList* Agent::GetWaitNodes(int event_id)
+Agent::NodeList* Agent::GetWaitNodes(int event_id)
 {
 	if (event_id < 0 || event_id >= manager_->GetEventManager().GetEventCount())
 	{

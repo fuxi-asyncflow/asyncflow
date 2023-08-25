@@ -27,8 +27,8 @@ namespace asyncflow
 			void ContinueBreakpoint(NodeData* node_data);
 #endif
 		private:
-			NodeList waiting_nodes_;				//waiting for result
-			NodeList activate_nodes_;		//the result has been returned, waiting for execution
+			_NodeList waiting_nodes_;				//waiting for result
+			_NodeList activate_nodes_;		//the result has been returned, waiting for execution
 			std::unordered_set<Node*> nodes_set_;	//facilitate search
 			
 		};

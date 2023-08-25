@@ -37,6 +37,15 @@ Node::~Node()
 
 Agent*	Node::GetAgent() const { return chart_->GetAgent(); }
 
+Node* Node::FromLinkNode(LinkedNode* link)
+{
+	if (link == nullptr)
+		return nullptr;
+	const int offset = static_cast<int>(reinterpret_cast<intptr_t>((&((Node*)nullptr)->link_)));
+	return reinterpret_cast<Node*>(reinterpret_cast<char*>(link) - offset);
+}
+
+
 NodeResult Node::Run()
 {
 	ASYNCFLOW_DBG("--------------------- RUN NODE {0} : [{1}], skip:{2}", id_, chart_->Name(), skip_);

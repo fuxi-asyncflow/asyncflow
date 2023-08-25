@@ -19,6 +19,7 @@ namespace asyncflow
 		public:
 			static std::string DEBUG_NAME_METHOD;
 			static const int AGENT_INIT_ID = 1;
+			using NodeList = NodeLinkedList;
 
 			enum Status
 			{

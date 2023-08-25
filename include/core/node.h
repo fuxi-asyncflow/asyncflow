@@ -51,6 +51,7 @@ namespace asyncflow
 			void		SetPreNodeId(int id) { pre_node_id_ = id; }
 			void		SetContainer(INodeContainer* container) { container_ = container; }
 			INodeContainer*	GetContainer() { return container_; }
+			LinkedNode* GetLink() { return &link_; }
 			void		SendEventStatus(const AsyncEventBase* event);
 
 			void		IncTrueCount()  { true_count_++; }
@@ -58,11 +59,14 @@ namespace asyncflow
 			int			GetTrueCount() const { return true_count_; }
 			int			GetFalseCount() const { return false_count_; }
 
+			static Node* FromLinkNode(LinkedNode* link);
+
 		private:
 			int				id_;
 			int				pre_node_id_;
 			int				true_count_;
 			int				false_count_;
+			LinkedNode		link_;
 			Chart*			chart_;
 			NodeData*		data_;
 			NodeResult		result_;

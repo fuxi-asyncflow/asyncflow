@@ -51,8 +51,7 @@ void AsyncManager::ActivateNode(Node* node, bool skip_flag /*= true*/)
 #ifdef FLOWCHART_DEBUG
 void AsyncManager::ContinueBreakpoint(Chart* chart)
 {
-	const auto& node_list = waiting_nodes_.GetList();
-	for (auto* n : node_list)
+	for (auto* n : waiting_nodes_)
 	{
 		if (n->GetChart() == chart && n->GetData()->IsBreakPoint())
 		{
@@ -71,8 +70,7 @@ void AsyncManager::ContinueBreakpoint(Chart* chart)
 // continue to run the nodes in waiting_nodes_ those are deleted breakpoint
 void AsyncManager::ContinueBreakpoint(NodeData* node_data)
 {
-	const auto& node_list = waiting_nodes_.GetList();
-	for (auto* n : node_list)
+	for (auto* n : waiting_nodes_)
 	{
 		if (n->GetData() == node_data)
 		{
