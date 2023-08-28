@@ -189,6 +189,60 @@ def test_loop_wait():
         say_one(c)
     assert expected == actual
 
+def test_wait_dynamic():
+    mgr = asyncflow.setup()
+    graph_name = "AI.test_wait_dynamic"
+
+    def wait_a(self):
+        asyncflow.wait(asyncflow.get_var("a"))
+        return True
+    
+    def inc_a(self):
+        asyncflow.set_var("a", asyncflow.get_var("a") + 1)
+        print(asyncflow.get_var("a"))
+        return True   
+    
+
+    graph = GraphBuilder(graph_name, "Character")
+    graph.add_varialble("a", "Number")
+    n1 = graph.add_func_node(set_var("a", 1))
+    n2 = graph.add_func_node(wait_a)
+    n3 = graph.add_func_node(inc_a)
+    n4 = graph.add_func_node(say_time)
+    graph.connect_from_start(n1)
+    graph.connect(n1, n2)
+    graph.connect(n2, n3)
+    graph.connect(n3, n2)
+    graph.connect(n3, n4)
+
+    #           $a = 1 
+    #               |      
+    #           wait($a)   
+    #               |   \   
+    #           $a = $a + 1
+    #               |
+    #            say(time) 
+
+    mgr.import_charts(graph.build())
+    mgr.import_event(EventBuilder().build())
+
+    c = Character("npc")
+    actual = []
+    Character._output = actual.append
+    asyncflow.register(c)
+    asyncflow.attach(c, graph_name)
+    asyncflow.start(c)
+    count = 10 
+    for i in range(count):
+        asyncflow.step(1000)
+    asyncflow.exit()
+
+    expected = []
+    Character._output = expected.append
+    say_msg(2000)(c)
+    say_msg(4000)(c)
+    say_msg(7000)(c)
+    assert expected == actual
 
 if __name__ == '__main__':
     test_simple_run()
@@ -196,3 +250,4 @@ if __name__ == '__main__':
     test_dfs_run()
     test_wait()
     test_loop_wait()
+    test_wait_dynamic()
