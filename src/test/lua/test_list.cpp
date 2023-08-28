@@ -3,7 +3,6 @@
 #include "core/custom_struct.h"
 #include "core/node_data.h"
 
-
 class TestNode : public LinkedNode
 {
 public:
@@ -95,4 +94,56 @@ TEST_CASE("test list iterator")
 	}
 	REQUIRE(count == 2);
 	REQUIRE(sum == 4);
+
+	auto new_list(std::move(list));
+	REQUIRE(list.empty());
+	REQUIRE(new_list.size() == 2);
+
+	REQUIRE(node_0->GetLink()->prev != nullptr);
+	REQUIRE(node_0->GetLink()->next != nullptr);
+	REQUIRE(node_1->GetLink()->prev == nullptr);
+	REQUIRE(node_1->GetLink()->next == nullptr);
+	REQUIRE(node_2->GetLink()->prev != nullptr);
+	REQUIRE(node_2->GetLink()->next != nullptr);
+	new_list.~NodeLinkedList();
+	REQUIRE(node_0->GetLink()->prev == nullptr);
+	REQUIRE(node_0->GetLink()->next == nullptr);
+	REQUIRE(node_1->GetLink()->prev == nullptr);
+	REQUIRE(node_1->GetLink()->next == nullptr);
+	REQUIRE(node_2->GetLink()->prev == nullptr);
+	REQUIRE(node_2->GetLink()->next == nullptr);
+}
+
+TEST_CASE("test list swap")
+{
+	auto* node_data = new asyncflow::core::NodeData(0);
+	asyncflow::core::NodeLinkedList list;
+	auto* node_0 = new asyncflow::core::Node(nullptr, node_data);	
+	auto* node_1 = new asyncflow::core::Node(nullptr, node_data);	
+	auto* node_2 = new asyncflow::core::Node(nullptr, node_data);
+
+	asyncflow::core::NodeLinkedList lista;
+	asyncflow::core::NodeLinkedList listb;
+
+	lista.Push(node_0);
+	lista.Push(node_1);
+	listb.Push(node_2);
+
+	REQUIRE(lista.size() == 2);
+	REQUIRE(listb.size() == 1);
+
+	REQUIRE(lista.front() == node_0->GetLink());
+	REQUIRE(lista.back() == node_1->GetLink());
+	REQUIRE(listb.front() == node_2->GetLink());
+	REQUIRE(listb.back() == node_2->GetLink());
+
+	lista.swap(listb);
+
+	REQUIRE(listb.front() == node_0->GetLink());
+	REQUIRE(listb.back() == node_1->GetLink());
+	REQUIRE(lista.front() == node_2->GetLink());
+	REQUIRE(lista.back() == node_2->GetLink());
+
+	REQUIRE(lista.size() == 1);
+	REQUIRE(listb.size() == 2);
 }

@@ -17,10 +17,39 @@ class LinkedList
 public:
 	LinkedList()
 	{
+		init();
+	}	
+
+	LinkedList(const LinkedList&) = delete;
+	LinkedList(LinkedList&& l) noexcept
+	{
+		list_ = l.list_;
+		l.init();
+	}
+
+	virtual ~LinkedList()
+	{
+		if (list_ == nullptr)
+			return;
+		clear();
+		delete list_;
+		list_ = nullptr;
+	}
+
+	void init()
+	{
 		list_ = new LinkedNode;
 		list_->next = list_;
 		list_->prev = list_;
 	}
+
+	void swap(LinkedList& l)
+	{
+		auto* tmp = list_;
+		list_ = l.list_;
+		l.list_ = tmp;
+	}
+
 protected:
 	LinkedNode* list_;
 
@@ -95,5 +124,26 @@ public:
 		auto* ret = list_->prev;
 		remove(ret);
 		return ret;
+	}
+
+	void clear()
+	{
+		for(auto* cur = list_->next; cur != list_;)
+		{
+			auto* next = cur->next;
+			cur->prev = nullptr;
+			cur->next = nullptr;
+			cur = next;
+		}
+	}
+
+	std::size_t size()
+	{
+		size_t count = 0;
+		for (auto* cur = list_->next; cur != list_; cur = cur->next)
+		{
+			count++;
+		}
+		return count;
 	}
 };
