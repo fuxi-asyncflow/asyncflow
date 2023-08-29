@@ -98,18 +98,13 @@ namespace asyncflow
 			};
 			using TIt= NodeLinkedListIterator;
 		public:
+			~NodeLinkedList() override;
 			void	Push(Node* node) override;
-			Node* Pop() override;
+			Node*	Pop() override;
 			void	Remove(Node* node) override;
-			 Node* GetTop() override;
+			Node*	GetTop() override;
 			bool	IsEmpty() override;
-			TIt Erase(const TIt& it)
-			{
-				TIt r(it);
-				++r;
-				remove(it.cur_);
-				return r;
-			}
+			TIt		Erase(const TIt& it);
 			TIt begin() const { return TIt(list_->next); }
 			TIt end() const { return TIt(list_); }
 

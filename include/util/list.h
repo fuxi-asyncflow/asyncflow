@@ -20,12 +20,8 @@ public:
 		init();
 	}	
 
-	LinkedList(const LinkedList&) = delete;
-	LinkedList(LinkedList&& l) noexcept
-	{
-		list_ = l.list_;
-		l.init();
-	}
+	LinkedList(LinkedList& l) = delete;
+	LinkedList(LinkedList&& l) = delete;
 
 	virtual ~LinkedList()
 	{

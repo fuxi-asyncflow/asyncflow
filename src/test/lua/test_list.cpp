@@ -95,7 +95,8 @@ TEST_CASE("test list iterator")
 	REQUIRE(count == 2);
 	REQUIRE(sum == 4);
 
-	auto new_list(std::move(list));
+	asyncflow::core::NodeLinkedList new_list;
+	new_list.swap(list);
 	REQUIRE(list.empty());
 	REQUIRE(new_list.size() == 2);
 

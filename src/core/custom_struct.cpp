@@ -51,20 +51,38 @@ _NodeList::~_NodeList()
 }
 
 ///////////////////////////////////////////////////////////////////
+NodeLinkedList::~NodeLinkedList()
+{
+	if (list_ == nullptr)
+		return;
+	for (auto* cur = list_->next; cur != list_; cur = cur->next)
+	{
+		Node::FromLinkNode(cur)->SetContainer(nullptr);
+	}
+}
 
 void NodeLinkedList::Push(Node* node)
 {
-	push_back(node->GetLink());	
+	auto* container = node->GetContainer();
+	if (container)
+	{
+		container->Remove(node);
+	}
+	push_back(node->GetLink());
+	node->SetContainer(this);
 }
 
 Node* NodeLinkedList::Pop()
 {
-	return Node::FromLinkNode(pop_front());
+	auto* node =  Node::FromLinkNode(pop_front());
+	node->SetContainer(nullptr);
+	return node;
 }
 
 void NodeLinkedList::Remove(Node* node)
 {
 	remove(node->GetLink());
+	node->SetContainer(nullptr);
 }
 
 Node* NodeLinkedList::GetTop()
@@ -93,4 +111,13 @@ void NodeLinkedList::print()
 Node* NodeLinkedList::NodeLinkedListIterator::operator*() const
 {
 	return Node::FromLinkNode(cur_);	
+}
+
+NodeLinkedList::TIt	NodeLinkedList::Erase(const NodeLinkedList::TIt & it)
+{
+	NodeLinkedList::TIt r(it);
+	++r;
+	Node::FromLinkNode(it.cur_)->SetContainer(nullptr);
+	remove(it.cur_);
+	return r;
 }
