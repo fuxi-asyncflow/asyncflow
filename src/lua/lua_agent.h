@@ -16,7 +16,6 @@ namespace asyncflow
 			Ref		GetRefObject() { return obj_; }
 			TOBJ		GetGameObject() { return addr_; }
 			std::string GetName() override;
-			bool		RunFlow(Node* start_node) override;
 
 		private:
 			Ref			obj_;						//game obj, self parameter in node function

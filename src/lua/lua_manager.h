@@ -101,6 +101,7 @@ namespace asyncflow
 				}
 				return agent;
 			}
+			bool	RunFlow(Node* node) override;
 
 			std::pair<bool, std::vector<std::string>> RunScript(const char* str) override;
 

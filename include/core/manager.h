@@ -49,6 +49,7 @@ namespace asyncflow
 			AsyncManager& GetAsyncManager() { return async_manager_; }
 			virtual BasicAgentManager& GetAgentManager() = 0;
 			IExecutor& GetExecutor() { return executor_; }
+			virtual bool	RunFlow(Node* node) { return executor_.RunFlow(node); }
 
 			Agent* GetCurrentAgent() { return executor_.GetCurrentAgent(); }
 			Node* GetCurrentNode() { return executor_.GetCurrentNode(); }
@@ -102,6 +103,7 @@ namespace asyncflow
 
 		private:
 			void HandleEvent(AsyncEventBase& event);
+			void _handleEvent(AsyncEventBase& ev, Agent::NodeList& node_list);
 
 		protected:
 			

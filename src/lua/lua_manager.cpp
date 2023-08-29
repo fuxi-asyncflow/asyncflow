@@ -175,4 +175,15 @@ Ref LuaManager::InitFuncRef(lua_State* L)
 	return ref;	
 }
 
+bool LuaManager::RunFlow(Node* node)
+{
+	lua_rawgeti(L, LUA_REGISTRYINDEX, ErrorHandler);						//  +1
+	lua_rawgeti(L, LUA_REGISTRYINDEX, ObjectRef);							//  +1
+	lua_rawgeti(L, -1, ((LuaAgent*)(node->GetAgent()))->GetRefObject());	//  +1
+	lua_rawgeti(L, LUA_REGISTRYINDEX, FunctionRef);							//  +1
+	auto ret = Manager::RunFlow(node);
+	lua_pop(L, 4);																	//  -4
+	return ret;
+}
+
 

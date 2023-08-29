@@ -17,8 +17,8 @@ void AsyncManager::Step()
 		node->SetSkip(flag);
 		node->SetResult(result);
 		RemoveNode(node);
-		auto* agent = node->GetAgent();
-		agent->RunFlow(node);
+		auto* manager = node->GetAgent()->GetManager();
+		manager->RunFlow(node);
 	}
 }
 

@@ -40,8 +40,6 @@ namespace asyncflow
 			bool		EraseChart(Chart* chart);
 			bool		RemoveChart(const std::string& chart_name);
 			bool		StopChart(const std::string& chart_name);
-			void		HandleEvent(const AsyncEventBase& event, NodeList* waiting_nodes);
-			virtual bool		RunFlow(Node* start_node);
 
 			int			GetId() { return id_; }
 			void		SetId(int id) { id_ = id; }
@@ -55,7 +53,7 @@ namespace asyncflow
 			const std::unordered_map<std::string, std::vector<Chart*>>& GetChartDict() { return chart_dict_; }
 			Status		GetStatus() { return status_; }
 			void		SetStatus(Status s) { status_ = s; }
-			NodeList* GetWaitNodes(int event_id);
+			NodeList*	GetWaitNodes(int event_id);
 			
 
 		protected:

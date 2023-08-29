@@ -133,7 +133,7 @@ bool Agent::StartChart(Chart* chart, bool sync, void* args, int argc)
 	if(sync)
 	{
 		// if out of stack, then try async mode
-		if (RunFlow(start_node))
+		if (manager_->RunFlow(start_node))
 			return true;
 	}
 	
@@ -188,36 +188,6 @@ Agent::NodeList* Agent::GetWaitNodes(int event_id)
 	return waiting_nodes_list[event_id];
 }
 
-void Agent::HandleEvent(const AsyncEventBase& event, NodeList* waiting_nodes)
-{
-	if (status_ == Destroying)	return;
-
-	// As the node runs, new nodes may be added to the list, so a copy is created.
-	waiting_nodes_list[event.Id()] = new NodeList();
-	ASYNCFLOW_DBG("handle event {0} for agent {1} [{2}-{4}], total {3} nodes",
-		(void*)&event, (void*)this, event.Id(), waiting_nodes->Size(), manager_->GetEventManager().GetEventName(event.Id()));
-
-	while (!waiting_nodes->IsEmpty())
-	{
-		// The agent of the node may be different from the agent which the current event belongs to, eg $obj.OnSee.
-		auto* node = waiting_nodes->Pop();
-		auto* agent = node->GetAgent();
-		node->SetStatus(Node::Idle);
-#ifdef FLOWCHART_DEBUG
-		node->SendEventStatus(&event);
-#endif
-		agent->RunFlow(node);
-	}	
-	// assert(waiting_nodes->empty());	
-	// Assert may be failed: As subchart called, the start node of the subchart is also waiting for the start event and is placed in the same list, which cannot be cleared
-}
-
-// RunFlow function is only used in two places: event occures, and timer-triggered node runs.
-bool Agent::RunFlow(Node* start_node)
-{
-	return manager_->GetExecutor().RunFlow(start_node);
-}
-
 // Start to run all charts that are not in running status;
 int Agent::Start()
 {
@@ -258,10 +228,9 @@ void Agent::WaitEvent(Node* node, int event_id)
 	}
 	ASYNCFLOW_DBG("node {0} : {1}[{2}] wait event {3} [{4}-{5}]"
 		, (void*)node, node->GetChart()->Name(), node->GetId(), (void*)this, event_id, manager_->GetEventManager().GetEventName(event_id));
-	node->SetContainer(nullptr);
 	waiting_nodes->Push(node);
 	// The node waiting for an event must be Running status.
-	node->SetStatus(Node::Running);			
+	node->SetStatus(Node::Running);
 }
 
 Chart* Agent::FindChart(const std::string& chart_name, Node* owner_node)

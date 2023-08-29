@@ -388,16 +388,39 @@ int Manager::ImportEvent(const std::string& file_name)
 	return eventManager.InitFromYaml(str);
 }
 
+void Manager::_handleEvent(AsyncEventBase& ev, Agent::NodeList& node_list)
+{
+	// As the node runs, new nodes may be added to the list, so a copy is created.
+	ASYNCFLOW_DBG("handle event {0} for agent {1} [{2}-{4}], total {3} nodes",
+		(void*)&event, (void*)this, event.Id(), waiting_nodes->Size(), manager_->GetEventManager().GetEventName(event.Id()));
+
+	while (!node_list.IsEmpty())
+	{
+		// The agent of the node may be different from the agent which the current event belongs to, eg $obj.OnSee.
+		auto* node = node_list.Pop();
+		auto* agent = node->GetAgent();
+		node->SetStatus(Node::Idle);
+#ifdef FLOWCHART_DEBUG
+		node->SendEventStatus(&ev);
+#endif
+		RunFlow(node);
+	}
+	// assert(waiting_nodes->empty());	
+	// Assert may be failed: As subchart called, the start node of the subchart is also waiting for the start event and is placed in the same list, which cannot be cleared
+}
+
 void Manager::HandleEvent(AsyncEventBase& ev)
 {
 	auto* agent = ev.GetAgent();
 	auto* waiting_nodes = agent->GetWaitNodes(ev.Id());
 	if (waiting_nodes == nullptr || waiting_nodes->IsEmpty())
 		return;
+	NodeLinkedList node_list;
+	node_list.swap(*waiting_nodes);
 	current_event_ = &ev;
-	waiting_nodes_ = waiting_nodes;
-	agent->HandleEvent(ev, waiting_nodes);
-	delete waiting_nodes;
+	waiting_nodes_ = &node_list;
+	if (agent->GetStatus() == Agent::Running)
+		_handleEvent(ev, node_list);
 	waiting_nodes_ = nullptr;
 	current_event_ = nullptr;
 }
@@ -412,10 +435,11 @@ bool Manager::TriggerEvent(AsyncEventBase& ev)
 	if(current_event_frame_ >= MAX_EVENT_FRAME)	
 		return false;
 	current_event_frame_++;
+	// use function stack as stack of node list and current event
 	auto* prev_list = waiting_nodes_;
 	auto* prev_ev = current_event_;
 
-    // hanele event
+    // handle event
 	HandleEvent(ev);
 
 	// pop
@@ -423,7 +447,6 @@ bool Manager::TriggerEvent(AsyncEventBase& ev)
 	waiting_nodes_ = prev_list;
 	current_event_ = prev_ev;
 	return true;
-
 }
 
 void Manager::Wait(int milliseconds)
