@@ -135,7 +135,7 @@ public:
 
 	std::size_t size()
 	{
-		size_t count = 0;
+		std::size_t count = 0;
 		for (auto* cur = list_->next; cur != list_; cur = cur->next)
 		{
 			count++;
