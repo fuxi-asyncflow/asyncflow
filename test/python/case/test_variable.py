@@ -47,7 +47,7 @@ def test_weakref(weak = True):
     test_var = [Character("weak var")]
 
     def del_var(self):
-        test_var.clear()
+        test_var[:] = []  # py2 has no clear method for list
 
     def set_var_weak(name, lst, weak = False):
         def _set_var(self):

@@ -526,6 +526,12 @@ PyObject* asyncflow::py::wait(PyObject* self, PyObject* args)
 	{
 		tm = (int)(1000 * PyFloat_AsDouble(arg0));
 	}
+#ifdef USING_PYTHON2
+	else if(PyInt_Check(arg0))
+	{
+		tm = (int)(1000 * PyInt_AsLong(arg0));
+	}
+#endif
 	else if (PyLong_Check(arg0))
 	{
 		tm = (int)(1000 * PyLong_AsLong(arg0));
