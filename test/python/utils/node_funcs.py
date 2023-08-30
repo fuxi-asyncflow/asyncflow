@@ -14,6 +14,9 @@ def say_three(self):
 def say_four(self):
     self.Say("four")
 
+def say_time(self):
+    self.Say(asyncflow.time())
+
 def say_msg(msg):
     def _say(self):
         self.Say(msg)

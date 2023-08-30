@@ -134,7 +134,8 @@ void asyncflow::py::PyChart::ClearVariables()
 		for (int i = 0; i < var_count; i++)
 		{
 			Py_XDECREF(variables_[i]);
-            variables_[i] = Py_NewRef(Py_None);
+            variables_[i] = Py_None;
+			Py_INCREF(Py_None);
 		}
 	}
 }
@@ -176,7 +177,8 @@ bool asyncflow::py::PyChart::InitArgs()
 		variables_ = new PyObject *[var_count];
 		for (int i = 0; i < var_count; i++)
 		{
-			variables_[i] = Py_NewRef(Py_None);			
+			variables_[i] = Py_None;
+			Py_INCREF(Py_None);
 		}
 	}
 	else
@@ -187,7 +189,8 @@ bool asyncflow::py::PyChart::InitArgs()
 			if (v != Py_None)
 			{
 				Py_XDECREF(v);
-				variables_[i] = Py_NewRef(Py_None);
+				variables_[i] = Py_None;
+				Py_INCREF(Py_None);
 			}
 		}
 	}
