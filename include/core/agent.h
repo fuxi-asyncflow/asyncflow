@@ -63,7 +63,7 @@ namespace asyncflow
 			Manager*		manager_;
 			AgentTimer		timer_;
 			std::unordered_map<std::string, std::vector<Chart*>> chart_dict_;
-			std::vector<NodeList*> waiting_nodes_list;
+			std::unordered_map<int, NodeList*> waiting_nodes_dict_;
 		};
 
 

@@ -19,10 +19,6 @@ Agent::Agent(Manager* manager)
 	, timer_(this)
 {
 	timer_.Start();
-	for (auto i = 0; i <= manager_->GetEventManager().GetEventCount(); i++)
-	{
-		waiting_nodes_list.push_back(new NodeList());
-	}
 }
 
 Agent::~Agent()
@@ -31,11 +27,11 @@ Agent::~Agent()
 	timer_.Stop();
 
 	// destroy all nodes that are waiting for events
-	for (auto* v : waiting_nodes_list)
+	for (auto& kv : waiting_nodes_dict_)
 	{
-		delete v;
+		delete kv.second;
 	}
-	waiting_nodes_list.clear();
+	waiting_nodes_dict_.clear();
 
 	// destroy all charts
 	for (auto& kv : chart_dict_)
@@ -185,7 +181,12 @@ Agent::NodeList* Agent::GetWaitNodes(int event_id)
 		ASYNCFLOW_WARN("event id is out of range : {0}", event_id);
 		return nullptr;
 	}
-	return waiting_nodes_list[event_id];
+	const auto it = waiting_nodes_dict_.find(event_id);
+	if (it != waiting_nodes_dict_.end())
+		return it->second;
+	auto* nodes_list = new NodeList;
+	waiting_nodes_dict_.emplace(event_id, nodes_list);
+	return nodes_list;
 }
 
 // Start to run all charts that are not in running status;
