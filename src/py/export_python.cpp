@@ -484,6 +484,8 @@ PyObject* asyncflow::py::set_node_func(PyObject* self, PyObject* args)
 {
 	//PyObject* async_module = PyImport_ImportModule("asyncflow");
     PyObject* async_module = self;
+	if (async_module == nullptr)
+		async_module = asyncflow::py::_module;
 	if (CheckPythonException() || async_module == nullptr)
 	{
 		ASYNCFLOW_ERR("cannot find asyncflow module when set_node_func");
