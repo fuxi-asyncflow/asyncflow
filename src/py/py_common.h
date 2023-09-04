@@ -2,20 +2,22 @@
 #include "Python.h"
 #include<string>
 
-static const char* manager_null_msg = "manager is null, any function shoud called after asyncflow.setup()";
-static const char* agr_err_msg = "parse argument failed!";
+static const char* manager_null_msg = "asyncflow func error , func `{0}` shoud called after asyncflow.setup()";
+static const char* manager_null_msg_c = "asyncflow func error , func `%s` shoud called after asyncflow.setup()";
+static const char* agr_err_msg = "asyncflow func arguments error in `{0}`";
+static const char* agr_err_msg_c = "asyncflow func arguments error in `%s`";
 
 #define PY_MGR_ERR												\
 do {															\
-    ASYNCFLOW_ERR(manager_null_msg);							\
-	PyErr_SetString(PyExc_RuntimeError, manager_null_msg);		\
+    ASYNCFLOW_ERR(manager_null_msg, __func__);					\
+	PyErr_Format(PyExc_RuntimeError, manager_null_msg_c, __func__);	\
     return nullptr;												\
 } while (false)
 
 #define PY_ARG_ERR												\
 do {															\
-    ASYNCFLOW_ERR(agr_err_msg);									\
-	PyErr_SetString(PyExc_TypeError, agr_err_msg);				\
+    ASYNCFLOW_ERR(agr_err_msg, __func__);						\
+	PyErr_Format(PyExc_RuntimeError, agr_err_msg_c, __func__);	\
     return nullptr;												\
 } while (false)
 
