@@ -25,10 +25,6 @@ const int Manager::MAX_EVENT_FRAME = 16;
 DataManager Manager::dataManager = DataManager();
 EventManager Manager::eventManager = EventManager();
 
-int BasicAgentManager::AGENT_ID_COUNT = 0;
-
-
-
 Manager::Manager()
 	: current_frame_(0)	
 	, current_event_(nullptr)

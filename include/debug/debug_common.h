@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <string>
+#include <cstdint>
 using namespace asyncflow::core;
 
 namespace asyncflow
@@ -9,14 +10,20 @@ namespace asyncflow
 	{
 		struct ChartInfo
 		{
-			int			agent_id{ -1 };
-			void*		owner_node_addr{ (void*)-1 };
-			int			owner_node_id{ -1 };
-			std::string owner_node_uid{ "" };
-			std::string object_name{ "" };
-			std::string chart_name{ "" };
-			std::string owner_chart_name{ "" };
-			std::string chart_uid{ "" };
+			ChartInfo()
+				: agent_id(UINT64_MAX)
+				, owner_node_addr((void*)-1)
+				, owner_node_id(-1)
+			{
+			}
+			uint64_t	agent_id;
+			void*		owner_node_addr;
+			int			owner_node_id;
+			std::string owner_node_uid;
+			std::string object_name;
+			std::string chart_name;
+			std::string owner_chart_name;
+			std::string chart_uid;
 		};
 
 		struct DebugData

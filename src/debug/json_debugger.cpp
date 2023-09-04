@@ -290,7 +290,7 @@ std::string JsonDebugger::GenChartInfo(Chart* chart)
 	writer.String("chart_name");
 	writer.String(chart->Name().c_str());
 	writer.String("agent_id");
-	writer.Int(chart->GetAgent()->GetId());
+	writer.Uint64(chart->GetAgent()->GetId());
 	writer.String("owner_node_addr");
 	writer.Uint64((uint64_t)chart->GetOwnerNode());
 	writer.EndObject();
@@ -344,7 +344,7 @@ void asyncflow::debug::Serialize_ChartInfo_Json(Writer& writer, const ChartInfo&
 	writer.StartObject();
 
 	writer.String("agent_id");
-	writer.Int(ci.agent_id);
+	writer.Uint64(ci.agent_id);
 
 	writer.String("owner_node_addr");
 	writer.Uint64((uint64_t)ci.owner_node_addr);
@@ -374,7 +374,7 @@ void asyncflow::debug::Serialize_ChartInfo_Json(Writer& writer, const ChartInfo&
 void asyncflow::debug::Deserialize_ChartInfo_Json(const rapidjson::Value& obj, ChartInfo& ci)
 {
 	if (obj.HasMember("agent_id") && obj["agent_id"].IsInt())
-		ci.agent_id = obj["agent_id"].GetInt();
+		ci.agent_id = obj["agent_id"].GetUint64();
 	if (obj.HasMember("owner_node_addr") && obj["owner_node_addr"].IsInt64())
 		ci.owner_node_addr = (void*)obj["owner_node_addr"].GetUint64();
 	if (obj.HasMember("owner_node_id") && obj["owner_node_id"].IsInt())

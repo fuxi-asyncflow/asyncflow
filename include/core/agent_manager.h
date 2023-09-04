@@ -13,9 +13,13 @@ namespace asyncflow
 		public:
 			BasicAgentManager(Manager* manager)
 				: manager_(manager)
+				, AGENT_ID_COUNT(0)
 			{
 				
 			}
+
+			BasicAgentManager(BasicAgentManager&) = delete;
+			BasicAgentManager(BasicAgentManager&&) = delete;
 
 			virtual ~BasicAgentManager()
 			{
@@ -25,7 +29,7 @@ namespace asyncflow
 			//The lua_agent should deconstruct before the lua_manager because of the refs, such as ObjectRef; Only use in lua_manager deconstructer
 			void Clear()
 			{
-				for (auto kv : agent_map_)
+				for (const auto kv : agent_map_)
 				{
 					delete kv.second;
 				}
@@ -40,25 +44,25 @@ namespace asyncflow
 
 			void AddAgent(Agent* agent)
 			{
-				auto id = GenAgentId();
+				const auto id = GenAgentId();
 				agent->SetId(id);
 				agent_map_[id] =  agent;
 			}
 
-			const std::unordered_map<int, Agent*>& GetAgents()
+			const std::unordered_map<Agent::AgentID, Agent*>& GetAgents()
 			{
 				return agent_map_;
 			}
 
-			static int GenAgentId() { return ++AGENT_ID_COUNT; }
+			Agent::AgentID GenAgentId() { return ++AGENT_ID_COUNT; }
 
-			virtual Agent* UnRegister(Agent* agent) = 0;			
+			virtual Agent* UnRegister(Agent* agent) = 0;
 			
 		protected:
-			std::unordered_map<int, Agent*> agent_map_;
+			std::unordered_map<Agent::AgentID, Agent*> agent_map_;
 			Manager* manager_;
 
-			static int AGENT_ID_COUNT;
+			Agent::AgentID AGENT_ID_COUNT;
 		};
 
 		template<typename TAGENT>
@@ -71,6 +75,9 @@ namespace asyncflow
 			{
 				
 			}
+
+			AgentManager(AgentManager&) = delete;
+			AgentManager(AgentManager&&) = delete;
 
 			~AgentManager() override
 			{

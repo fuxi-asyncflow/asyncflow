@@ -20,6 +20,7 @@ namespace asyncflow
 			static std::string DEBUG_NAME_METHOD;
 			static const int AGENT_INIT_ID = 1;
 			using NodeList = NodeLinkedList;
+			using AgentID = uint64_t;
 
 			enum Status
 			{
@@ -41,8 +42,8 @@ namespace asyncflow
 			bool		RemoveChart(const std::string& chart_name);
 			bool		StopChart(const std::string& chart_name);
 
-			int			GetId() { return id_; }
-			void		SetId(int id) { id_ = id; }
+			AgentID		GetId() { return id_; }
+			void		SetId(AgentID id) { id_ = id; }
 			virtual std::string GetName() { return ""; }
 			Manager*	GetManager() { return manager_; }
 			bool		IsRunning() { return status_ == Running; }
@@ -57,7 +58,7 @@ namespace asyncflow
 			
 
 		protected:
-			int				id_;
+			AgentID			id_;
 			int				tick_interval_;				// tick event interval for agent
 			Status			status_;
 			Manager*		manager_;
