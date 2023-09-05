@@ -6,6 +6,7 @@ namespace asyncflow
 {
 	namespace core
 	{
+		class NodeLinkedList;
 		class Agent;
 		class Manager;
 		
@@ -17,7 +18,7 @@ namespace asyncflow
 			AsyncEventBase(int id, Agent* agent);
 			virtual ~AsyncEventBase(){}
 
-			Agent* GetAgent(const Manager& mgr) const;
+			NodeLinkedList* GetWaitingNodes(const Manager& mgr) const;
 			int Id() const { return id_; }
 			int argCount() const { return arg_count_; }
 

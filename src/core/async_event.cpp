@@ -10,7 +10,10 @@ AsyncEventBase::AsyncEventBase(int id, Agent* agent)
 	agent_id_ = agent == nullptr ? UINT64_MAX : agent->GetId();
 }
 
-Agent* AsyncEventBase::GetAgent(const Manager& mgr) const
+NodeLinkedList* AsyncEventBase::GetWaitingNodes(const Manager& mgr) const
 {
-	return mgr.GetAgentManager().GetAgentById(agent_id_);	
+	auto agent =  mgr.GetAgentManager().GetAgentById(agent_id_);
+	if (agent == nullptr)
+		return nullptr;
+	return agent->GetWaitNodes(id_, false);
 }

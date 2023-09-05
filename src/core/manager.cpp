@@ -396,24 +396,21 @@ void Manager::_handleEvent(AsyncEventBase& ev, Agent::NodeList& node_list)
 
 void Manager::HandleEvent(AsyncEventBase& ev)
 {
-	auto* agent = ev.GetAgent(*this);
-	auto* waiting_nodes = agent->GetWaitNodes(ev.Id());
+	auto* waiting_nodes = ev.GetWaitingNodes(*this);
 	if (waiting_nodes == nullptr || waiting_nodes->IsEmpty())
 		return;
 	NodeLinkedList node_list;
 	node_list.swap(*waiting_nodes);
 	current_event_ = &ev;
 	waiting_nodes_ = &node_list;
-	if (agent->GetStatus() == Agent::Running)
-		_handleEvent(ev, node_list);
+	_handleEvent(ev, node_list);
 	waiting_nodes_ = nullptr;
 	current_event_ = nullptr;
 }
 
 bool Manager::TriggerEvent(AsyncEventBase& ev)
-{	
-	auto* agent = ev.GetAgent(*this);
-	auto* waiting_nodes = agent->GetWaitNodes(ev.Id());
+{
+	auto* waiting_nodes = ev.GetWaitingNodes(*this);
 	if (waiting_nodes == nullptr || waiting_nodes->IsEmpty())
 		return true;
 	

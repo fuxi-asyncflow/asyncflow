@@ -174,7 +174,7 @@ bool Agent::RemoveChart(const std::string& chart_name)
 }
 
 
-Agent::NodeList* Agent::GetWaitNodes(int event_id)
+Agent::NodeList* Agent::GetWaitNodes(int event_id, bool create)
 {
 	if (event_id < 0 || event_id >= manager_->GetEventManager().GetEventCount())
 	{
@@ -184,6 +184,8 @@ Agent::NodeList* Agent::GetWaitNodes(int event_id)
 	const auto it = waiting_nodes_dict_.find(event_id);
 	if (it != waiting_nodes_dict_.end())
 		return it->second;
+	if (!create)
+		return nullptr;
 	auto* nodes_list = new NodeList;
 	waiting_nodes_dict_.emplace(event_id, nodes_list);
 	return nodes_list;

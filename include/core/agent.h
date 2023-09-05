@@ -54,7 +54,7 @@ namespace asyncflow
 			const std::unordered_map<std::string, std::vector<Chart*>>& GetChartDict() { return chart_dict_; }
 			Status		GetStatus() { return status_; }
 			void		SetStatus(Status s) { status_ = s; }
-			NodeList*	GetWaitNodes(int event_id);
+			NodeList*	GetWaitNodes(int event_id, bool create = true);
 			
 
 		protected:
