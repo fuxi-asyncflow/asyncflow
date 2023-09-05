@@ -6,30 +6,25 @@ namespace asyncflow
 {
 	namespace core
 	{
-		class Agent;	
+		class Agent;
+		class Manager;
 		
 		class AsyncEventBase
 		{
 		public:
 			static int START_EVENT;
 			static int TICK_EVENT;
-			AsyncEventBase(int id, Agent* agent)
-				: id_(id)
-				, arg_count_(0)
-				, agent_(agent)				
-			{
-
-			}
+			AsyncEventBase(int id, Agent* agent);
 			virtual ~AsyncEventBase(){}
 
-			Agent* GetAgent() const { return agent_; }
+			Agent* GetAgent(const Manager& mgr) const;
 			int Id() const { return id_; }
 			int argCount() const { return arg_count_; }
 
 		protected:
 			int		id_;
 			int		arg_count_;
-			Agent*	agent_;
+			uint64_t	agent_id_;
 		};
 
 		template<typename T, typename RefHelper>

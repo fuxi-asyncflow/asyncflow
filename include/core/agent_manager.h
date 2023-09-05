@@ -36,7 +36,7 @@ namespace asyncflow
 				agent_map_.clear();
 			}
 			
-			Agent* GetAgentById(int id)
+			Agent* GetAgentById(Agent::AgentID id) const
 			{
 				auto const it = agent_map_.find(id);
 				return it == agent_map_.end() ? nullptr : it->second;

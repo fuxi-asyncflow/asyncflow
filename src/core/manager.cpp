@@ -407,7 +407,7 @@ void Manager::_handleEvent(AsyncEventBase& ev, Agent::NodeList& node_list)
 
 void Manager::HandleEvent(AsyncEventBase& ev)
 {
-	auto* agent = ev.GetAgent();
+	auto* agent = ev.GetAgent(*this);
 	auto* waiting_nodes = agent->GetWaitNodes(ev.Id());
 	if (waiting_nodes == nullptr || waiting_nodes->IsEmpty())
 		return;
@@ -423,7 +423,7 @@ void Manager::HandleEvent(AsyncEventBase& ev)
 
 bool Manager::TriggerEvent(AsyncEventBase& ev)
 {	
-	auto* agent = ev.GetAgent();
+	auto* agent = ev.GetAgent(*this);
 	auto* waiting_nodes = agent->GetWaitNodes(ev.Id());
 	if (waiting_nodes == nullptr || waiting_nodes->IsEmpty())
 		return true;

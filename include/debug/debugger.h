@@ -28,12 +28,12 @@ namespace asyncflow
 
 		struct DebugChartInfo
 		{
-			DebugChartInfo(int id, core::Node* node, core::Chart* chart, std::string name)
+			DebugChartInfo(uint64_t id, core::Node* node, core::Chart* chart, std::string name)
 			    : agent_id(id), owner_node(node), chart(chart), chart_name(name)
 			{
 			    
 			}
-			int agent_id;
+			uint64_t agent_id;
 			core::Node* owner_node;
 			core::Chart* chart;
 			std::string chart_name;

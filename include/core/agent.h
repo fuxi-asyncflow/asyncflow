@@ -42,7 +42,7 @@ namespace asyncflow
 			bool		RemoveChart(const std::string& chart_name);
 			bool		StopChart(const std::string& chart_name);
 
-			AgentID		GetId() { return id_; }
+			AgentID		GetId() const { return id_; }
 			void		SetId(AgentID id) { id_ = id; }
 			virtual std::string GetName() { return ""; }
 			Manager*	GetManager() { return manager_; }

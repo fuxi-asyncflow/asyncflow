@@ -38,6 +38,7 @@ namespace asyncflow
 			PyObject* Invoke(const std::string& name, PyObject** args, int arg_count);
 			PyAgent* GetAgent(PyObject* obj) { return (PyAgent*)agent_manager_.GetAgent(obj); }
 			BasicAgentManager& GetAgentManager() override { return agent_manager_; }
+			const BasicAgentManager& GetAgentManager() const override { return agent_manager_; }
 			std::pair<bool, std::vector<std::string>> RunScript(const char* str) override;
 
 			bool Subchart(std::string chart_name, PyObject* obj, PyObject** args, int arg_count);

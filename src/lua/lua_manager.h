@@ -90,6 +90,7 @@ namespace asyncflow
 			void GetEventParam(lua_State* obj, int event_id, int param_idx);
 			void Return(lua_State* L);
 			BasicAgentManager& GetAgentManager() override { return agent_manager_; }
+			const BasicAgentManager& GetAgentManager() const override { return agent_manager_; }
 			LuaAgent* GetAgent(void* obj) {	return (LuaAgent*)agent_manager_.GetAgent(obj);	}
 			Agent* TryGetAgent(void* obj)
 			{

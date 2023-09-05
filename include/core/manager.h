@@ -48,6 +48,7 @@ namespace asyncflow
 			EventManager& GetEventManager() { return eventManager; }
 			AsyncManager& GetAsyncManager() { return async_manager_; }
 			virtual BasicAgentManager& GetAgentManager() = 0;
+			virtual const BasicAgentManager& GetAgentManager() const = 0;
 			IExecutor& GetExecutor() { return executor_; }
 			virtual bool	RunFlow(Node* node) { return executor_.RunFlow(node); }
 

@@ -15,7 +15,7 @@ using namespace asyncflow::debug;
 DebugChartInfo GetDebugChartInfoFromJson(const rapidjson::Document::Object& params)
 {
 	auto chart_name = params["chart_name"].GetString();
-	auto agent_id = params["agent_id"].GetInt();
+	auto agent_id = params["agent_id"].GetUint64();
 	auto owner_node_addr = params["owner_node_addr"].GetUint64();
 	return DebugChartInfo(agent_id, (Node*)owner_node_addr, nullptr, chart_name);
 }
