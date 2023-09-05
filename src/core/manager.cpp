@@ -98,17 +98,6 @@ void Manager::Step(int milliseconds)
 	}
 
 	//deregister_obj agent, must after event handling
-	for (auto* agent : dying_agents_.GetDyingAgents())
-	{
-		auto* agt = GetAgentManager().UnRegister(agent);
-		if (agt == nullptr)
-		{
-			ASYNCFLOW_LOG("agent{0} has already destroyed", (void*)agent);
-			continue;
-		}
-		assert(agt == agent);
-		delete agent;
-	}
 	dying_agents_.Step();
 	
 	current_frame_++;
@@ -693,6 +682,8 @@ bool Manager::UnregisterGameObject(Agent* agent)
 		return true;
 	ASYNCFLOW_LOG("unregister object from asyncflow");
 	agent->SetStatus(Agent::Destroying);
+	agent->Stop();
+	GetAgentManager().UnRegister(agent);
 	dying_agents_.AddDyingAgent(agent, in_step_);	
 	return true;
 }

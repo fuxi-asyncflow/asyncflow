@@ -28,6 +28,8 @@ namespace asyncflow
 
 			void Step()
 			{
+				for (const auto* agent : destroying_agents_)
+					delete agent;
 				destroying_agents_.clear();
 				destroying_agents_.swap(next_destroying_agents_);
 			}
