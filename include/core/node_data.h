@@ -28,8 +28,8 @@ namespace asyncflow
 				: node_id_(id)
 				, var_id_(-1)
 				, is_event_(false)
+				, is_no_loop_check(false)
 				, node_func_(nullptr)
-				, text_("")
 #ifdef FLOWCHART_DEBUG
 				, break_point(false)
 #endif
@@ -44,24 +44,26 @@ namespace asyncflow
 			~NodeData();
 			bool InitFromJson(rapidjson::Value& jobj, const std::unordered_map<std::string, int>& id_map, ChartData* chart_data);
 			bool InitFromYaml(c4::yml::ConstNodeRef& nodeRef, std::unordered_map<std::string, int>& id_map, ChartData* chart_data);
-			NodeFunc* GetNodeFunc() { return node_func_; }
-			int	GetId() { return node_id_; }
+			NodeFunc* GetNodeFunc() const { return node_func_; }
+			int	GetId() const { return node_id_; }
 			const std::string& GetUid() { return node_uid_; }
 			const std::string& GetText() { return text_; }
 			std::vector<int>& GetSubsequenceIds(bool result) { return result ? children_[1] : children_[0]; }			
-			bool IsEventNode() { return is_event_; }
+			bool IsEventNode() const { return is_event_; }			
 			void SetEventNode(bool b) { is_event_ = b; }
-			int GetVarId() { return var_id_; }
+			bool IsNoLoopCheck() const { return is_no_loop_check || is_event_; }
+			int GetVarId() const { return var_id_; }
 			void AddSubsequence(int id, int type);
 
 		private:
-			int node_id_;
-			std::string node_uid_;		//save uid for debug
+			int node_id_;			
 			int var_id_;				//var for subchart
 			bool is_event_;
-			std::vector<int> children_[3];
+			bool is_no_loop_check;
 			NodeFunc* node_func_;
+			std::vector<int> children_[3];			
 			std::string text_;
+			std::string node_uid_;		//save uid for debug
 #ifdef ENABLE_PERF
 		private:
 			int run_count_;

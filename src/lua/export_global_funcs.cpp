@@ -28,13 +28,6 @@ int asyncflow::lua::setup(lua_State* L)
 	mgr->Init();
 	if (lua_istable(L, 1))
 	{
-		lua_getfield(L, 1, "loop_check");
-		if (lua_isboolean(L, -1))
-		{
-			bool flag = lua_toboolean(L, -1);
-			mgr->GetExecutor().SetLoopCheck(flag);
-			ASYNCFLOW_LOG("loop_check is set to {0}.", flag);
-		}
 		lua_getfield(L, 1, "immediate_subchart");
 		if (lua_isboolean(L, -1))
 		{

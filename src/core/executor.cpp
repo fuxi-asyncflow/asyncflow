@@ -69,8 +69,8 @@ bool DfsExecutor::RunFlow(Node* start_node)
 			Pop();
 			continue;
 		}
-
-		if (loop_check_ && node->RunFlag() && !node->GetData()->IsEventNode())	//loop
+		
+		if (node->RunFlag() && !node->GetData()->IsNoLoopCheck())	//loop
 		{
 			current_agent_->WaitEvent(node, AsyncEventBase::TICK_EVENT);
 			has_running_node = false;

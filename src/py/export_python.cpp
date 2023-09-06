@@ -55,15 +55,8 @@ PyObject* asyncflow::py::setup(PyObject* self, PyObject* args)
 	}
 	PyObject* config = Py_None;
 	if (PyArg_ParseTuple(args, "|O", &config) && PyDict_Check(config))
-	{
-		auto result = PyDict_GetItemString(config, "loop_check");
-		if (result != nullptr)
-		{
-			bool flag = PyObject_IsTrue(result);
-			manager->GetExecutor().SetLoopCheck(flag);
-			ASYNCFLOW_LOG("loop_check is set to {0}", flag);
-		}
-		result = PyDict_GetItemString(config, "immediate_subchart");
+	{		
+		auto result = PyDict_GetItemString(config, "immediate_subchart");
 		if (result != nullptr)
 		{
 			bool flag = PyObject_IsTrue(result);

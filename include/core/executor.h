@@ -12,8 +12,7 @@ namespace asyncflow
 		class IExecutor
 		{
 		public:
-			IExecutor() :
-				loop_check_(true) {}
+			IExecutor() = default;
 			virtual ~IExecutor() = default;
 
 			// be careful, this func should only be called inside agent's RunFlow function
@@ -22,10 +21,6 @@ namespace asyncflow
 			virtual Agent* GetCurrentAgent() = 0;
 			virtual Node* GetCurrentNode() = 0;
 			//virtual void Remove(Node* node) = 0;
-			void SetLoopCheck(bool flag) { loop_check_ = flag; }
-
-		protected:
-			bool loop_check_;
 		};
 
 		class DfsExecutor : public IExecutor, INodeContainer

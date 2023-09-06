@@ -150,7 +150,13 @@ bool NodeData::InitFromYaml(c4::yml::ConstNodeRef& nodeRef, std::unordered_map<s
 	{
 		tmp = tmpNode.val();
 		text_ = std::string{ tmp.data(), tmp.size() };
-	}	
+	}
+
+	auto noLoopCheckNode = nodeRef.find_child("no_loop_check");
+	if (noLoopCheckNode.valid())
+	{
+		is_no_loop_check = std::string(noLoopCheckNode.val().str, noLoopCheckNode.val().size()) == "true";
+	}
 
 	auto codeRef = nodeRef.find_child("code");
 
