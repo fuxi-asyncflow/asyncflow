@@ -56,12 +56,12 @@ PyObject* asyncflow::py::setup(PyObject* self, PyObject* args)
 	PyObject* config = Py_None;
 	if (PyArg_ParseTuple(args, "|O", &config) && PyDict_Check(config))
 	{		
-		auto result = PyDict_GetItemString(config, "immediate_subchart");
+		auto result = PyDict_GetItemString(config, "defer_event");
 		if (result != nullptr)
 		{
 			bool flag = PyObject_IsTrue(result);
-			manager->SetImmediateSub(flag);
-			ASYNCFLOW_LOG("immediate_subchart is set to {0}", flag);
+			manager->SetDeferMode(flag);
+			ASYNCFLOW_LOG("event defer is set to {0}", flag);
 		}
 		result = PyDict_GetItemString(config, "default_timestep");
 		if (result != nullptr)
@@ -399,12 +399,20 @@ PyObject* asyncflow::py::step(PyObject* self, PyObject* args)
 
 PyObject* asyncflow::py::event(PyObject* self, PyObject* args)
 {
-	return _event(self, args, false);
+	auto* manager = PyManager::GetCurrentManager();
+	if (manager == nullptr)
+		PY_MGR_ERR;
+	return _event(self, args, !manager->isDeferMode());
 }
 
 PyObject* asyncflow::py::trigger(PyObject* self, PyObject* args)
 {
 	return _event(self, args, true);
+}
+
+PyObject* asyncflow::py::post(PyObject* self, PyObject* args)
+{
+	return _event(self, args, false);
 }
 
 PyObject* asyncflow::py::_event(PyObject* self, PyObject* args, bool trigger)
@@ -893,6 +901,7 @@ static PyMethodDef asyncflow_python_module_methods[] =
 	ADD_PYTHON_FUNC(stop),
 	ADD_PYTHON_FUNC(event),
 	ADD_PYTHON_FUNC(trigger),
+	ADD_PYTHON_FUNC(post),
 	ADD_PYTHON_FUNC(config_log),
 	ADD_PYTHON_FUNC(set_logger),
 	ADD_PYTHON_FUNC(set_node_func),

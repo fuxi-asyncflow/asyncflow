@@ -95,7 +95,7 @@ void Chart::Return(bool result)
 		
 		auto* agent = owner_node->GetAgent();
 		auto* manager = agent->GetManager();
-		if(manager->IsImmediateSub() && manager->RunFlow(owner_node)) // not stack over flow
+		if(manager->RunFlow(owner_node)) // not stack over flow
 		{
 			
 		}

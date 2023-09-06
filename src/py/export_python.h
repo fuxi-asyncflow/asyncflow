@@ -18,6 +18,7 @@ namespace asyncflow
 		PyObject* step(PyObject* self, PyObject* args);
 		PyObject* event(PyObject* self, PyObject* args);
 		PyObject* trigger(PyObject* self, PyObject* args);
+		PyObject* post(PyObject* self, PyObject* args);
 		PyObject* _event(PyObject* self, PyObject* args, bool trigger);
 		PyObject* deregister_obj(PyObject* self, PyObject* args);
 		PyObject* exit(PyObject* self, PyObject* args);

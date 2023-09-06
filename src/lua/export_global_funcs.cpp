@@ -28,12 +28,12 @@ int asyncflow::lua::setup(lua_State* L)
 	mgr->Init();
 	if (lua_istable(L, 1))
 	{
-		lua_getfield(L, 1, "immediate_subchart");
+		lua_getfield(L, 1, "defer_event");
 		if (lua_isboolean(L, -1))
 		{
 			bool flag = lua_toboolean(L, -1);
-			mgr->SetImmediateSub(flag);
-			ASYNCFLOW_LOG("immediate_subchart is set to {0}.", flag);
+			mgr->SetDeferMode(flag);
+			ASYNCFLOW_LOG("defer_event is set to {0}.", flag);
 		}
 		lua_getfield(L, 1, "default_timestep");
 		if (lua_isnumber(L, -1))

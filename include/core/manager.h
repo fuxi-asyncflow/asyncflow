@@ -109,15 +109,15 @@ namespace asyncflow
 			
 			static EventManager	eventManager;
 			int default_time_interval_;
-			bool immediate_subchart_;
+			bool defer_event_;
 
 		public:
 			const static int DEFAULT_AGENT_TICK;
 			const static int MAX_EVENT_FRAME;
 			bool AUTO_REGISTER;
 			static DataManager dataManager;
-			bool IsImmediateSub() { return immediate_subchart_; }
-			void SetImmediateSub(bool flag) { immediate_subchart_ = flag; }
+			bool isDeferMode() { return defer_event_; }
+			void SetDeferMode(bool flag) { defer_event_ = flag; }
 			void SetDefaulTimeInterval(int interval) { default_time_interval_ = interval; }
 
 #ifdef FLOWCHART_DEBUG
