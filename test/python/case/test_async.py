@@ -65,7 +65,7 @@ def test_async_remove_graph_after_activate(remove_graph):
     assert expected == actual
 
 if __name__ == '__main__':
-    test_async_remove_graph_after_activate()
+    test_async_remove_graph_after_activate(True)
 
     
 

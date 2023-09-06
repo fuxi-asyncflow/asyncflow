@@ -2,7 +2,10 @@ import sys
 sys.path.append('../')
 sys.path.append('.')
 
+import pytest
+
 import asyncflow
+
 from utils.graph_builder import *
 from utils.game_object import Character
 from utils.node_funcs import *
@@ -16,7 +19,8 @@ def prepare_events():
     builder.add_event(event2, [{"name": "arg0", "type": "Number"}, {"name": "arg1", "type": "String"}, {"name": "arg2", "type": "Character"}])
     return builder.build()
 
-def test_event():    
+@pytest.mark.parametrize("defer", [(True,), (False,)])
+def test_event(defer):    
     c = Character("npc")
     expect_c = Character("npc")
     mgr = asyncflow.setup()    
@@ -55,11 +59,16 @@ def test_event():
     asyncflow.step(10)
     assert actual == expected       # stuck at event node
 
-    asyncflow.event(c, getattr(asyncflow.EventId, event0))
+    if defer:
+        asyncflow.post(c, getattr(asyncflow.EventId, event0))
+    else:
+        say_two(expect_c)
+        asyncflow.trigger(c, getattr(asyncflow.EventId, event0))
     assert actual == expected       # event raised, but event will be handled in next step
 
     asyncflow.step(10)              # event is handled now
-    say_two(expect_c)
+    if defer:
+        say_two(expect_c)
     assert actual == expected       # successor node now is excucted
 
     asyncflow.exit()
@@ -148,7 +157,7 @@ def test_event_other():
     asyncflow.step(10)
     assert actual == expected       # stuck at event node
 
-    asyncflow.event(other, getattr(asyncflow.EventId, event0))
+    asyncflow.post(other, getattr(asyncflow.EventId, event0))
     assert actual == expected       # event raised, but event will be handled in next step
 
     asyncflow.step(10)              # event is handled now
@@ -198,7 +207,7 @@ def test_event_param():
     asyncflow.step(10)
     assert actual == expected       # stuck at event node
 
-    asyncflow.event(c, getattr(asyncflow.EventId, event2), 1, "abc", c)
+    asyncflow.post(c, getattr(asyncflow.EventId, event2), 1, "abc", c)
     assert actual == expected       # event raised, but event will be handled in next step
 
     asyncflow.step(10)              # event is handled now
@@ -250,7 +259,7 @@ def test_event_order():
     asyncflow.start(c)    
     asyncflow.step(10)
     say_one(expect_c)
-    asyncflow.event(c, getattr(asyncflow.EventId, event0))   
+    asyncflow.post(c, getattr(asyncflow.EventId, event0))   
 
     asyncflow.step(10)
     say_two(expect_c)
@@ -320,8 +329,8 @@ def test_trigger_max():
     graph.add_varialble("a", "String")
     n1 = graph.add_func_node(say_one)
     n2 = graph.add_event_node(wait_event("self", event0))
-    n3 = graph.add_func_node(say_two)
-    n4 = graph.add_func_node(lambda self: asyncflow.trigger(self, getattr(asyncflow.EventId, event0)))
+    n3 = graph.add_func_node(say_two, no_loop_check = True)
+    n4 = graph.add_func_node(lambda self: asyncflow.trigger(self, getattr(asyncflow.EventId, event0)), no_loop_check = True)
     n5 = graph.add_func_node(lambda self: asyncflow.trigger(self, getattr(asyncflow.EventId, event0)))
     
     graph.connect_from_start(n1)
@@ -343,20 +352,20 @@ def test_trigger_max():
     asyncflow.register(c)    
     asyncflow.attach(c, graph_name)    
 
-    asyncflow.start(c)    
+    asyncflow.start(c)
 
     asyncflow.step(10) 
    
-    #print(actual)
+    print(actual)
     #assert actual == expected       # successor node now is excucted
 
     asyncflow.exit()
 
 if __name__ == '__main__':
-    test_event()
-    test_trigger()
-    test_event_other()
-    test_event_param()
-    test_event_order()
-    test_event_handle_order()
+    #test_event()
+    #test_trigger()
+    #test_event_other()
+    #test_event_param()
+    #test_event_order()
+    #test_event_handle_order()
     test_trigger_max()
