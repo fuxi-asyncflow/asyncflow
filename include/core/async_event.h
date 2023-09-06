@@ -16,7 +16,7 @@ namespace asyncflow
 			static int START_EVENT;
 			static int TICK_EVENT;
 			AsyncEventBase(int id, Agent* agent);
-			virtual ~AsyncEventBase(){}
+			virtual ~AsyncEventBase();
 
 			NodeLinkedList* GetWaitingNodes(const Manager& mgr) const;
 			int Id() const { return id_; }
@@ -25,7 +25,9 @@ namespace asyncflow
 		protected:
 			int		id_;
 			int		arg_count_;
-			uint64_t	agent_id_;
+			//uint64_t	agent_id_;
+			NodeLinkedList* node_list_;
+
 		};
 
 		template<typename T, typename RefHelper>
