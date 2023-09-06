@@ -53,7 +53,9 @@ PyObject* ChartObject::start(TSELF* self, PyObject*)
 	auto* chart = self->ptr;	
 	if (chart == nullptr || chart->GetStatus() == core::Chart::Status::Running)
 		Py_RETURN_FALSE;
-	return PyBool_FromLong(chart->GetAgent()->StartChart(chart));
+	auto* agent = chart->GetAgent();
+
+	return PyBool_FromLong(agent->StartChart(chart, !agent->GetManager()->isDeferMode()));
 }
 
 PyObject* ChartObject::stop(TSELF* self, PyObject*)

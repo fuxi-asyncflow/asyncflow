@@ -361,6 +361,47 @@ def test_trigger_max():
 
     asyncflow.exit()
 
+def test_event_no_step():
+    c = Character("npc")
+    expect_c = Character("npc")
+    mgr = asyncflow.setup({"defer_event": False})
+    graph_name = "AI.test_event_no_step"
+
+    graph = GraphBuilder(graph_name, "Character")
+    graph.add_varialble("a", "String")
+    n1 = graph.add_func_node(say_one)
+    n2 = graph.add_event_node(wait_event("self", event0))
+    n3 = graph.add_func_node(say_two, no_loop_check = True)
+    
+    graph.connect_from_start(n1)
+    graph.connect(n1, n2)   
+    graph.connect(n2, n3)
+  
+
+    print(graph.build())
+    mgr.import_charts(graph.build())    
+    mgr.import_event(prepare_events())
+    print("event id", getattr(asyncflow.EventId, event0))
+    
+    actual = []
+    expected = []
+    c._output = actual.append
+    expect_c._output = expected.append
+    asyncflow.register(c)    
+    asyncflow.attach(c, graph_name)    
+
+    asyncflow.start(c)
+    say_one(expect_c)
+    print(actual)
+    print(expected)
+    assert actual == expected
+
+    asyncflow.trigger(c, getattr(asyncflow.EventId, event0))
+    say_two(expect_c)
+    assert actual == expected
+    asyncflow.exit()
+
+
 if __name__ == '__main__':
     #test_event()
     #test_trigger()
@@ -368,4 +409,5 @@ if __name__ == '__main__':
     #test_event_param()
     #test_event_order()
     #test_event_handle_order()
-    test_trigger_max()
+    #test_trigger_max()
+    test_event_no_step()

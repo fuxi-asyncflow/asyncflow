@@ -97,7 +97,7 @@ bool Agent::StartChart(const std::string& chart_name)
 	auto* chart = FindChart(chart_name, nullptr);
 	if (chart != nullptr && chart->GetStatus() != Chart::Status::Running)
 	{
-		this->StartChart(chart);
+		this->StartChart(chart, !manager_->isDeferMode());
 		return true;
 	}
 	return false;
@@ -201,7 +201,7 @@ int Agent::Start()
 		{
 			if (chart->GetOwnerNode() == nullptr && chart->GetStatus() != Chart::Status::Running)
 			{
-				if (StartChart(chart))
+				if (StartChart(chart, !manager_->isDeferMode()))
 					count++;
 			}
 		}
