@@ -78,3 +78,7 @@ def return_func(value):
     def _return(self):
         asyncflow.ret(value)
     return _return
+
+def destroy_self(self):
+    asyncflow.deregister(self)
+    return True

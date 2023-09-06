@@ -27,11 +27,13 @@ class GraphBuilder:
     def get_start_node(self):
         return self.start_node
 
-    def add_func_node(self, f):
+    def add_func_node(self, f, **kwargs):
         uid = gen_uuid()
         func_name ="{path}.{uid}".format(path = self.path, uid = uid.hex)
         asyncflow.set_node_func(func_name, f)
-        self.nodes.append({"uid": uid, "type": NodeType.FUNC})
+        node = {"uid": uid, "type": NodeType.FUNC}
+        node.update(kwargs)
+        self.nodes.append(node)
         return uid
     
     def add_event_node(self, f):
@@ -86,6 +88,8 @@ class GraphBuilder:
         for node in self.nodes:
             lines.append("- ")
             lines.append("  uid: {}".format(node['uid']))
+            if node.get('no_loop_check', False):
+                lines.append("  no_loop_check: true")
             if node['type'] == NodeType.FUNC:
                 lines.append("  code:")
                 lines.append("    type: FUNC")
