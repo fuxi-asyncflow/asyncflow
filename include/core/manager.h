@@ -90,7 +90,6 @@ namespace asyncflow
 			AsyncManager	async_manager_;
 
 			StackExecutor<DfsExecutor>		executor_;
-			Agent::NodeList*		waiting_nodes_;
 			EventQueue		event_queue_;
 			DyingAgents		dying_agents_;
 

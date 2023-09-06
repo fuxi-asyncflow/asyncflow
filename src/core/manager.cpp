@@ -377,7 +377,7 @@ void Manager::_handleEvent(AsyncEventBase& ev, Agent::NodeList& node_list)
 {
 	// As the node runs, new nodes may be added to the list, so a copy is created.
 	ASYNCFLOW_DBG("handle event {0} for agent {1} [{2}-{4}], total {3} nodes",
-		(void*)&event, (void*)this, event.Id(), waiting_nodes->Size(), manager_->GetEventManager().GetEventName(event.Id()));
+		(void*)&ev, (void*)this, ev.Id(), node_list.size(), GetEventManager().GetEventName(ev.Id()));
 
 	while (!node_list.IsEmpty())
 	{
@@ -399,12 +399,9 @@ void Manager::HandleEvent(AsyncEventBase& ev)
 	auto* waiting_nodes = ev.GetWaitingNodes(*this);
 	if (waiting_nodes == nullptr || waiting_nodes->IsEmpty())
 		return;
-	NodeLinkedList node_list;
-	node_list.swap(*waiting_nodes);
+
 	current_event_ = &ev;
-	waiting_nodes_ = &node_list;
-	_handleEvent(ev, node_list);
-	waiting_nodes_ = nullptr;
+	_handleEvent(ev, *waiting_nodes);
 	current_event_ = nullptr;
 }
 
@@ -418,7 +415,6 @@ bool Manager::TriggerEvent(AsyncEventBase& ev)
 		return false;
 	current_event_frame_++;
 	// use function stack as stack of node list and current event
-	auto* prev_list = waiting_nodes_;
 	auto* prev_ev = current_event_;
 
     // handle event
@@ -426,7 +422,6 @@ bool Manager::TriggerEvent(AsyncEventBase& ev)
 
 	// pop
 	current_event_frame_--;
-	waiting_nodes_ = prev_list;
 	current_event_ = prev_ev;
 	return true;
 }
