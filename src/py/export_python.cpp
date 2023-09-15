@@ -641,13 +641,17 @@ PyObject* asyncflow::py::wait_event(PyObject* self, PyObject* args)
 			ASYNCFLOW_ERR("parse argument failed!\n");
 			Py_RETURN_FALSE;
 		}
-		Agent* agent = manager->GetAgent(obj);
-		if (agent == nullptr)
+
+		if (!Py_IsNone(obj))
 		{
-			ASYNCFLOW_ERR("wait event obj {} is not registered", (void*)obj);
-			agent = manager->RegisterGameObject(obj, Manager::DEFAULT_AGENT_TICK);
+			Agent* agent = manager->GetAgent(obj);
+			if (agent == nullptr)
+			{
+				ASYNCFLOW_ERR("wait event obj {} is not registered", (void*)obj);
+				agent = manager->RegisterGameObject(obj, Manager::DEFAULT_AGENT_TICK);
+			}
+			result = manager->WaitEvent(agent, event_id);
 		}
-		result = manager->WaitEvent(agent, event_id);
 	}
 	return PyBool_FromLong(result);
 }
