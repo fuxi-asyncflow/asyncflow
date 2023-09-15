@@ -73,7 +73,7 @@ bool DfsExecutor::RunFlow(Node* start_node)
 		if (node->RunFlag() && !node->GetData()->IsNoLoopCheck())	//loop
 		{
 			current_agent_->WaitEvent(node, AsyncEventBase::TICK_EVENT);
-			has_running_node = false;
+			has_running_node = true;
 		}
 		else
 		{
@@ -92,7 +92,7 @@ bool DfsExecutor::RunFlow(Node* start_node)
 			if(node->GetContainer() == this) // if node is stopped or waiting event, it has been removed, then no need to pop.
 				Pop(); // pop node should after node run end, so if current node is `stopflow` and stop self, it's children would not push into queue
 
-			//If the node finishes executing(not in running stateus),the subsequent node is added to the list			
+			//If the node finishes executing(not in running status),the subsequent node is added to the list			
 			if (node->IsRunning())
 				has_running_node = true;
 			else
