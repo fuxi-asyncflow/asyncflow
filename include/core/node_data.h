@@ -51,7 +51,7 @@ namespace asyncflow
 			std::vector<int>& GetSubsequenceIds(bool result) { return result ? children_[1] : children_[0]; }			
 			bool IsEventNode() const { return is_event_; }			
 			void SetEventNode(bool b) { is_event_ = b; }
-			bool IsNoLoopCheck() const { return is_no_loop_check || is_event_; }
+			bool IsNoLoopCheck() const { return is_no_loop_check; }
 			int GetVarId() const { return var_id_; }
 			void AddSubsequence(int id, int type);
 

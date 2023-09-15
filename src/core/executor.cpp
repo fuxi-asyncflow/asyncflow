@@ -69,7 +69,14 @@ bool DfsExecutor::RunFlow(Node* start_node)
 			Pop();
 			continue;
 		}
-		
+
+		// event node is not need to check flag, because:
+		// 1. when node is activated, the first run of event node is skip, loop flag is not set.
+		//    when loop back to event node, and run again, the wait_event function will be invoked
+		// 2. when event node is ran from two path ( diamond structure), wait_event will be invoked at the first time, then status is running
+		//    when event node is ran again, because it's status is running, it won't run again.
+		// 3. if event node is wait for another object's event and the object is invalid, event node will return failure immediately
+		//    event node will wait tick event, just like common nodes
 		if (node->RunFlag() && !node->GetData()->IsNoLoopCheck())	//loop
 		{
 			current_agent_->WaitEvent(node, AsyncEventBase::TICK_EVENT);
