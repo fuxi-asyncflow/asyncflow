@@ -6,6 +6,8 @@
 using namespace asyncflow::core;
 using namespace asyncflow::util;
 
+int DfsExecutor::MAX_NODES_PER_EXECUTION = 1024;
+
 DfsExecutor::DfsExecutor()
 	: current_agent_(nullptr)
 	, current_node_(nullptr)
@@ -55,13 +57,24 @@ bool DfsExecutor::RunFlow(Node* start_node)
 	node_list_.clear();
 	Push(start_node);
 
+	int nodes_count = 0;
+
 	//Start with start node and depth-first traversal
 	//RunFlag is set in node run function and is set to true only for nodes that are actually running
 	while (!node_list_.empty() && chart->IsRunning())	// if chart is return or stopped as subChart, status will be set to Idle
 	{
+		if (++nodes_count > MAX_NODES_PER_EXECUTION)
+		{
+			while (!node_list_.empty())
+			{
+				auto* node = Pop();
+				node->SetStatus(Node::EndRun);
+			}
+			break;
+		}
+
 		auto* node = GetTop();
 		// do not pop node here, it should be pop after run end
-		// 
 
 		if (node->IsRunning() && !node->IsWaitAll())   //special handling WaitAll node
 		{

@@ -26,6 +26,7 @@ namespace asyncflow
 		class DfsExecutor : public IExecutor, INodeContainer
 		{
 		public:
+			static int MAX_NODES_PER_EXECUTION;
 			DfsExecutor();
 
 			Node* GetTop() override	{ return node_list_.back();}
