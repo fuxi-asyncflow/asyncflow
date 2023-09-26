@@ -110,6 +110,15 @@ target_compile_features(asyncflow PUBLIC cxx_std_11)
 set_target_properties(asyncflow PROPERTIES CXX_EXTENSIONS OFF)
 target_link_libraries(asyncflow PUBLIC msgpack rapidjson)
 
+# set macro for logging verbose info
+if(DEFINED LOGGING_VERBOSE)
+if(${LOGGING_VERBOSE})
+    target_compile_definitions(asyncflow PUBLIC LOGGING_VERBOSE=1)
+else()
+    target_compile_definitions(asyncflow PUBLIC LOGGING_VERBOSE=0)
+endif(${LOGGING_VERBOSE})
+endif(DEFINED LOGGING_VERBOSE)
+
 if(${BUILD_WASM})
     target_compile_definitions(asyncflow PUBLIC BUILD_WASM)
 else()

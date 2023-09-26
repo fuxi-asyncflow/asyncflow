@@ -52,11 +52,22 @@ namespace asyncflow
 }
 
 #if ENABLE_LOG
-#if NDEBUG
-	#define ASYNCFLOW_DBG(...)	((void)0)
-#else
+#ifndef LOGGING_VERBOSE
+	#ifdef NDEBUG
+		#define  LOGGING_VERBOSE 0
+	#else
+		#define  LOGGING_VERBOSE 1
+	#endif // NDEBUG
+#endif // LOGGING_VERBOSE
+
+#if LOGGING_VERBOSE
 	#define ASYNCFLOW_DBG(...) asyncflow::util::Log::DBG(__VA_ARGS__)
-#endif
+	auto const logging_level = spdlog::level::debug;
+#else
+	#define ASYNCFLOW_DBG(...)	((void)0)
+	auto const logging_level = spdlog::level::info;
+#endif // IF LOGGING_VERBOSE
+
 #define ASYNCFLOW_LOG(...) asyncflow::util::Log::LOG(__VA_ARGS__)
 #define ASYNCFLOW_WARN(...) asyncflow::util::Log::WARN(__VA_ARGS__)
 #define ASYNCFLOW_ERR(...) asyncflow::util::Log::ERR(__VA_ARGS__)
