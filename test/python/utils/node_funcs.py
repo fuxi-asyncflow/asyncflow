@@ -52,15 +52,13 @@ def subchart(name, obj, *args):
 
 def wait_event(obj, ev_name):
     def _wait_self_event(self):
-        asyncflow.wait_event(self, getattr(asyncflow.EventId, ev_name))
-        return True
+        return asyncflow.wait_event(self, getattr(asyncflow.EventId, ev_name))
     def _wait_event(self):
         v = asyncflow.get_var(obj)
-        asyncflow.wait_event(v, getattr(asyncflow.EventId, ev_name))
-        return True
-    def _wait_event_obj(self):        
-        asyncflow.wait_event(obj, getattr(asyncflow.EventId, ev_name))
-        return True
+        return asyncflow.wait_event(v, getattr(asyncflow.EventId, ev_name))
+    def _wait_event_obj(self):
+        return asyncflow.wait_event(obj, getattr(asyncflow.EventId, ev_name))
+
     if obj == "self":
         return _wait_self_event
     elif obj is str:
