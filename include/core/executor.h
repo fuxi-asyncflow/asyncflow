@@ -1,5 +1,7 @@
 #pragma once
 #include <vector>
+
+#include "node.h"
 #include "util/log.h"
 #include "core/custom_struct.h"
 
@@ -18,6 +20,7 @@ namespace asyncflow
 			// be careful, this func should only be called inside agent's RunFlow function
 			// because LuaAgent need to prepare some data on stack 
 			virtual bool RunFlow(Node* node) = 0;
+			virtual bool ContinueFlow(Node* node) = 0;
 			virtual Agent* GetCurrentAgent() = 0;
 			virtual Node* GetCurrentNode() = 0;
 			//virtual void Remove(Node* node) = 0;
@@ -40,6 +43,7 @@ namespace asyncflow
             bool IsEmpty() override { return node_list_.empty(); }
 
 			bool	RunFlow(Node* node) override;
+			bool	ContinueFlow(Node* node) override;
 			Agent* GetCurrentAgent() override { return current_agent_; }
 			Node* GetCurrentNode() override { return current_node_; }
 
@@ -90,6 +94,17 @@ namespace asyncflow
 				current_index_ = old_index;
 				current_ = stack_[current_index_];
 				return true;
+			}
+
+			bool ContinueFlow(Node* node) override
+			{
+				if(current_index_ > 0)
+				{
+					auto* prev = stack_[current_index_ - 1];
+					node->SetRunFlag(true);
+					return prev->ContinueFlow(node);
+				}
+				return RunFlow(node);
 			}
 
 			Agent* GetCurrentAgent() override { return current_->GetCurrentAgent(); }

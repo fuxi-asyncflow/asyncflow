@@ -164,6 +164,13 @@ bool DfsExecutor::RunFlow(Node* start_node)
 	return true;
 }
 
+bool DfsExecutor::ContinueFlow(Node* node)
+{
+	Push(node);
+	return true;
+}
+
+
 void DfsExecutor::AddSubsequenceNodes(Node* node)
 {
 	const auto result = node->GetResult();

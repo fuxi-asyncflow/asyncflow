@@ -51,6 +51,7 @@ namespace asyncflow
 			virtual const BasicAgentManager& GetAgentManager() const = 0;
 			IExecutor& GetExecutor() { return executor_; }
 			virtual bool	RunFlow(Node* node) { return executor_.RunFlow(node); }
+			bool	ContinueFlow(Node* node) { return executor_.ContinueFlow(node); }
 
 			Agent* GetCurrentAgent() { return executor_.GetCurrentAgent(); }
 			Node* GetCurrentNode() { return executor_.GetCurrentNode(); }

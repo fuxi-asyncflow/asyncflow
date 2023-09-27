@@ -181,11 +181,53 @@ def test_subchart_sync():
         say_two(c)   
     assert expected == actual
 
+def test_subchart_loop():
+    c = Character("npc")
+    mgr = asyncflow.setup()
+    subgraph_name = "AI.subgraph"
+    graph_name = "AI.test_subchart_loop"
 
+    graph = GraphBuilder(graph_name, "Character")
+    graph.add_varialble("a", "String")
+    n1 = graph.add_func_node(say_one)
+    n2 = graph.add_func_node(subchart(subgraph_name, c))
+    n3 = graph.add_func_node(say_four)
+    
+    graph.connect_from_start(n1)
+    graph.connect(n1, n2)
+    graph.connect(n2, n2)
+    graph.connect(n2, n3)
+
+    asyncflow.import_charts(graph.build())
+    asyncflow.import_charts(prepare_subchart(subgraph_name))
+    asyncflow.import_event(EventBuilder().build())
+    
+    actual = []    
+    Character._output = actual.append
+    asyncflow.register(c)
+    asyncflow.attach(c, graph_name)
+    asyncflow.start(c)
+    count = 3
+    for i in range(count):
+        asyncflow.step(1000)
+
+    asyncflow.exit()
+
+    expected = []
+    Character._output = expected.append
+    say_one(c)
+    for i in range(count):
+        say_two(c)
+        say_three(c)
+        say_four(c)
+    
+    assert expected == actual
+    print(actual)
 
 
 if __name__ == '__main__':
-    test_subchart()
-    test_return()
-    test_subchart_return()
-    test_subchart_sync()
+    #test_subchart()
+    #test_return()
+    #test_subchart_return()
+    #test_subchart_sync()
+    test_subchart_loop()
