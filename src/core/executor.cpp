@@ -114,7 +114,10 @@ bool DfsExecutor::RunFlow(Node* start_node)
 
 			//If the node finishes executing(not in running status),the subsequent node is added to the list			
 			if (node->IsRunning())
+			{
+				node->SetRunFlag(false);
 				has_running_node = true;
+			}
 			else
 			{
 				node->SetStatus(Node::EndRun);
