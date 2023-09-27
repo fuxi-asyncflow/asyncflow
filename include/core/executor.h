@@ -101,8 +101,11 @@ namespace asyncflow
 				if(current_index_ > 0)
 				{
 					auto* prev = stack_[current_index_ - 1];
-					node->SetRunFlag(true);
-					return prev->ContinueFlow(node);
+					if (prev->GetCurrentNode() == node)
+					{
+						node->SetRunFlag(true);
+						return prev->ContinueFlow(node);
+					}
 				}
 				return RunFlow(node);
 			}
