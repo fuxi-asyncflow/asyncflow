@@ -34,11 +34,10 @@ def test_event(defer):
     
     graph.connect_from_start(n1)
     graph.connect(n1, n2)
-    graph.connect(n2, n3)    
+    graph.connect(n2, n3)
 
-    print(graph.build())
-    mgr.import_charts(graph.build())    
-    mgr.import_event(prepare_events())
+    asyncflow.import_charts(graph.build())    
+    asyncflow.import_event(prepare_events())
     print("event id", getattr(asyncflow.EventId, event0))
     
     actual = []
@@ -64,6 +63,7 @@ def test_event(defer):
     else:
         say_two(expect_c)
         asyncflow.trigger(c, getattr(asyncflow.EventId, event0))
+
     assert actual == expected       # event raised, but event will be handled in next step
 
     asyncflow.step(10)              # event is handled now
@@ -87,11 +87,10 @@ def test_trigger():
     
     graph.connect_from_start(n1)
     graph.connect(n1, n2)
-    graph.connect(n2, n3)    
+    graph.connect(n2, n3)
 
-    print(graph.build())
-    mgr.import_charts(graph.build())    
-    mgr.import_event(prepare_events())
+    asyncflow.import_charts(graph.build())    
+    asyncflow.import_event(prepare_events())
     print("event id", getattr(asyncflow.EventId, event0))
     
     actual = []
@@ -132,11 +131,10 @@ def test_event_other():
     
     graph.connect_from_start(n1)
     graph.connect(n1, n2)
-    graph.connect(n2, n3)    
+    graph.connect(n2, n3)
 
-    print(graph.build())
-    mgr.import_charts(graph.build())    
-    mgr.import_event(prepare_events())
+    asyncflow.import_charts(graph.build())    
+    asyncflow.import_event(prepare_events())
     print("event id", getattr(asyncflow.EventId, event0))
     
     actual = []
@@ -185,9 +183,8 @@ def test_event_param():
     graph.connect(n3, n4)
     graph.connect(n4, n5)
 
-    print(graph.build())
-    mgr.import_charts(graph.build())    
-    mgr.import_event(prepare_events())    
+    asyncflow.import_charts(graph.build())    
+    asyncflow.import_event(prepare_events())    
     
     actual = []
     expected = []
@@ -245,9 +242,8 @@ def test_event_order():
     graph.connect(n1, n6)
     graph.connect(n6, n7)
     
-    mgr.import_charts(graph.build()) 
-    mgr.import_event(prepare_events())
-    print("event id", getattr(asyncflow.EventId, event0))
+    asyncflow.import_charts(graph.build()) 
+    asyncflow.import_event(prepare_events())
     
     actual = []
     expected = []
@@ -295,8 +291,8 @@ def test_event_handle_order():
     graph.connect(n1, n6)
     graph.connect(n6, n7)
     
-    mgr.import_charts(graph.build()) 
-    mgr.import_event(prepare_events())
+    asyncflow.import_charts(graph.build()) 
+    asyncflow.import_event(prepare_events())
     print("event id", getattr(asyncflow.EventId, event0))
     
     actual = []
@@ -341,8 +337,8 @@ def test_trigger_max():
     graph.connect(n1, n5)
 
     print(graph.build())
-    mgr.import_charts(graph.build())    
-    mgr.import_event(prepare_events())
+    asyncflow.import_charts(graph.build())    
+    asyncflow.import_event(prepare_events())
     print("event id", getattr(asyncflow.EventId, event0))
     
     actual = []
@@ -379,8 +375,8 @@ def test_event_no_step():
   
 
     print(graph.build())
-    mgr.import_charts(graph.build())    
-    mgr.import_event(prepare_events())
+    asyncflow.import_charts(graph.build())    
+    asyncflow.import_event(prepare_events())
     print("event id", getattr(asyncflow.EventId, event0))
     
     actual = []
@@ -426,8 +422,8 @@ def test_event_loop():
     graph.connect(n2, n4, ConnType.Success)
 
     print(graph.build())
-    mgr.import_charts(graph.build())    
-    mgr.import_event(prepare_events())
+    asyncflow.import_charts(graph.build())    
+    asyncflow.import_event(prepare_events())
     print("event id", getattr(asyncflow.EventId, event0))
     
     actual = []
@@ -453,7 +449,7 @@ def test_event_loop():
 
 
 if __name__ == '__main__':
-    #test_event()
+    test_event(False)
     #test_trigger()
     #test_event_other()
     #test_event_param()
@@ -461,4 +457,4 @@ if __name__ == '__main__':
     #test_event_handle_order()
     #test_trigger_max()
     #test_event_no_step()
-    test_event_loop()
+    #test_event_loop()

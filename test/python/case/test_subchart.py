@@ -47,9 +47,9 @@ def test_subchart():
     graph.connect(n1, n2)
     graph.connect(n2, n3)    
 
-    mgr.import_charts(graph.build())
-    mgr.import_charts(prepare_subchart(subgraph_name))
-    mgr.import_event(EventBuilder().build())
+    asyncflow.import_charts(graph.build())
+    asyncflow.import_charts(prepare_subchart(subgraph_name))
+    asyncflow.import_event(EventBuilder().build())
     
     actual = []    
     Character._output = actual.append
@@ -87,8 +87,8 @@ def test_return():
     graph.connect(n2, n3)
     graph.connect(n1, n4)    
 
-    mgr.import_charts(graph.build())    
-    mgr.import_event(EventBuilder().build())
+    asyncflow.import_charts(graph.build())    
+    asyncflow.import_event(EventBuilder().build())
     
     actual = []
     Character._output = actual.append
@@ -122,9 +122,9 @@ def test_subchart_return():
     graph.connect(n1, n2)
     graph.connect(n2, n3)    
 
-    mgr.import_charts(graph.build())
-    mgr.import_charts(prepare_subchart_return(subgraph_name))
-    mgr.import_event(EventBuilder().build())
+    asyncflow.import_charts(graph.build())
+    asyncflow.import_charts(prepare_subchart_return(subgraph_name))
+    asyncflow.import_event(EventBuilder().build())
     
     actual = []    
     Character._output = actual.append
@@ -160,9 +160,9 @@ def test_subchart_sync():
     graph.connect(n1, n2)
     graph.connect(n2, n3)    
 
-    mgr.import_charts(graph.build())
-    mgr.import_charts(prepare_subchart_sync(subgraph_name))
-    mgr.import_event(EventBuilder().build())
+    asyncflow.import_charts(graph.build())
+    asyncflow.import_charts(prepare_subchart_sync(subgraph_name))
+    asyncflow.import_event(EventBuilder().build())
     
     actual = []    
     Character._output = actual.append
