@@ -24,6 +24,7 @@ do {															\
 #ifdef USING_PYTHON2
 const char* PyUnicode_AsUTF8(PyObject * unicode);
 const char* PyUnicode_AsUTF8AndSize(PyObject * unicode, Py_ssize_t * size);
+#define Py_IsNone(x) ((x) == Py_None)
 #endif
 
 namespace asyncflow
