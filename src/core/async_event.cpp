@@ -6,7 +6,7 @@ using namespace asyncflow::core;
 AsyncEventBase::AsyncEventBase(int id, Agent* agent)
 	: id_(id)
 	, arg_count_(0)
-	, node_list_(new NodeLinkedList)
+	// , node_list_(new NodeLinkedList)
 {
 	agent_id_ = agent == nullptr ? UINT64_MAX : agent->GetId();
 	//if (agent == nullptr)
@@ -26,23 +26,18 @@ AsyncEventBase::AsyncEventBase(int id, Agent* agent)
 
 AsyncEventBase::~AsyncEventBase()
 {
-	if (node_list_)
-	{
-		delete node_list_;
-		node_list_ = nullptr;
-	}
+	//if (node_list_)
+	//{
+	//	delete node_list_;
+	//	node_list_ = nullptr;
+	//}
 }
 
 
 NodeLinkedList* AsyncEventBase::GetWaitingNodes(const Manager& mgr) const
 {
-	//return node_list_;
-	auto agent =  mgr.GetAgentManager().GetAgentById(agent_id_);
+	auto agent = mgr.GetAgentManager().GetAgentById(agent_id_);
 	if (agent == nullptr)
 		return nullptr;
-	auto* list = agent->GetWaitNodes(id_, false);
-	if (list == nullptr)
-		return nullptr;
-	node_list_->swap(*list);
-	return node_list_;
+	return agent->GetWaitNodes(id_, false);
 }

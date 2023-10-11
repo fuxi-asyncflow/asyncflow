@@ -69,7 +69,7 @@ def test_loop():
 
     expected = []
     Character._output = expected.append
-    for i in range(count):
+    for i in range(count + 1):
         say_one(c)
         say_two(c)
     assert expected == actual

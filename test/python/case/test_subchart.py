@@ -216,7 +216,7 @@ def test_subchart_loop():
     expected = []
     Character._output = expected.append
     say_one(c)
-    for i in range(count):
+    for i in range(count + 1):
         say_two(c)
         say_three(c)
         say_four(c)

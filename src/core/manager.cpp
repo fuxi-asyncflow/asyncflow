@@ -375,6 +375,7 @@ int Manager::ImportEvent(const std::string& file_name)
 
 void Manager::_handleEvent(AsyncEventBase& ev, Agent::NodeList& node_list)
 {
+	current_event_ = &ev;
 	// As the node runs, new nodes may be added to the list, so a copy is created.
 	ASYNCFLOW_DBG("handle event {0} for agent {1} [{2}-{4}], total {3} nodes",
 		(void*)&ev, (void*)this, ev.Id(), node_list.size(), GetEventManager().GetEventName(ev.Id()));
@@ -390,6 +391,7 @@ void Manager::_handleEvent(AsyncEventBase& ev, Agent::NodeList& node_list)
 #endif
 		RunFlow(node);
 	}
+	current_event_ = nullptr;
 	// assert(waiting_nodes->empty());	
 	// Assert may be failed: As subchart called, the start node of the subchart is also waiting for the start event and is placed in the same list, which cannot be cleared
 }
@@ -399,10 +401,11 @@ void Manager::HandleEvent(AsyncEventBase& ev)
 	auto* waiting_nodes = ev.GetWaitingNodes(*this);
 	if (waiting_nodes == nullptr || waiting_nodes->IsEmpty())
 		return;
-
-	current_event_ = &ev;
-	_handleEvent(ev, *waiting_nodes);
-	current_event_ = nullptr;
+	NodeLinkedList node_list;
+	node_list.swap(*waiting_nodes);
+	
+	_handleEvent(ev, node_list);
+	
 }
 
 bool Manager::TriggerEvent(AsyncEventBase& ev)
@@ -417,8 +420,11 @@ bool Manager::TriggerEvent(AsyncEventBase& ev)
 	// use function stack as stack of node list and current event
 	auto* prev_ev = current_event_;
 
+	NodeLinkedList node_list;
+	node_list.swap(*waiting_nodes);
+
     // handle event
-	HandleEvent(ev);
+	_handleEvent(ev, node_list);
 
 	// pop
 	current_event_frame_--;

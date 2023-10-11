@@ -26,7 +26,7 @@ namespace asyncflow
 			int		id_;
 			int		arg_count_;
 			uint64_t	agent_id_;
-			NodeLinkedList* node_list_;
+			// NodeLinkedList* node_list_;
 
 		};
 
