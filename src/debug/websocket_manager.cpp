@@ -154,6 +154,8 @@ void WebsocketManager::StartDebugChart(Chart* chart, websocketpp::connection_hdl
 		hdls.insert(hdls.end(), hdl);
 		chart->StartDebug();
 
+		chart->SendAllNodeCount();
+
 		for (auto* node : chart->GetNodeList())
 		{
 			if (node->GetStatus() == Node::Running)

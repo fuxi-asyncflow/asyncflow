@@ -126,7 +126,16 @@ void Chart::SendNodeStatus(int id, const std::string& uid, Node::Status old_stat
 		data->id = debug_data_count_++;
 		debug_data_list_.push_back(data);
 	}
+}
 
+void Chart::SendAllNodeCount()
+{
+	for(auto* node : node_list_)
+	{
+		auto* data = new debug::NodeStatusData(node->GetId(), node->GetData()->GetUid(), node->GetTrueCount()+1024, node->GetFalseCount()+1024, true);
+		data->id = debug_data_count_++;
+		debug_data_list_.push_back(data);
+	}
 }
 
 void Chart::ClearDebugData()
