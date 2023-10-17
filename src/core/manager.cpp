@@ -21,6 +21,7 @@ using namespace asyncflow::util;
 
 const int Manager::DEFAULT_AGENT_TICK = 1000;
 const int Manager::MAX_EVENT_FRAME = 16;
+const int DEFAULT_STEP_INTERVAL = 30;
 
 DataManager Manager::dataManager = DataManager();
 EventManager Manager::eventManager = EventManager();
@@ -28,11 +29,12 @@ EventManager Manager::eventManager = EventManager();
 Manager::Manager()
 	: current_frame_(0)	
 	, current_event_(nullptr)
-	, default_time_interval_(100)
+	, default_time_interval_(DEFAULT_STEP_INTERVAL)
 	, defer_event_(true)
     , AUTO_REGISTER(true)
 	, rd("default")
 	, current_event_frame_(0)
+	, node_stop_when_error_(false)
 #ifdef FLOWCHART_DEBUG
 	, websocket_manager_(this)
 #endif
@@ -70,6 +72,30 @@ Manager::~Manager()
 #endif
 	
 }
+
+void Manager::SetDefaulTimeInterval(int interval)
+{
+	if (interval <= 0)
+	{
+		ASYNCFLOW_WARN("default_timestep must be larger than 0");
+		interval = DEFAULT_STEP_INTERVAL;
+	}
+	default_time_interval_ = interval;
+	ASYNCFLOW_LOG("default_timestep is set to {0}", interval);
+}
+
+void Manager::SetNodeStopWhenError(bool b)
+{
+	node_stop_when_error_ = b;
+	ASYNCFLOW_LOG("node_stop_when_error is set to {0}", b);
+}
+
+void Manager::SetDeferMode(bool b)
+{
+	defer_event_ = b;
+	ASYNCFLOW_LOG("dever_event is set to {0}", b);
+}
+
 
 void Manager::Step(int milliseconds)
 {

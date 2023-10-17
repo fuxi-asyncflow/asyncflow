@@ -38,6 +38,27 @@ void asyncflow::py::InitEventIdObject(PyObject* module)
 }
 
 #pragma region asyncflow_customer_func
+
+bool _get_int_from_config_dict(PyObject* dict, const char* key, int& value)
+{
+	auto* result = PyDict_GetItemString(dict, key);
+	if (result == nullptr)
+	{
+		return false;
+	}
+
+	if (PyLong_Check(result))
+	{
+		value = (int)PyLong_AsLong(result);
+		return true;
+	}
+	else
+	{
+		ASYNCFLOW_WARN("{0} must be integer", key);
+		return false;
+	}
+}
+
 //TODO support several managers in python
 PyObject* asyncflow::py::setup(PyObject* self, PyObject* args)
 {
@@ -59,29 +80,21 @@ PyObject* asyncflow::py::setup(PyObject* self, PyObject* args)
 		auto result = PyDict_GetItemString(config, "defer_event");
 		if (result != nullptr)
 		{
-			bool flag = PyObject_IsTrue(result);
-			manager->SetDeferMode(flag);
-			ASYNCFLOW_LOG("event defer is set to {0}", flag);
+			manager->SetDeferMode(PyObject_IsTrue(result));			
 		}
-		result = PyDict_GetItemString(config, "default_timestep");
+
+		int step_time = 0;
+		if(_get_int_from_config_dict(config, "default_timestep", step_time))
+		{
+			manager->SetDefaulTimeInterval(step_time);
+		}
+
+		result = PyDict_GetItemString(config, "node_stop_when_error");
 		if (result != nullptr)
 		{
-			if (PyLong_Check(result))
-			{
-				int step = (int)PyLong_AsLong(result);
-				if (step <= 0)
-					ASYNCFLOW_WARN("default_timestep must be larger than 0");
-				else
-				{
-					manager->SetDefaulTimeInterval(step);
-					ASYNCFLOW_LOG("default_timestep is set to {0}", step);
-				}
-			}
-			else
-			{
-				ASYNCFLOW_WARN("default_timestep must be long");
-			}
+			manager->SetNodeStopWhenError(PyObject_IsTrue(result));
 		}
+		
 #ifdef FLOWCHART_DEBUG
 		std::string ip = WebsocketManager::IP;
 		int port = WebsocketManager::START_PORT;

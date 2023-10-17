@@ -111,6 +111,7 @@ namespace asyncflow
 			static EventManager	eventManager;
 			int default_time_interval_;
 			bool defer_event_;
+			bool node_stop_when_error_;
 
 		public:
 			const static int DEFAULT_AGENT_TICK;
@@ -118,8 +119,10 @@ namespace asyncflow
 			bool AUTO_REGISTER;
 			static DataManager dataManager;
 			bool isDeferMode() { return defer_event_; }
-			void SetDeferMode(bool flag) { defer_event_ = flag; }
-			void SetDefaulTimeInterval(int interval) { default_time_interval_ = interval; }
+			void SetDeferMode(bool flag);
+			void SetDefaulTimeInterval(int interval);
+			void SetNodeStopWhenError(bool b);
+			bool IsNodeStopWhenError() { return node_stop_when_error_; }
 
 #ifdef FLOWCHART_DEBUG
 		public:

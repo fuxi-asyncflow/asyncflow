@@ -21,6 +21,25 @@ static const char* agr_err_msg = "parse argument failed!";
 
 #pragma region asyncflow_customer_func
 
+bool _get_bool_from_config_dict(lua_State* L, const char* key, bool& b)
+{
+	lua_getfield(L, 1, key);
+	if(lua_isnoneornil(L, -1))
+	{
+		lua_pop(L, 1);
+		return false;
+	}
+
+	if (lua_isnumber(L, -1))
+	{
+		b = ((int)lua_tonumber(L, -1)) ? true : false;
+	}
+	else
+		b = lua_toboolean(L, -1);
+	lua_pop(L, 1);
+	return true;
+}
+
 int asyncflow::lua::setup(lua_State* L)
 {
 	auto mgr = new LuaManager;
@@ -28,32 +47,20 @@ int asyncflow::lua::setup(lua_State* L)
 	mgr->Init();
 	if (lua_istable(L, 1))
 	{
-		lua_getfield(L, 1, "defer_event");
-		if (lua_isboolean(L, -1))
-		{
-			bool flag = lua_toboolean(L, -1);
-			mgr->SetDeferMode(flag);
-			ASYNCFLOW_LOG("defer_event is set to {0}.", flag);
-		}
+		bool defer_event = false;
+		if(_get_bool_from_config_dict(L, "defer_event", defer_event))
+			mgr->SetDeferMode(defer_event);
+
 		lua_getfield(L, 1, "default_timestep");
 		if (lua_isnumber(L, -1))
 		{
-			int step = (int)lua_tonumber(L, -1);
-			if (step <= 0)
-				ASYNCFLOW_WARN("default_timestep must be larger than 0.");
-			else
-			{
-				mgr->SetDefaulTimeInterval(step);
-				ASYNCFLOW_LOG("default_timestep is set to {0}.", step);
-			}
+			mgr->SetDefaulTimeInterval((int)lua_tonumber(L, -1));
 		}
+		lua_pop(L, 1);
 
-		lua_getfield(L, 1, "auto_register");
-		if (lua_isboolean(L, -1))
-		{
-			mgr->AUTO_REGISTER = lua_toboolean(L, -1);
-			ASYNCFLOW_LOG("auto_register is set to {0}.", mgr->AUTO_REGISTER);
-		}
+		bool node_stop_when_error = false;
+		if (_get_bool_from_config_dict(L, "node_stop_when_error", node_stop_when_error))
+			mgr->SetNodeStopWhenError(node_stop_when_error);
 
 #ifdef FLOWCHART_DEBUG
 		std::string ip = WebsocketManager::IP;

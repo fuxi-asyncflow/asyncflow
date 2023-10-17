@@ -45,7 +45,7 @@ NodeResult LuaNodeFunc::call(Agent* agent)
 			chart_stack++;
 
 		}
-		result = rSTOP;
+		result = mgr->IsNodeStopWhenError() ? rSTOP : rFALSE;
 	}
 	else
 	{
