@@ -61,6 +61,12 @@ NodeResult Node::Run()
 			return rFALSE;
 		}
 		auto r = func->call(GetAgent());
+#ifdef FLOWCHART_DEBUG
+		const auto& error_msg = GetAgent()->GetManager()->GetErrorMessage();
+		if (!error_msg.empty())
+			chart_->SendNodeMessage(data_->GetId(), data_->GetUid(), error_msg.c_str(), error_msg.size());
+#endif
+		GetAgent()->GetManager()->ClearErrorMessage();
 		if (result_ != rSTOP)
 			SetResult(r);
 		ASYNCFLOW_DBG("--------------------- RUN NODE RESULT {0}", result_);

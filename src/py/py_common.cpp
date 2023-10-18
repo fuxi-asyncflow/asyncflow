@@ -13,6 +13,18 @@ static inline PyCodeObject* PyFrame_GetCode(PyFrameObject* frame)
 }
 #endif
 
+std::string py_error_message;
+
+const char* asyncflow::py::GetPythonErrorMessage(int* length)
+{
+	if (length != nullptr)
+		*length = 0;
+	if(py_error_message.empty())
+		return nullptr;
+	*length = py_error_message.length();
+	return py_error_message.c_str();
+}
+
 bool asyncflow::py::ObjIsBool(PyObject* obj)
 {
 	return PyObject_IsTrue(obj) == 1;
@@ -27,6 +39,7 @@ bool asyncflow::py::CheckPythonException()
 {
 	if (PyErr_Occurred())
 	{
+		py_error_message.clear();
 		// get the error details
 		std::string error_message = "An error occurred:";
 		PyObject *pExcType, *pExcValue, *pExcTraceback;
@@ -41,7 +54,9 @@ bool asyncflow::py::CheckPythonException()
 		if (pExcValue != nullptr)
 		{
 			PyObject* pRepr = PyObject_Repr(pExcValue);
-			error_message = error_message + "- exception value:" + PyUnicode_AsUTF8(pRepr);
+			const char* msg = PyUnicode_AsUTF8(pRepr);
+			error_message = error_message + "- exception value:" + msg;
+			py_error_message.assign(msg);
 			Py_DecRef(pRepr);
 			Py_DecRef(pExcValue);
 		}

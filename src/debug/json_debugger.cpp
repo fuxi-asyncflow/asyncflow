@@ -122,7 +122,9 @@ std::string JsonDebugger::PrepareChartDebugData(Chart* chart)
 		else if (data->type == DebugData::VariableStatus)
 			Serialize_VariableStatusData_Json(writer, *reinterpret_cast<VariableStatusData*>(data));			
 		else if (data->type == DebugData::EventStatus)
-			Serialize_EventStatusData_Json(writer, *reinterpret_cast<EventStatusData*>(data));			
+			Serialize_EventStatusData_Json(writer, *reinterpret_cast<EventStatusData*>(data));
+		else if(data->type == DebugData::NodeMessage)
+			Serialize_NodeMessageData_Json(writer, *reinterpret_cast<NodeMessageData*>(data));
 	}
 	chart->ClearDebugData();
 	writer.EndArray();
@@ -412,7 +414,7 @@ void asyncflow::debug::Serialize_NodeStatusData_Json(Writer& writer, const NodeS
 	writer.String("new_status");
 	writer.Int(nsd.new_status);
 
-	if (nsd.new_status == 2)   //½ÚµãÏÖÔÚµÄ×´Ì¬ÎªÍê³É×´Ì¬·¢ËÍÔËÐÐ½á¹û
+	if (nsd.new_status == 2)
 	{
 		writer.String("result");
 		writer.Bool(nsd.result);
@@ -420,21 +422,26 @@ void asyncflow::debug::Serialize_NodeStatusData_Json(Writer& writer, const NodeS
 	writer.EndObject();
 }
 
-
-void asyncflow::debug::Deserialize_NodeStatusData_Json(const rapidjson::Value& obj, NodeStatusData& nsd)
+void asyncflow::debug::Serialize_NodeMessageData_Json(Writer& writer, const NodeMessageData& nsd)
 {
-	if (obj.HasMember("id") && obj["id"].IsInt())
-		nsd.id = obj["id"].GetInt();
-	if (obj.HasMember("node_id") && obj["node_id"].IsInt())
-		nsd.node_id = obj["node_id"].GetInt();
-	if (obj.HasMember("node_uid") && obj["node_uid"].IsString())
-		nsd.node_uid = obj["node_uid"].GetString();
-	if (obj.HasMember("old_status") && obj["old_status"].IsInt())
-		nsd.old_status = obj["old_status"].GetInt();
-	if (obj.HasMember("new_status") && obj["new_status"].IsInt())
-		nsd.new_status = obj["new_status"].GetInt();
-	if (obj.HasMember("result") && obj["result"].IsBool())
-		nsd.result = obj["result"].GetBool();
+	writer.StartObject();
+
+	writer.String("type");
+	writer.String("node_message");
+
+	writer.String("id");
+	writer.Int(nsd.id);
+
+	writer.String("node_id");
+	writer.Int(nsd.node_id);
+
+	writer.String("node_uid");
+	writer.String(nsd.node_uid.c_str());
+
+	writer.String("message");
+	writer.String(nsd.message.c_str(), nsd.message.length());
+
+	writer.EndObject();
 }
 
 
@@ -462,23 +469,6 @@ void asyncflow::debug::Serialize_VariableStatusData_Json(Writer& writer, const V
 
 	writer.EndObject();
 }
-
-
-void asyncflow::debug::Deserialize_VariableStatusData_Json(const rapidjson::Value& obj, VariableStatusData& vsd)
-{
-	if (obj.HasMember("id") && obj["id"].IsInt())
-		vsd.id = obj["id"].GetInt();
-	if (obj.HasMember("variable_name") && obj["variable_name"].IsString())
-		vsd.variable_name = obj["variable_name"].GetString();
-	if (obj.HasMember("node_uid") && obj["node_uid"].IsString())
-		vsd.node_uid = obj["node_uid"].GetString();
-	if (obj.HasMember("old_value") && obj["old_value"].IsString())
-		vsd.old_value = obj["old_value"].GetString();
-	if (obj.HasMember("new_value") && obj["new_value"].IsString())
-		vsd.new_value = obj["new_value"].GetString();
-}
-
-
 
 void asyncflow::debug::Serialize_EventStatusData_Json(Writer& writer, const EventStatusData& esd)
 {
@@ -508,28 +498,6 @@ void asyncflow::debug::Serialize_EventStatusData_Json(Writer& writer, const Even
 	writer.EndArray();
 
 	writer.EndObject();
-}
-
-void asyncflow::debug::Deserialize_EventStatusData_Json(const rapidjson::Value& obj, EventStatusData& esd)
-{
-	if (obj.HasMember("id") && obj["id"].IsInt())
-		esd.id = obj["id"].GetInt();
-	if (obj.HasMember("event_name") && obj["event_name"].IsString())
-		esd.event_name = obj["event_name"].GetString();
-	if (obj.HasMember("node_uid") && obj["node_uid"].IsString())
-		esd.node_uid = obj["node_uid"].GetString();
-	if (obj.HasMember("arg_count") && obj["arg_count"].IsInt())
-		esd.argcount = obj["arg_count"].GetInt();
-	if (obj.HasMember("event_params") && obj["event_params"].IsArray())
-	{
-		auto array = obj["event_params"].GetArray();
-		esd.n_args.clear();
-		for (const auto& arg : array)
-		{
-			if (arg.IsString())
-				esd.n_args.push_back(arg.GetString());
-		}
-	}
 }
 
 std::string JsonDebugger::HeartBeat()

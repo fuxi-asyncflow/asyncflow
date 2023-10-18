@@ -32,7 +32,8 @@ namespace asyncflow
 			{
 				NodeStatus = 1,
 				VariableStatus = 2,
-				EventStatus = 3
+				EventStatus = 3,
+				NodeMessage = 4
 			};
 			int id;
 			DataType type;
@@ -41,7 +42,7 @@ namespace asyncflow
 
 		struct NodeStatusData : public DebugData
 		{
-			NodeStatusData(int id, std::string uid, int ostatus, int nstatus, bool res)
+			NodeStatusData(int id, const std::string& uid, int ostatus, int nstatus, bool res)
 				:node_id(id), node_uid(uid), old_status(ostatus), new_status(nstatus), result(res)
 			{
 				type = NodeStatus;
@@ -56,6 +57,18 @@ namespace asyncflow
 			int old_status;
 			int new_status;
 			bool result;			
+		};
+
+		struct NodeMessageData : public DebugData
+		{
+			NodeMessageData(int id, const std::string& uid, const char* msg, int msg_length)
+				: node_id(id), node_uid(uid), message(msg, msg_length)
+			{
+				type = NodeMessage;
+			}
+			int node_id;
+			std::string node_uid;
+			std::string message;
 		};
 
 		struct VariableStatusData : public DebugData

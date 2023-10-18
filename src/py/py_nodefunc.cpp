@@ -19,6 +19,9 @@ NodeResult PyNodeFunc::call(Agent* agent)
 	if (CheckPythonException())
 	{
 		//print error chart and variables in chart
+		int error_msg_length;
+		const auto* error_msg = GetPythonErrorMessage(&error_msg_length);
+		agent->GetManager()->SetErrorMessage(error_msg, error_msg_length);
 		auto current_chart = (PyChart*)agent->GetManager()->GetCurrentNode()->GetChart();
 		ASYNCFLOW_ERR("run node error in chart {0}", current_chart->Name());
 		Chart* temp_chart = current_chart;

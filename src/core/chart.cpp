@@ -128,6 +128,14 @@ void Chart::SendNodeStatus(int id, const std::string& uid, Node::Status old_stat
 	}
 }
 
+void Chart::SendNodeMessage(int id, const std::string& uid, const char* msg, int msg_length)
+{
+	auto* data = new debug::NodeMessageData(id, uid, msg, msg_length);
+	data->id = debug_data_count_++;
+	debug_data_list_.push_back(data);
+}
+
+
 void Chart::SendAllNodeCount()
 {
 	for(auto* node : node_list_)

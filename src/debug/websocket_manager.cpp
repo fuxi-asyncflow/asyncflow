@@ -69,9 +69,11 @@ void WebsocketManager::Step()
 		auto* chart = chart_kv.first;
 		auto& conns = chart_kv.second;
 		if (chart->GetDebugData().empty())
-			str = debugger_->HeartBeat();
+			continue;
+			//str = debugger_->HeartBeat();
 		else
 			str = debugger_->PrepareChartDebugData(chart);
+
 		ASYNCFLOW_DBG("[debug] chart json {0}", str);
 		auto iter = conns.begin();
 		while (iter != conns.end())

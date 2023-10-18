@@ -82,6 +82,9 @@ namespace asyncflow
 		public:
 			virtual std::pair<bool, std::vector<std::string>> RunScript(const char* str) = 0;   //run script
 			ChartData* GetChartData(const std::string& chart_name);
+			const std::string& GetErrorMessage() { return error_message_; }
+			void SetErrorMessage(const char* msg, int length) { error_message_.assign(msg, length); }
+			void ClearErrorMessage() { error_message_.clear(); }
 
 		protected:
 			int64_t			current_frame_;
@@ -100,7 +103,8 @@ namespace asyncflow
 			std::unordered_map<std::string, ChartData*>* chart_data_dict_;
 
 			int current_event_frame_;
-			bool in_step_;				// flag for inside or outside step function 
+			bool in_step_;				// flag for inside or outside step function
+			std::string error_message_;
 
 		private:
 			void HandleEvent(AsyncEventBase& event);

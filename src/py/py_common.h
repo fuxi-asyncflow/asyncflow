@@ -34,6 +34,7 @@ namespace asyncflow
 		bool ObjIsBool(PyObject* obj);
 		void FreeObject(PyObject* obj);
 		bool CheckPythonException();
+		const char* GetPythonErrorMessage(int* length);
 		std::string GetObjectName(PyObject* obj);		//get obj name in debug
 		std::string ToString(PyObject* obj);    //convert obj to string in debug
         static PyObject* _module = nullptr;

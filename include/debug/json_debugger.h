@@ -47,12 +47,12 @@ namespace asyncflow
 		typedef rapidjson::PrettyWriter<rapidjson::StringBuffer> Writer;
 		void Serialize_ChartInfo_Json(Writer& writer, const ChartInfo& ci);
 		void Deserialize_ChartInfo_Json(const rapidjson::Value& obj, ChartInfo& ci);
+		//TODO refactor with visitor pattern fro DebugData
 		void Serialize_NodeStatusData_Json(Writer& writer, const NodeStatusData& nsd);
-		void Deserialize_NodeStatusData_Json(const rapidjson::Value& obj, NodeStatusData& nsd);
+		void Serialize_NodeMessageData_Json(Writer& writer, const NodeMessageData& nsd);
 		void Serialize_VariableStatusData_Json(Writer& writer, const VariableStatusData& vsd);
-		void Deserialize_VariableStatusData_Json(const rapidjson::Value& obj, VariableStatusData& vsd);
 		void Serialize_EventStatusData_Json(Writer& writer, const EventStatusData& esd);
-		void Deserialize_EventStatusData_Json(const rapidjson::Value& obj, EventStatusData& esd);
+		
     }
 }
 
