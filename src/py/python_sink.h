@@ -11,14 +11,23 @@ namespace spdlog
 		explicit python_logger_sink(PyObject* pylogger)
 			: py_logger_(pylogger)
 		{
-			func_names_[static_cast<size_t>(level::trace)] = nullptr;
-			func_names_[static_cast<size_t>(level::debug)] = PyUnicode_FromString("debug");
-			func_names_[static_cast<size_t>(level::info)] = PyUnicode_FromString("info");
-			func_names_[static_cast<size_t>(level::warn)] = PyUnicode_FromString("warning");
-			func_names_[static_cast<size_t>(level::err)] = PyUnicode_FromString("error");
-			func_names_[static_cast<size_t>(level::critical)] = PyUnicode_FromString("fatal");
-			func_names_[static_cast<size_t>(level::off)] = nullptr;
+			std::array<const char*, 7> level_names = { "", "debug", "info", "warning", "error", "fatal", "" };
+			for (int i = 0; i < 7; i++)
+			{
+				func_names_[i] = nullptr;
+			}
 
+			for(int i=1; i<6; i++)
+			{
+				if (!PyObject_HasAttrString(pylogger, level_names[i]))
+					continue;
+				auto* func = PyObject_GetAttrString(pylogger, level_names[i]);
+				if(func != nullptr && PyCallable_Check(func))
+				{
+					Py_XINCREF(func);
+					func_names_[i] = func;
+				}
+			}
 			Py_XINCREF(py_logger_);
 		}
 
@@ -40,9 +49,10 @@ namespace spdlog
 		{
 			fmt::memory_buffer formatted;
 			formatter_->format(msg, formatted);
-			auto str = PyUnicode_FromStringAndSize(formatted.data(), formatted.size());
-			PyObject_CallMethodObjArgs(py_logger_, func_names_[static_cast<size_t>(msg.level)], 
-				str, nullptr);
+			auto* str = PyUnicode_FromStringAndSize(formatted.data(), formatted.size());
+			auto* func = func_names_[static_cast<size_t>(msg.level)];
+			if (func != nullptr)
+				PyObject_CallFunctionObjArgs(func, str, nullptr);
 			Py_XDECREF(str);
 			return;
 		}

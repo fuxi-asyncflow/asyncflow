@@ -471,26 +471,29 @@ PyObject* asyncflow::py::set_logger(PyObject* self, PyObject* args)
 	PyObject* python_log = nullptr;
 	if (!PyArg_ParseTuple(args, "O", &python_log))
 	{
-		printf("parse argument failed in set_python_log!\n");
+		printf("parse argument failed in set_logger! first arg should be a callable object\n");
 		Py_RETURN_FALSE;
 	}
-	if (auto log = spdlog::get("python_log"))
+
+	auto asyncflow_logger = spdlog::get("asyncflow");
+	if (asyncflow_logger == nullptr)
 	{
-		for(auto& sink : log->sinks())
+		printf("[asyncflow] set_logger failed! you should call config_log with asyncflow as logger before set_logger");
+		Py_RETURN_FALSE;
+	}
+
+	for (auto& sink : asyncflow_logger->sinks())
+	{		
+		auto python_sink = std::dynamic_pointer_cast<spdlog::python_logger_sink>(sink);
+		if (python_sink)
 		{
-			auto python_sink = std::dynamic_pointer_cast<spdlog::python_logger_sink>(sink);
-			if(python_sink)
-			{
-				python_sink->set(python_log);
-			}
+			python_sink->set(python_log);
+			Py_RETURN_TRUE;
 		}
 	}
-	else
-	{
-		Log::rotatelogger = spdlog::create<spdlog::python_logger_sink>("python_log", python_log);
-	}
-	Log::rotatelogger->set_level(Log::LEVEL);
-	Log::rotatelogger->set_pattern("[asyncflow] %v");
+
+	auto py_sink = std::make_shared<spdlog::python_logger_sink>(python_log);
+	asyncflow_logger->sinks().push_back(py_sink);
 	Py_RETURN_TRUE;
 }
 
