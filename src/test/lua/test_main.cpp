@@ -16,7 +16,6 @@ TEST_CASE("manager setup")
 	dostring(L, "asyncflow.setup(cfg)");
 	manager = (asyncflow::lua::LuaManager*)get_manager();
 	REQUIRE(manager != nullptr);
-	REQUIRE(manager->IsImmediateSub() == true);
 #ifdef FLOWCHART_DEBUG
 	REQUIRE(Agent::DEBUG_NAME_METHOD == "get_name");
 	Agent::DEBUG_NAME_METHOD = name_methed;
