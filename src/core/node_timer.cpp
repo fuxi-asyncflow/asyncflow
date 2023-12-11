@@ -84,15 +84,15 @@ bool NodeWaitAll::Run(int id)
 	{
 		it->second = true;
 		//check if all node has runned
-		for(auto iter = node_ids_.begin(); iter != node_ids_.end(); ++iter)
+		for (const auto& node_id : node_ids_)
 		{
-			if (!iter->second)
+			if (!node_id.second)
 				return false;			
 		}
 		//reset
-		for(auto iter = node_ids_.begin(); iter != node_ids_.end(); ++iter)
+		for (auto& node_id : node_ids_)
 		{
-			iter->second = false;
+			node_id.second = false;
 		}
 		return true;
 	}
@@ -105,5 +105,8 @@ bool NodeWaitAll::Run(int id)
 
 void NodeWaitAll::Stop()
 {
-	
+	for (auto& node_id : node_ids_)
+	{
+		node_id.second = false;
+	}
 }
