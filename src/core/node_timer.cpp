@@ -92,7 +92,7 @@ bool NodeWaitAll::Run(int id)
 		//reset
 		for(auto iter = node_ids_.begin(); iter != node_ids_.end(); ++iter)
 		{
-			iter->second = true;
+			iter->second = false;
 		}
 		return true;
 	}
